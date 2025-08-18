@@ -218,7 +218,7 @@
   }
 
   // Navegación directa al cargar la página con un hash en la URL
-  const initialHash = location.hash ? location.hash.slice(1) : '';
+  const initialHash = location.hash ? location.hash.slice(1) : 'about';
   if (initialHash) {
     // Esperar un poco para que la página se renderice completamente
     setTimeout(() => openFocusScroll(initialHash, true), 100);

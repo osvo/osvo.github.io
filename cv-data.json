@@ -12,7 +12,7 @@
   "about": {
     "title": "Juan Camilo Osorio Oviedo",
     "rol": ["Docente", "Estudiante de Maestría en Ciencias — Matemática Aplicada"],
-    "interests": ["IA", "ML", "SVR", "Confiabilidad estructural"],
+    "interests": ["Inteligencia artificial", "Machine Learning", "Support vector machines", "Confiabilidad estructural", "Computer science"],
     "location": "Manizales - Caldas - Colombia",
     "email": "jucosorioov@unal.edu.co"
   },
@@ -63,7 +63,7 @@
     "columns": [
       [
         "Programación: Python, MATLAB/Octave",
-        "ML: SVR, Bayesiano, Regressión, Clasificación",
+        "ML: SVR, Bayesiano, Regresión, Clasificación",
         "Herramientas: Git, LaTeX, Linux"
       ],
       [

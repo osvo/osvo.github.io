@@ -1,0 +1,105 @@
+{
+  "person": {
+    "name": "Juan Camilo Osorio Oviedo",
+    "alternateName": "osvo",
+    "jobTitle": "Estudiante de Maestría en Ciencias — Matemática Aplicada",
+    "url": "",
+    "sameAs": [
+      "https://github.com/osvo",
+      "https://www.linkedin.com/in/osvo/"
+    ]
+  },
+  "about": {
+    "title": "Juan Camilo Osorio Oviedo",
+    "role": "Estudiante de Maestría en Ciencias — Matemática Aplicada",
+    "interests": ["ML", "SVR", "Fiabilidad estructural"],
+    "location": "Colombia",
+    "email": "jucosorioov@unal.edu.co"
+  },
+  "education": {
+    "title": "Educación",
+    "items": [
+      {
+        "degree": "Maestría en Ciencias — Matemática Aplicada",
+        "institution": "Universidad Nacional de Colombia",
+        "status": "En curso"
+      },
+      {
+        "degree": "Ingeniería Civil",
+        "institution": "Universidad Nacional de Colombia",
+        "status": null
+      }
+    ]
+  },
+  "experience": {
+    "title": "Experiencia",
+    "items": [
+      {
+        "id": "expTeaching",
+        "role": "Docente ocasional",
+        "institution": "Universidad Nacional de Colombia",
+        "tasks": [
+          "Estadística I",
+          "Ecuaciones diferenciales",
+          "Cálculo diferencial",
+          "Matemáticas básicas"
+        ]
+      },
+      {
+        "id": "expMonitors",
+        "role": "Monitorías académicas",
+        "institution": "Universidad Nacional de Colombia",
+        "tasks": [
+          "Programación de computadores",
+          "Mecánica de sólidos",
+          "Cálculo integral",
+          "Álgebra lineal"
+        ]
+      }
+    ]
+  },
+  "skills": {
+    "title": "Habilidades",
+    "columns": [
+      [
+        "Programación: Python, JS, MATLAB/Octave",
+        "ML: SVR, Bayesiano, Regressión, Clasificación",
+        "Herramientas: Git, LaTeX, Linux"
+      ],
+      [
+        "Idiomas: Español (nativo), Inglés (C1)",
+        "Docencia y divulgación científica",
+        "Redacción académica"
+      ]
+    ]
+  },
+  "projects": {
+    "title": "Proyectos (pronto)",
+    "items": [
+      "// Cuando tengas repos, enlázalos aquí con una breve descripción."
+    ]
+  },
+  "publications": {
+    "title": "Publicaciones",
+    "items": [
+      {
+        "title": "Un framework para la construcción de CVs dinámicos",
+        "conference": "Tech Conference 2024",
+        "url": "https://example.com/publication1"
+      }
+    ]
+  },
+  "links": {
+    "title": "Enlaces",
+    "items": [
+      {
+        "name": "github",
+        "url": "https://github.com/osvo"
+      },
+      {
+        "name": "linkedin",
+        "url": "https://www.linkedin.com/in/osvo/"
+      }
+    ]
+  }
+}

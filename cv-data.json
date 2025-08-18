@@ -67,7 +67,7 @@
         "Herramientas: Git, LaTeX, Linux"
       ],
       [
-        "Idiomas: Español (nativo), Inglés (C1)",
+        "Idiomas: Español (nativo) e Inglés (C1)",
         "Docencia y divulgación científica"
       ]
     ]
@@ -96,13 +96,17 @@
         "url": "https://github.com/osvo"
       },
       {
-        "name": "Linkedin",
+        "name": "LinkedIn",
         "url": "https://www.linkedin.com/in/osvo/"
       },
       {
         "name": "YouTube",
         "url": "https://www.youtube.com/@caosvo"
-      }
+      },
+      {
+        "name": "Goodreads",
+        "url": "https://goodreads.com/osvo"
+      }    
     ]
   }
 }

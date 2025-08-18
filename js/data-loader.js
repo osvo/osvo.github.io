@@ -100,7 +100,7 @@
         <div class="line"><span class="hdr"># ${about.title}</span></div>
         <div class="line"><span class="id">${person.alternateName}</span> <span class="k">=</span> <span class="v">{</span></div>
         <div class="indent">
-          <div class="line"><span class="k">role</span>: <span class="v">"${about.role}"</span>,</div>
+          <div class="line"><span class="k">rol</span>: <span class="v">[${about.rol.map(r => `"${r}"`).join(', ')}]</span>,</div>
           <div class="line"><span class="k">intereses</span>: <span class="v">[${about.interests.map(i => `"${i}"`).join(', ')}]</span>,</div>
           <div class="line"><span class="k">ubicación</span>: <span class="v">"${about.location}"</span>,</div>
           <div class="line"><span class="k">email</span>: <a href="mailto:${about.email}?subject=Contacto%20desde%20CV">${about.email}</a></div>
@@ -138,7 +138,7 @@
     if (expCard) {
         const itemsHtml = experience.items.map(item => `
             <li id="${item.id}">
-                <strong>${item.role}</strong> — ${item.institution}<br/>
+                <strong>${item.rol}</strong> — ${item.institution}<br/>
                 <ul>
                     ${item.tasks.map(task => `<li>${task}</li>`).join('')}
                 </ul>

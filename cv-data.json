@@ -36,7 +36,7 @@
     "items": [
       {
         "id": "expTeaching",
-        "role": "Docente ocasional",
+        "rol": "Docente ocasional",
         "institution": "Universidad Nacional de Colombia",
         "tasks": [
           "Estadística I",
@@ -47,7 +47,7 @@
       },
       {
         "id": "expMonitors",
-        "role": "Monitorías académicas",
+        "rol": "Monitorías académicas",
         "institution": "Universidad Nacional de Colombia",
         "tasks": [
           "Programación de computadores",

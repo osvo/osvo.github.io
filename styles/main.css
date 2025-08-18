@@ -194,12 +194,34 @@
 /* Menos movimiento para quien lo prefiera */
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
 .title{ position:relative; }
-/* Encabezado simulado dentro de about.txt */
-.hdr{ color: var(--cyan); font-size: 20px; font-weight:700; display:inline-block; margin: 2px 0 8px; }
-/* Cursor parpadeante en encabezado about */
-.hdr::after { content:" ▌"; animation: blink 1s steps(1) infinite; }
-@keyframes blink { 50% { opacity: 0; } }
-@media (prefers-reduced-motion: reduce) { .hdr::after { animation: none !important; } }
+/* Estilo de encabezado para la ventana maximizada */
+.terminal.maxwide .card h2,
+.terminal.maxwide .card .hdr {
+    font-size: 24px; /* Ligeramente más grande */
+    font-weight: 800;
+    color: var(--cyan);
+    display: inline-block;
+}
+
+/* Cursor parpadeante en el encabezado de la ventana maximizada */
+.terminal.maxwide .card h2::after,
+.terminal.maxwide .card .hdr::after {
+    content: " ▌";
+    animation: blink 1s steps(1) infinite;
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .terminal.maxwide .card h2::after,
+    .terminal.maxwide .card .hdr::after {
+        animation: none !important;
+    }
+}
 /* Evitar mosaico del fondo al hacer scroll */
 body{background-repeat: no-repeat, no-repeat, repeat; background-attachment: fixed, fixed, scroll;}
 /* Fallback en pantallas muy pequeñas: los gradientes acompañan el scroll */

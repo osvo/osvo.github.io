@@ -94,7 +94,7 @@
     const aboutCard = document.querySelector('#about .card');
     if (aboutCard) {
       aboutCard.innerHTML = `
-        <div class="line"><span class="hdr"># ${about.title}</span></div>
+        <h2 class="hdr"># ${about.title}</h2>
         <div class="line"><span class="id">${person.alternateName}</span> <span class="k">=</span> <span class="v">{</span></div>
         <div class="indent">
           <div class="line"><span class="k">rol</span>: <span class="v">[${about.rol.map(r => `"${r}"`).join(', ')}]</span>,</div>

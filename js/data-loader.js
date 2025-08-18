@@ -141,7 +141,7 @@
         <li id="${item.id}">
             <strong>${item.rol}</strong> — ${item.institution}<br/>
             <ul>
-                ${item.tasks.map(task => `<li>${task}</li>`).join('')}
+                ${item.tasks.map(task => `<li>${task.name}${task.year ? ` <span class="badge">${task.year}</span>` : ''}</li>`).join('')}
             </ul>
         </li>
     `).join('');

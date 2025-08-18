@@ -39,10 +39,10 @@
         "rol": "Docente ocasional",
         "institution": "Universidad Nacional de Colombia",
         "tasks": [
-          "Estadística I",
-          "Ecuaciones diferenciales",
-          "Cálculo diferencial",
-          "Matemáticas básicas"
+          { "name": "Estadística I", "year": "2024" },
+          { "name": "Ecuaciones diferenciales", "year": "2024" },
+          { "name": "Cálculo diferencial", "year": "2022" },
+          { "name": "Matemáticas básicas", "year": "2022" }
         ]
       },
       {
@@ -50,10 +50,10 @@
         "rol": "Monitorías académicas",
         "institution": "Universidad Nacional de Colombia",
         "tasks": [
-          "Programación de computadores",
-          "Mecánica de sólidos",
-          "Cálculo integral",
-          "Álgebra lineal"
+          { "name": "Programación de computadores", "year": "2019" },
+          { "name": "Mecánica de sólidos", "year": "2020-2021" },
+          { "name": "Cálculo integral", "year": "2023" },
+          { "name": "Álgebra lineal", "year": "2025" }
         ]
       }
     ]

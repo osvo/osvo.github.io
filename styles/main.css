@@ -194,6 +194,15 @@
 /* Menos movimiento para quien lo prefiera */
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
 .title{ position:relative; }
+/* Estilo de encabezado para la ventana NO maximizada */
+.terminal:not(.maxwide) .card .hdr {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--cyan);
+    display: block;
+    margin: 18px 0 10px;
+}
+
 /* Estilo de encabezado para la ventana maximizada */
 .terminal.maxwide .card h2,
 .terminal.maxwide .card .hdr {

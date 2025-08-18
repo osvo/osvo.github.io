@@ -78,16 +78,6 @@
       "Próximamente"
     ]
   },
-  "publications": {
-    "title": "Publicaciones",
-    "items": [
-      {
-        "title": "Un framework para la construcción de CVs dinámicos",
-        "conference": "Tech Conference 2024",
-        "url": "https://example.com/publication1"
-      }
-    ]
-  },
   "links": {
     "title": "Enlaces",
     "items": [

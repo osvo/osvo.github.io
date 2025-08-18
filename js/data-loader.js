@@ -52,9 +52,6 @@
     // --- Sección: Projects ---
     populateProjects(data.projects);
 
-    // --- Sección: Publications ---
-    populatePublications(data.publications);
-
     // --- Sección: Links ---
     populateLinks(data.links);
   }
@@ -175,25 +172,6 @@
     if (projCard) {
       const itemsHtml = projects.items.map(item => `<li><span class="c">${item}</span></li>`).join('');
       projCard.innerHTML = `<h2 id="h-proj"># ${projects.title}</h2><ul>${itemsHtml}</ul>`;
-    }
-  }
-
-  /**
-   * Rellena la sección "Publications".
-   * @param {object} publications - Datos de la sección.
-   */
-  function populatePublications(publications) {
-    if (!publications) return;
-    const pubsCard = document.querySelector('#publications .card');
-    if (pubsCard) {
-      const itemsHtml = publications.items.map(pub => `
-        <li>
-          <a href="${pub.url}" target="_blank" rel="noopener">${pub.title}</a>
-          <br>
-          <span class="c">${pub.conference}</span>
-        </li>
-      `).join('');
-      pubsCard.innerHTML = `<h2 id="h-pubs"># ${publications.title}</h2><ul>${itemsHtml}</ul>`;
     }
   }
 

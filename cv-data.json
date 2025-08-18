@@ -11,9 +11,9 @@
   },
   "about": {
     "title": "Juan Camilo Osorio Oviedo",
-    "role": "Estudiante de Maestría en Ciencias — Matemática Aplicada",
-    "interests": ["ML", "SVR", "Fiabilidad estructural"],
-    "location": "Colombia",
+    "rol": ["Docente", "Estudiante de Maestría en Ciencias — Matemática Aplicada"],
+    "interests": ["IA", "ML", "SVR", "Confiabilidad estructural"],
+    "location": "Manizales - Caldas - Colombia",
     "email": "jucosorioov@unal.edu.co"
   },
   "education": {
@@ -27,7 +27,7 @@
       {
         "degree": "Ingeniería Civil",
         "institution": "Universidad Nacional de Colombia",
-        "status": null
+        "status": "2022"
       }
     ]
   },
@@ -62,21 +62,20 @@
     "title": "Habilidades",
     "columns": [
       [
-        "Programación: Python, JS, MATLAB/Octave",
+        "Programación: Python, MATLAB/Octave",
         "ML: SVR, Bayesiano, Regressión, Clasificación",
         "Herramientas: Git, LaTeX, Linux"
       ],
       [
         "Idiomas: Español (nativo), Inglés (C1)",
-        "Docencia y divulgación científica",
-        "Redacción académica"
+        "Docencia y divulgación científica"
       ]
     ]
   },
   "projects": {
-    "title": "Proyectos (pronto)",
+    "title": "Proyectos",
     "items": [
-      "// Cuando tengas repos, enlázalos aquí con una breve descripción."
+      "Próximamente"
     ]
   },
   "publications": {
@@ -93,12 +92,16 @@
     "title": "Enlaces",
     "items": [
       {
-        "name": "github",
+        "name": "Github",
         "url": "https://github.com/osvo"
       },
       {
-        "name": "linkedin",
+        "name": "Linkedin",
         "url": "https://www.linkedin.com/in/osvo/"
+      },
+      {
+        "name": "YouTube",
+        "url": "https://www.youtube.com/@juancaosvo"
       }
     ]
   }

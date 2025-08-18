@@ -10,194 +10,7 @@
   <meta property="og:description" content="Currículum de Juan Camilo Osorio Oviedo (osvo): experiencia, educación y enlaces." />
   <meta property="og:type" content="website" />
   <meta name="theme-color" content="#0b0f14" />
-  <style>
-    :root {
-      --bg: #0b0f14;         /* fondo principal */
-      --panel: #0f151c;      /* panel/ventana */
-      --panel-2: #101821;    /* panel alterno */
-      --border: #19212b;     /* bordes */
-      --text: #e6edf3;       /* texto */
-      --muted: #9aa4b2;      /* texto secundario */
-      --shadow: 0 10px 40px rgba(0,0,0,.35);
-      /* Paleta tipo One Dark */
-      --red: #e06c75;  --orange: #d19a66;  --yellow: #e5c07b;
-      --green: #98c379;--cyan: #56b6c2;    --blue: #61afef; --magenta: #c678dd;
-      --selection: rgba(86,182,194,.25);
-      --link: var(--cyan);
-    }
-    [data-theme="light"] {
-      --bg: #f6f8fa;
-      --panel: #ffffff;
-      --panel-2: #fafbfc;
-      --border: #e6e8eb;
-      --text: #0b0f14;
-      --muted: #4b5563;
-      --shadow: 0 10px 30px rgba(0,0,0,.08);
-      --selection: rgba(97,175,239,.25);
-      --link: #1c64f2;
-    }
-    html, body { height: 100%; }
-    body {
-      margin: 0; background: radial-gradient(1200px 800px at 10% -10%, rgba(97,175,239,.08), transparent 40%),
-                              radial-gradient(900px 700px at 110% 10%, rgba(198,120,221,.06), transparent 45%), var(--bg);
-      color: var(--text);
-      font-family: ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
-    }
-    ::selection { background: var(--selection); }
-    .wrap { max-width: 980px; margin: 24px auto 80px; padding: 0 16px; }
-    .terminal {
-      background: linear-gradient(180deg, var(--panel), var(--panel-2));
-      border: 1px solid var(--border);
-      border-radius: 14px; box-shadow: var(--shadow);
-      overflow: hidden;
-    }
-    .topbar { display:flex; align-items:center; justify-content:space-between; padding: 10px 14px; border-bottom:1px solid var(--border); background: rgba(255,255,255,.02); }
-    .dots { display:flex; gap:8px; }
-    .dot { width:12px; height:12px; border-radius:50%; }
-    .dot.red { background: #ff5f56; }
-    .dot.yellow { background: #ffbd2e; }
-    .dot.green { background: #27c93f; }
-    .title { font-weight: 700; letter-spacing: .3px; color: var(--muted); }
-    .actions { display:flex; gap:8px; }
-    .btn { border: 1px solid var(--border); background: transparent; color: var(--muted); padding:6px 10px; border-radius: 10px; cursor:pointer; transition: transform .06s ease, background .2s ease; }
-    .btn:hover { background: rgba(255,255,255,.03); }
-    .btn:active { transform: translateY(1px); }
-    .screen { padding: 18px; }
-    .line { display:block; white-space:pre-wrap; word-break: break-word; }
-    .prompt { color: var(--muted); }
-    .user { color: var(--green); }
-    .host { color: var(--blue); }
-    .path { color: var(--yellow); }
-    .cmd { color: var(--cyan); }
-    .arg { color: var(--magenta); }
-    .file { color: var(--orange); }
-
-    h1 { font-size: 28px; margin: 8px 0 16px; }
-    h2 { font-size: 20px; margin: 18px 0 10px; color: var(--cyan); }
-
-    .grid { display:grid; grid-template-columns: 1fr; gap: 14px; }
-    @media (min-width: 750px) { .grid { grid-template-columns: 1.1fr .9fr; } }
-
-    .card {
-      border: 1px dashed var(--border); border-radius: 12px; padding: 14px; background: rgba(255,255,255,.01);
-    }
-
-    .k { color: var(--magenta); } /* keyword */
-    .id { color: var(--blue); }   /* identifier */
-    .v { color: var(--yellow); }  /* value */
-    .c { color: var(--muted); }   /* comment */
-
-    a { color: var(--link); text-decoration: none; border-bottom: 1px dotted transparent; transition: border-color .2s ease; }
-    a:hover { border-bottom-color: currentColor; }
-    ul { margin: 8px 0 0 18px; padding: 0; }
-    li { margin: 4px 0; }
-    .badge { display:inline-block; padding: 2px 8px; border-radius: 999px; border:1px solid var(--border); font-size: 12px; color: var(--muted); }
-
-    .footer { text-align:center; color: var(--muted); margin-top: 18px; font-size: 12px; }
-
-    /* Accesibilidad */
-    :focus { outline: 2px dashed var(--cyan); outline-offset: 3px; }
-
-    /* Impresión como CV PDF */
-    @media print {
-      body { background: #fff; color: #000; }
-      .wrap { margin: 0; }
-      .terminal, .topbar, .btn, .dots { box-shadow:none; }
-      .topbar, .actions { display:none; }
-      a { border: none; color: #000; }
-    }
-    /* Paletas alternativas */
-  [data-palette="dracula"] {
-      --bg: #282a36; --panel: #2b2d3a; --panel-2: #2b2d3a; --border: #3b3f52; --text: #f8f8f2; --muted: #a6accd;
-      --red:#ff5555; --orange:#ffb86c; --yellow:#f1fa8c; --green:#50fa7b; --cyan:#8be9fd; --blue:#6272a4; --magenta:#bd93f9;
-      --selection: rgba(189,147,249,.22); --link: var(--cyan);
-  }
-  [data-palette="nord"] {
-      --bg:#2e3440; --panel:#2f3541; --panel-2:#2f3541; --border:#434c5e; --text:#eceff4; --muted:#d8dee9;
-      --red:#bf616a; --orange:#d08770; --yellow:#ebcb8b; --green:#a3be8c; --cyan:#88c0d0; --blue:#81a1c1; --magenta:#b48ead;
-      --selection: rgba(136,192,208,.22); --link: var(--cyan);
-  }
-  [data-palette="solarized"] {
-      --bg:#002b36; --panel:#073642; --panel-2:#073642; --border:#0b3944; --text:#eee8d5; --muted:#93a1a1;
-      --red:#dc322f; --orange:#cb4b16; --yellow:#b58900; --green:#859900; --cyan:#2aa198; --blue:#268bd2; --magenta:#6c71c4;
-      --selection: rgba(42,161,152,.22); --link: var(--cyan);
-  }
-  [data-palette="gruvbox"] {
-      --bg:#282828; --panel:#1d2021; --panel-2:#1d2021; --border:#3c3836; --text:#ebdbb2; --muted:#bdae93;
-      --red:#fb4934; --orange:#fe8019; --yellow:#fabd2f; --green:#b8bb26; --cyan:#8ec07c; --blue:#83a598; --magenta:#d3869b;
-      --selection: rgba(250,189,47,.22); --link: var(--cyan);
-  }
-  [data-palette="monokai"] {
-      --bg:#272822; --panel:#1f201b; --panel-2:#1f201b; --border:#3b3c35; --text:#f8f8f2; --muted:#a1a1a1;
-      --red:#f92672; --orange:#fd971f; --yellow:#e6db74; --green:#a6e22e; --cyan:#66d9ef; --blue:#66d9ef; --magenta:#ae81ff;
-      --selection: rgba(102,217,239,.22); --link: var(--cyan);
-  }
-  [data-palette="tokyonight"] {
-      --bg:#1a1b26; --panel:#1f2335; --panel-2:#1f2335; --border:#2e3348; --text:#c0caf5; --muted:#a9b1d6;
-      --red:#f7768e; --orange:#ff9e64; --yellow:#e0af68; --green:#9ece6a; --cyan:#7dcfff; --blue:#7aa2f7; --magenta:#bb9af7;
-      --selection: rgba(122,162,247,.22); --link: var(--cyan);
-  }
-  [data-palette="catppuccin"] {
-      --bg:#1e1e2e; --panel:#181825; --panel-2:#181825; --border:#313244; --text:#cdd6f4; --muted:#a6adc8;
-      --red:#f38ba8; --orange:#fab387; --yellow:#f9e2af; --green:#a6e3a1; --cyan:#94e2d5; --blue:#89b4fa; --magenta:#cba6f7;
-      --selection: rgba(137,180,250,.22); --link: var(--cyan);
-  }
-  [data-palette="night-owl"] {
-      --bg:#011627; --panel:#021b31; --panel-2:#021b31; --border:#093a5b; --text:#d6deeb; --muted:#9fb3c8;
-      --red:#ef5350; --orange:#f78c6c; --yellow:#ecc48d; --green:#22da6e; --cyan:#7fdbca; --blue:#82aaff; --magenta:#c792ea;
-      --selection: rgba(130,170,255,.22); --link: var(--cyan);
-  }
-  /* Interacciones de ventana y título */
-    .win-title { font-size: 30px; font-weight: 800; margin: 6px 0 12px; letter-spacing: .2px; }
-    .terminal.minimized .screen { display: none; }
-    .terminal.closed .screen { display: none; }
-    
-    
-    .dot { border: 0; cursor: pointer; display: inline-block; }
-    .dot:focus { outline: 2px dashed var(--cyan); outline-offset: 2px; }
-    .title::after { content: ""; }
-    .terminal.minimized .title::after { content: " [minimizada]"; color: var(--muted); }
-    .terminal.closed .title::after { content: " [cerrada]"; color: var(--muted); }
-    .terminal.maxwide .title::after { content: " [max]"; color: var(--muted); }
-.indent{ margin-left:18px; }
-  /* Layout de escritorios con ventanas */
-    .desk { display:grid; gap:18px; grid-template-columns: 1fr; }
-    
-    .terminal.maxwide { grid-column: 1 / -1; }
-.terminal { width: min(100%, var(--win-width, 760px)); margin-left:auto; margin-right:auto; transition: width .25s ease, box-shadow .25s ease, border-color .25s ease, transform .2s ease; }
-.terminal.maxwide { width: 100%; border-color: var(--cyan); box-shadow: 0 20px 60px rgba(0,0,0,.55), 0 0 0 1px var(--cyan) inset; transform: translateY(-2px); }
-.terminal.maxwide .topbar { background: linear-gradient(90deg, rgba(255,255,255,.06), transparent 60%); }
-.terminal.maxwide .title { color: var(--text); }
-.terminal.maxwide .dots .dot { box-shadow: 0 0 0 2px rgba(255,255,255,.06); }
-/* Móvil: toolbar fija y targets cómodos */
-.toolbar { position: fixed; top: 8px; right: 16px; z-index: 60; background: transparent; padding: 0; }
-.toolbar .btn { padding: 4px 8px; font-size: 12px; border-radius: 8px; }
-@media (max-width: 560px) {
-  .wrap { margin: 16px auto 64px; padding: 0 10px; }
-  .screen { padding: 14px; }
-  .title { font-size: 13px; }
-  .btn { padding: 6px 8px; }
-  .dot { width: 16px; height: 16px; }
-  .dots { gap: 10px; }
-}
-/* Menos movimiento para quien lo prefiera */
-@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
-.title{ position:relative; }
-/* Encabezado simulado dentro de about.txt */
-.hdr{ color: var(--cyan); font-size: 20px; font-weight:700; display:inline-block; margin: 2px 0 8px; }
-/* Cursor parpadeante en encabezado about */
-.hdr::after { content:" ▌"; animation: blink 1s steps(1) infinite; }
-@keyframes blink { 50% { opacity: 0; } }
-@media (prefers-reduced-motion: reduce) { .hdr::after { animation: none !important; } }
-/* Evitar mosaico del fondo al hacer scroll */
-body{background-repeat: no-repeat, no-repeat, repeat; background-attachment: fixed, fixed, scroll;}
-/* Fallback en pantallas muy pequeñas: los gradientes acompañan el scroll */
-@media (max-width: 400px) {
-  body { background-attachment: scroll, scroll, scroll; }
-}
-</style>
+  <link rel="stylesheet" href="styles/main.css">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -217,14 +30,14 @@ body{background-repeat: no-repeat, no-repeat, repeat; background-attachment: fix
   </script>
 </head>
 <body>
-  <a class="badge" href="#sections" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;">Saltar al contenido</a>
+  <a class="badge sr-only" href="#sections">Saltar al contenido</a>
   <div class="wrap">
     <div class="toolbar">
       <button class="btn" id="togglePalette" title="Cambiar paleta de colores"><span id="paletteName">One Dark</span></button>
     </div>
     <div class="desk" id="desk">
       <!-- Ventana: Sections (índice) -->
-      <div class="terminal" id="sections" role="application" aria-label="sections/">
+      <div class="terminal" id="sections" role="region" aria-label="sections/">
         <div class="topbar">
           <div class="dots">
             <button class="dot red" aria-label="Cerrar"></button>
@@ -243,7 +56,7 @@ body{background-repeat: no-repeat, no-repeat, repeat; background-attachment: fix
       </div>
 
       <!-- Ventana: About -->
-      <div class="terminal" id="about" role="application" aria-label="about.txt">
+      <div class="terminal" id="about" role="region" aria-label="about.txt">
         <div class="topbar">
           <div class="dots">
             <button class="dot red" aria-label="Cerrar"></button>
@@ -270,7 +83,7 @@ body{background-repeat: no-repeat, no-repeat, repeat; background-attachment: fix
       </div>
 
       <!-- Ventana: Educación -->
-      <div class="terminal" id="education" role="application" aria-label="education.md">
+      <div class="terminal" id="education" role="region" aria-label="education.md">
         <div class="topbar">
           <div class="dots">
             <button class="dot red" aria-label="Cerrar"></button>
@@ -293,7 +106,7 @@ body{background-repeat: no-repeat, no-repeat, repeat; background-attachment: fix
       </div>
 
       <!-- Ventana: Experiencia -->
-      <div class="terminal" id="experience" role="application" aria-label="experience.log">
+      <div class="terminal" id="experience" role="region" aria-label="experience.log">
         <div class="topbar">
           <div class="dots">
             <button class="dot red" aria-label="Cerrar"></button>
@@ -332,7 +145,7 @@ body{background-repeat: no-repeat, no-repeat, repeat; background-attachment: fix
       </div>
 
       <!-- Ventana: Habilidades -->
-      <div class="terminal" id="skills" role="application" aria-label="skills.json">
+      <div class="terminal" id="skills" role="region" aria-label="skills.json">
         <div class="topbar">
           <div class="dots">
             <button class="dot red" aria-label="Cerrar"></button>
@@ -363,7 +176,7 @@ body{background-repeat: no-repeat, no-repeat, repeat; background-attachment: fix
       </div>
 
       <!-- Ventana: Proyectos -->
-      <div class="terminal" id="projects" role="application" aria-label="projects/">
+      <div class="terminal" id="projects" role="region" aria-label="projects/">
         <div class="topbar">
           <div class="dots">
             <button class="dot red" aria-label="Cerrar"></button>
@@ -385,7 +198,7 @@ body{background-repeat: no-repeat, no-repeat, repeat; background-attachment: fix
       </div>
 
       <!-- Ventana: Enlaces -->
-      <div class="terminal" id="links" role="application" aria-label="links/">
+      <div class="terminal" id="links" role="region" aria-label="links/">
         <div class="topbar">
           <div class="dots">
             <button class="dot red" aria-label="Cerrar"></button>
@@ -410,165 +223,6 @@ body{background-repeat: no-repeat, no-repeat, repeat; background-attachment: fix
     </div>
       <div class="footer">© <span id="yearRoman"></span> — Juan Camilo Osorio Oviedo — Hecho con HTML, CSS y un toque de JS.</div>
   </div>
-
-  <script>
-    (function() {
-      // Años en todos los footers
-      const toRoman=(n)=>{const map=[[1000,'M'],[900,'CM'],[500,'D'],[400,'CD'],[100,'C'],[90,'XC'],[50,'L'],[40,'XL'],[10,'X'],[9,'IX'],[5,'V'],[4,'IV'],[1,'I']];let r='';for(const [v,s] of map){while(n>=v){r+=s;n-=v;}}return r;};
-      document.querySelectorAll('#yearRoman').forEach(el=>el.textContent=toRoman(new Date().getFullYear()));
-      // Botón global de paleta
-      const PALETTES = ['one-dark','dracula','nord','solarized','gruvbox','monokai','tokyonight','catppuccin','night-owl'];
-      const NAMES = { 'one-dark':'One Dark','dracula':'Dracula','nord':'Nord','solarized':'Solarized','gruvbox':'Gruvbox','monokai':'Monokai','tokyonight':'Tokyo Night','catppuccin':'Catppuccin','night-owl':'Night Owl' };
-      const paletteBtn = document.getElementById('togglePalette');
-      const paletteName = document.getElementById('paletteName');
-      const getCurrent = () => document.documentElement.getAttribute('data-palette') || PALETTES[0];
-      const setPalette = (p) => { document.documentElement.setAttribute('data-palette', p); localStorage.setItem('palette', p); if (paletteName) paletteName.textContent = NAMES[p] || p; };
-      const saved = localStorage.getItem('palette');
-      let initial = (saved && PALETTES.includes(saved)) ? saved : getCurrent();
-      if (!location.hash) {
-        const rand = PALETTES[Math.floor(Math.random()*PALETTES.length)];
-        initial = rand;
-      }
-      setPalette(initial);
-      paletteBtn?.addEventListener('click', () => {
-        const cur = getCurrent();
-        const next = PALETTES[(PALETTES.indexOf(cur)+1)%PALETTES.length];
-        setPalette(next);
-      });
-
-      // Controles por ventana (cerrar, minimizar, max ancho sin cambiar altura)
-      document.querySelectorAll('.terminal').forEach(term => {
-        const red = term.querySelector('.dot.red');
-        const yellow = term.querySelector('.dot.yellow');
-        const green = term.querySelector('.dot.green');
-        const title = term.querySelector('.title');
-
-        const refresh = () => {
-          const states = [];
-          if (term.classList.contains('closed')) states.push('cerrada');
-          if (term.classList.contains('minimized')) states.push('minimizada');
-          if (term.classList.contains('maxwide')) states.push('max');
-          title?.setAttribute('data-state', states.join(' '));
-        };
-
-        red?.addEventListener('click', () => {
-          term.classList.toggle('closed');
-          term.classList.remove('minimized','maxwide');
-          refresh();
-        });
-
-        yellow?.addEventListener('click', () => {
-          term.classList.toggle('minimized');
-          term.classList.remove('closed','maxwide');
-          refresh();
-        });
-
-        green?.addEventListener('click', () => {
-          const wasMax = term.classList.contains('maxwide');
-          document.querySelectorAll('.terminal.maxwide').forEach(t => t.classList.remove('maxwide'));
-          term.classList.remove('closed','minimized');
-          if (!wasMax) {
-            term.classList.add('maxwide');
-            if (window.__scrollAdjusted) {
-              window.__scrollAdjusted(term, true);
-            } else {
-              try {
-                const tb = document.querySelector('.toolbar');
-                const off = (tb ? tb.getBoundingClientRect().height : 0) + 12;
-                const rect = term.getBoundingClientRect();
-                const absTop = window.scrollY + rect.top;
-                const vpH = window.innerHeight;
-                const fits = rect.height + off + 16 <= vpH;
-                const targetTop = fits
-                  ? Math.max(0, absTop - (vpH - rect.height)/2)
-                  : Math.max(0, absTop - off - 8);
-                window.scrollTo({ top: targetTop, behavior: 'smooth' });
-              } catch(_) {
-                term.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              }
-            }
-          }
-          refresh();
-        });
-
-        new MutationObserver(refresh).observe(term, { attributes:true, attributeFilter:['class'] });
-        refresh();
-      });
-    })();
-  </script>
-<script>
-  // Navegación desde el índice con ajuste de scroll para ver la ventana completa
-  (function(){
-    const IDs_ADJUST = new Set(['about','education','experience']);
-
-    const toolbarOffset = () => {
-      const tb = document.querySelector('.toolbar');
-      return (tb ? tb.getBoundingClientRect().height : 0) + 12; // margen de seguridad
-    };
-
-    const focusTerm = (term) => {
-      document.querySelectorAll('.terminal.maxwide').forEach(t => t.classList.remove('maxwide'));
-      term.classList.remove('closed');
-      term.classList.remove('minimized');
-      term.classList.add('maxwide');
-    };
-
-    const scrollAdjusted = (term, forceAdjust=false) => {
-      const off = toolbarOffset();
-      const rect = term.getBoundingClientRect();
-      const absTop = window.scrollY + rect.top;
-      const vpH = window.innerHeight;
-
-      // Si cabe completa en viewport, centra un poco; si no, alinea cerca del top
-      const fits = rect.height + off + 16 <= vpH;
-      const targetTop = fits
-        ? Math.max(0, absTop - (vpH - rect.height)/2)
-        : Math.max(0, absTop - off - 8);
-
-      window.scrollTo({ top: targetTop, behavior: 'smooth' });
-
-      // Revalidación tras el desplazamiento para asegurar visibilidad completa
-      setTimeout(() => {
-        const r = term.getBoundingClientRect();
-        // Asegurar top visible bajo la toolbar
-        if (r.top < off + 6) {
-          window.scrollBy({ top: r.top - (off + 6), behavior: 'auto' });
-        }
-        // Asegurar bottom visible si la ventana es pequeña
-        if (r.bottom > window.innerHeight - 8 && (fits || forceAdjust)) {
-          window.scrollBy({ top: r.bottom - (window.innerHeight - 8), behavior: 'auto' });
-        }
-      }, 450);
-    };
-
-    function openFocusScroll(id, forceAdjust=false) {
-      const term = document.getElementById(id);
-      if (!term) return;
-      focusTerm(term);
-      const adjust = forceAdjust || IDs_ADJUST.has(id);
-      scrollAdjusted(term, adjust);
-      try { history.replaceState(null, '', '#' + id); } catch(_) {}
-    }
-    window.__scrollAdjusted = scrollAdjusted;
-    window.__openFocusScroll = openFocusScroll;
-
-    // Clicks en el índice
-    const idx = document.getElementById('sections');
-    if (idx) {
-      idx.querySelectorAll('a[href^="#"]').forEach(a => {
-        a.addEventListener('click', (e) => {
-          e.preventDefault();
-          openFocusScroll(a.getAttribute('href').slice(1), true);
-        });
-      });
-    }
-
-    // Navegación directa con hash al cargar
-    const initial = location.hash ? location.hash.slice(1) : '';
-    if (initial) {
-      setTimeout(() => openFocusScroll(initial, true), 60);
-    }
-  })();
-</script>
+  <script src="js/main.js"></script>
 </body>
 </html>

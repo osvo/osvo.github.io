@@ -170,7 +170,7 @@
    */
   function generateProjectsHtml(projects) {
     if (!projects) return '';
-    const itemsHtml = projects.items.map(item => `<li><span class="c">${item}</span></li>`).join('');
+    const itemsHtml = projects.items.map(item => `<li><a href="${item.url}" target="_blank" rel="noopener">${item.name}</a></li>`).join('');
     return `<h2 id="h-proj"># ${projects.title}</h2><ul>${itemsHtml}</ul>`;
   }
 

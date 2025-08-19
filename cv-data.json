@@ -60,44 +60,16 @@
   },
   "skills": {
     "title": "Habilidades",
-    "items": [
-      {
-        "name": "Programación",
-        "details": [
-          "Python",
-          "MATLAB/Octave"
-        ]
-      },
-      {
-        "name": "Machine Learning",
-        "details": [
-          "SVR",
-          "Bayesiano",
-          "Regresión",
-          "Clasificación"
-        ]
-      },
-      {
-        "name": "Herramientas",
-        "details": [
-          "Git",
-          "LaTeX",
-          "Linux"
-        ]
-      },
-      {
-        "name": "Idiomas",
-        "details": [
-          "Español (nativo)",
-          "Inglés (C1)"
-        ]
-      },
-      {
-        "name": "Otros",
-        "details": [
-          "Docencia y divulgación científica"
-        ]
-      }
+    "columns": [
+      [
+        "Programación: Python, MATLAB/Octave",
+        "ML: SVR, Bayesiano, Regresión, Clasificación",
+        "Herramientas: Git, LaTeX, Linux"
+      ],
+      [
+        "Idiomas: Español (nativo) e Inglés (C1)",
+        "Docencia y divulgación científica"
+      ]
     ]
   },
   "projects": {

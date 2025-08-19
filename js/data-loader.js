@@ -155,15 +155,12 @@
    */
   function generateSkillsHtml(skills) {
     if (!skills) return '';
-    const itemsHtml = skills.items.map(item => `
-        <li>
-            <strong>${item.name}</strong><br/>
-            <ul>
-                ${item.details.map(detail => `<li>${detail}</li>`).join('')}
-            </ul>
-        </li>
+    const columnsHtml = skills.columns.map(column => `
+      <ul>
+        ${column.map(skill => `<li>${skill}</li>`).join('')}
+      </ul>
     `).join('');
-    return `<h2 id="h-skills"># ${skills.title}</h2><ul>${itemsHtml}</ul>`;
+    return `<h2 id="h-skills"># ${skills.title}</h2><div class="grid">${columnsHtml}</div>`;
   }
 
   /**

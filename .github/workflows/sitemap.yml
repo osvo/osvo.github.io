@@ -1,0 +1,26 @@
+name: Generate sitemap
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sitemap:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Necesario para lastmod correcto
+      - name: Generate sitemap
+        uses: cicirello/generate-sitemap@v1
+        with:
+          base-url-path: https://osvo.github.io/
+      - name: Commit sitemap.xml
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: "sitemap.xml"
+          message: "chore: update sitemap"

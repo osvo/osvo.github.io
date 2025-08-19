@@ -62,8 +62,8 @@
     "title": "Habilidades",
     "columns": [
       [
-        "Programación: Python, MATLAB/Octave",
-        "ML: SVR, Bayesiano, Regresión, Clasificación",
+        "Programación: Python y MATLAB/Octave",
+        "ML: SVM, Regresión y Clasificación",
         "Herramientas: Git, LaTeX, Linux"
       ],
       [
@@ -86,7 +86,7 @@
         "url": "https://github.com/osvo"
       },
       {
-        "name": "LinkedIn",
+        "name": "Linkedin",
         "url": "https://www.linkedin.com/in/osvo/"
       },
       {

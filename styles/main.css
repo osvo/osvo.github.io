@@ -12,17 +12,6 @@
       --selection: rgba(86,182,194,.25);
       --link: var(--cyan);
     }
-    [data-theme="light"] {
-      --bg: #f6f8fa;
-      --panel: #ffffff;
-      --panel-2: #fafbfc;
-      --border: #e6e8eb;
-      --text: #0b0f14;
-      --muted: #4b5563;
-      --shadow: 0 10px 30px rgba(0,0,0,.08);
-      --selection: rgba(97,175,239,.25);
-      --link: #1c64f2;
-    }
     html, body { height: 100%; }
     body {
       margin: 0; background: radial-gradient(1200px 800px at 10% -10%, rgba(97,175,239,.08), transparent 40%),

@@ -75,7 +75,10 @@
   "projects": {
     "title": "Proyectos",
     "items": [
-      "Próximamente"
+      {
+        "name": "Código de este sitio web",
+        "url": "https://github.com/osvo/osvo.github.io/"
+      }
     ]
   },
   "links": {

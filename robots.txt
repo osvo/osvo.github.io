@@ -1,0 +1,3 @@
+User-agent: *
+Disallow:
+Sitemap: https://osvo.github.io/sitemap.xml

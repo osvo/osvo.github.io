@@ -78,6 +78,10 @@
       {
         "name": "Código de este sitio web",
         "url": "https://github.com/osvo/osvo.github.io/"
+      },
+      {
+        "name": "Laboratorio interactivo de álgebra lineal",
+        "url": "https://osvo.github.io/algebra-lineal/"
       }
     ]
   },

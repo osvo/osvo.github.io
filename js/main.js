@@ -47,17 +47,34 @@
   const paletteBtn = document.getElementById('togglePalette');
   const paletteNameSpan = document.getElementById('paletteName');
 
+  const safeStorage = {
+    get(key) {
+      try {
+        return localStorage.getItem(key);
+      } catch (e) {
+        return null;
+      }
+    },
+    set(key, value) {
+      try {
+        localStorage.setItem(key, value);
+      } catch (e) {
+        // Ignorar si no se puede acceder a localStorage
+      }
+    }
+  };
+
   const getCurrentPalette = () => document.documentElement.getAttribute('data-palette') || PALETTES[0];
 
   const setPalette = (palette) => {
     document.documentElement.setAttribute('data-palette', palette);
-    localStorage.setItem('palette', palette);
+    safeStorage.set('palette', palette);
     if (paletteNameSpan) {
       paletteNameSpan.textContent = PALETTE_NAMES[palette] || palette;
     }
   };
 
-  const savedPalette = localStorage.getItem('palette');
+  const savedPalette = safeStorage.get('palette');
   let initialPalette;
 
   if (savedPalette && PALETTES.includes(savedPalette)) {
@@ -79,57 +96,47 @@
 
 
   // --- LÓGICA DE CONTROLES DE VENTANA (TERMINAL) ---
-  document.querySelectorAll('.terminal').forEach(term => {
-    const redBtn = term.querySelector('.dot.red');
-    const yellowBtn = term.querySelector('.dot.yellow');
-    const greenBtn = term.querySelector('.dot.green');
+  const refreshTitleState = (term) => {
     const title = term.querySelector('.title');
+    if (!title) return;
+    const states = [];
+    if (term.classList.contains('closed')) states.push('cerrada');
+    if (term.classList.contains('minimized')) states.push('minimizada');
+    if (term.classList.contains('maxwide')) states.push('max');
+    title.setAttribute('data-state', states.join(' '));
+  };
 
-    // Refresca el título para reflejar el estado (ej. [minimizada])
-    const refreshTitleState = () => {
-      if (!title) return;
-      const states = [];
-      if (term.classList.contains('closed')) states.push('cerrada');
-      if (term.classList.contains('minimized')) states.push('minimizada');
-      if (term.classList.contains('maxwide')) states.push('max');
-      title.setAttribute('data-state', states.join(' '));
-    };
+  document.querySelectorAll('.terminal').forEach(term => {
+    new MutationObserver(() => refreshTitleState(term)).observe(term, { attributes: true, attributeFilter: ['class'] });
+    refreshTitleState(term);
+  });
 
-    redBtn?.addEventListener('click', () => {
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.dot');
+    if (!btn) return;
+    const term = btn.closest('.terminal');
+    if (!term) return;
+
+    if (btn.classList.contains('red')) {
       term.classList.toggle('closed');
       term.classList.remove('minimized', 'maxwide');
-      refreshTitleState();
-    });
-
-    yellowBtn?.addEventListener('click', () => {
+    } else if (btn.classList.contains('yellow')) {
       term.classList.toggle('minimized');
       term.classList.remove('closed', 'maxwide');
-      refreshTitleState();
-    });
-
-    greenBtn?.addEventListener('click', () => {
+    } else if (btn.classList.contains('green')) {
       const wasMaximized = term.classList.contains('maxwide');
-      // Desmaximizar cualquier otra ventana
       document.querySelectorAll('.terminal.maxwide').forEach(t => t.classList.remove('maxwide'));
-
       term.classList.remove('closed', 'minimized');
-
       if (!wasMaximized) {
         term.classList.add('maxwide');
-        // Si la función de scroll ajustado está disponible, úsala.
         if (window.__scrollAdjusted) {
           window.__scrollAdjusted(term, true);
         } else {
-          // Fallback simple
           term.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       }
-      refreshTitleState();
-    });
-
-    // Observar cambios en las clases para mantener el título actualizado
-    new MutationObserver(refreshTitleState).observe(term, { attributes: true, attributeFilter: ['class'] });
-    refreshTitleState();
+    }
+    refreshTitleState(term);
   });
 })();
 
@@ -140,7 +147,9 @@
 (function() {
   'use strict';
 
-  const IDs_TO_ADJUST_SCROLL = new Set(['about', 'education', 'experience']);
+  const IDs_TO_ADJUST_SCROLL = new Set(
+    Array.from(document.querySelectorAll('.terminal[data-adjust-scroll]')).map(el => el.id)
+  );
 
   const getToolbarOffset = () => {
     const toolbar = document.querySelector('.toolbar');

@@ -14,8 +14,8 @@
     }
     html, body { height: 100%; }
     body {
-      margin: 0; background: radial-gradient(1200px 800px at 10% -10%, rgba(97,175,239,.08), transparent 40%),
-                              radial-gradient(900px 700px at 110% 10%, rgba(198,120,221,.06), transparent 45%), var(--bg);
+      margin: 0;
+      background: var(--bg);
       color: var(--text);
       font-family: ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
       line-height: 1.6;

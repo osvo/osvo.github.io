@@ -6,6 +6,14 @@
 (function() {
   'use strict';
 
+  const escapeHtml = (str = '') =>
+    String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+
   /**
    * Carga los datos del CV desde un archivo JSON y los muestra en la página.
    * @param {string} url - La ruta al archivo JSON de datos.
@@ -102,13 +110,13 @@
   function generateAboutHtml(about, person) {
     if (!about || !person) return '';
     return `
-      <div class="line"><span class="hdr"># ${about.title}</span></div>
-      <div class="line"><span class="id">${person.alternateName}</span> <span class="k">=</span> <span class="v">{</span></div>
+      <div class="line"><span class="hdr"># ${escapeHtml(about.title)}</span></div>
+      <div class="line"><span class="id">${escapeHtml(person.alternateName)}</span> <span class="k">=</span> <span class="v">{</span></div>
       <div class="indent">
-        <div class="line"><span class="k">rol</span>: <span class="v">[${about.rol.map(r => `"${r}"`).join(', ')}]</span>,</div>
-        <div class="line"><span class="k">intereses</span>: <span class="v">[${about.interests.map(i => `"${i}"`).join(', ')}]</span>,</div>
-        <div class="line"><span class="k">ubicación</span>: <span class="v">"${about.location}"</span>,</div>
-        <div class="line"><span class="k">email</span>: <a href="mailto:${about.email}?subject=Contacto%20desde%20CV">${about.email}</a></div>
+        <div class="line"><span class="k">rol</span>: <span class="v">[${about.rol.map(r => `&quot;${escapeHtml(r)}&quot;`).join(', ')}]</span>,</div>
+        <div class="line"><span class="k">intereses</span>: <span class="v">[${about.interests.map(i => `&quot;${escapeHtml(i)}&quot;`).join(', ')}]</span>,</div>
+        <div class="line"><span class="k">ubicación</span>: <span class="v">&quot;${escapeHtml(about.location)}&quot;</span>,</div>
+        <div class="line"><span class="k">email</span>: <a href="mailto:${escapeHtml(about.email)}?subject=Contacto%20desde%20CV">${escapeHtml(about.email)}</a></div>
       </div>
       <div class="line"><span class="v">}</span></div>
     `;
@@ -123,11 +131,11 @@
     if (!education) return '';
     const itemsHtml = education.items.map(item => `
       <li>
-        <strong>${item.degree}</strong> — ${item.institution}
-        ${item.status ? ` <span class="badge">${item.status}</span>` : ''}
+        <strong>${escapeHtml(item.degree)}</strong> — ${escapeHtml(item.institution)}
+        ${item.status ? ` <span class="badge">${escapeHtml(item.status)}</span>` : ''}
       </li>
     `).join('');
-    return `<h2 id="h-edu"># ${education.title}</h2><ul>${itemsHtml}</ul>`;
+    return `<h2 id="h-edu"># ${escapeHtml(education.title)}</h2><ul>${itemsHtml}</ul>`;
   }
 
   /**
@@ -138,14 +146,14 @@
   function generateExperienceHtml(experience) {
     if (!experience) return '';
     const itemsHtml = experience.items.map(item => `
-        <li id="${item.id}">
-            <strong>${item.rol}</strong> — ${item.institution}<br/>
+        <li id="${escapeHtml(item.id)}">
+            <strong>${escapeHtml(item.rol)}</strong> — ${escapeHtml(item.institution)}<br/>
             <ul>
-                ${item.tasks.map(task => `<li>${task.name}${task.year ? ` <span class="badge">${task.year}</span>` : ''}</li>`).join('')}
+                ${item.tasks.map(task => `<li>${escapeHtml(task.name)}${task.year ? ` <span class="badge">${escapeHtml(task.year)}</span>` : ''}</li>`).join('')}
             </ul>
         </li>
     `).join('');
-    return `<h2 id="h-exp"># ${experience.title}</h2><ul>${itemsHtml}</ul>`;
+    return `<h2 id="h-exp"># ${escapeHtml(experience.title)}</h2><ul>${itemsHtml}</ul>`;
   }
 
   /**
@@ -157,10 +165,10 @@
     if (!skills) return '';
     const columnsHtml = skills.columns.map(column => `
       <ul>
-        ${column.map(skill => `<li>${skill}</li>`).join('')}
+        ${column.map(skill => `<li>${escapeHtml(skill)}</li>`).join('')}
       </ul>
     `).join('');
-    return `<h2 id="h-skills"># ${skills.title}</h2><div class="grid">${columnsHtml}</div>`;
+    return `<h2 id="h-skills"># ${escapeHtml(skills.title)}</h2><div class="grid">${columnsHtml}</div>`;
   }
 
   /**
@@ -170,8 +178,8 @@
    */
   function generateProjectsHtml(projects) {
     if (!projects) return '';
-    const itemsHtml = projects.items.map(item => `<li><a href="${item.url}" target="_blank" rel="noopener">${item.name}</a></li>`).join('');
-    return `<h2 id="h-proj"># ${projects.title}</h2><ul>${itemsHtml}</ul>`;
+    const itemsHtml = projects.items.map(item => `<li><a href="${escapeHtml(item.url)}" target="_blank" rel="noopener">${escapeHtml(item.name)}</a></li>`).join('');
+    return `<h2 id="h-proj"># ${escapeHtml(projects.title)}</h2><ul>${itemsHtml}</ul>`;
   }
 
   /**
@@ -182,9 +190,9 @@
   function generateLinksHtml(links) {
     if (!links) return '';
     const itemsHtml = links.items.map(link => `
-      <li><a href="${link.url}" target="_blank" rel="noopener">${link.name}</a></li>
+      <li><a href="${escapeHtml(link.url)}" target="_blank" rel="noopener">${escapeHtml(link.name)}</a></li>
     `).join('');
-    return `<h2 id="h-links"># ${links.title}</h2><ul>${itemsHtml}</ul>`;
+    return `<h2 id="h-links"># ${escapeHtml(links.title)}</h2><ul>${itemsHtml}</ul>`;
   }
 
   // --- INICIAR LA CARGA DE DATOS ---

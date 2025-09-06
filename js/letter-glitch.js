@@ -8,6 +8,8 @@
     outerVignette: true
   };
 
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
   const fontSize = 16;
   const charWidth = 10;
   const charHeight = 20;
@@ -59,6 +61,8 @@
   let lastGlitchTime = Date.now();
   let animationId;
   let glitchColors = [];
+  let canvasWidth = 0;
+  let canvasHeight = 0;
 
   function getPaletteColors() {
     const styles = getComputedStyle(document.documentElement);
@@ -127,19 +131,20 @@
   function resizeCanvas() {
     const dpr = window.devicePixelRatio || 1;
     const rect = container.getBoundingClientRect();
-    canvas.width = rect.width * dpr;
-    canvas.height = rect.height * dpr;
-    canvas.style.width = rect.width + 'px';
-    canvas.style.height = rect.height + 'px';
+    canvasWidth = rect.width;
+    canvasHeight = rect.height;
+    canvas.width = canvasWidth * dpr;
+    canvas.height = canvasHeight * dpr;
+    canvas.style.width = canvasWidth + 'px';
+    canvas.style.height = canvasHeight + 'px';
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    const g = calculateGrid(rect.width, rect.height);
+    const g = calculateGrid(canvasWidth, canvasHeight);
     initializeLetters(g.columns, g.rows);
     drawLetters();
   }
 
   function drawLetters() {
-    const rect = canvas.getBoundingClientRect();
-    ctx.clearRect(0, 0, rect.width, rect.height);
+    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
     ctx.font = `${fontSize}px monospace`;
     ctx.textBaseline = 'top';
     letters.forEach((letter, index) => {
@@ -199,11 +204,23 @@
     animationId = requestAnimationFrame(animate);
   }
 
-  window.addEventListener('resize', () => {
+  function init() {
     cancelAnimationFrame(animationId);
+    updatePalette();
     resizeCanvas();
-    animate();
+    if (!prefersReducedMotion.matches) {
+      lastGlitchTime = Date.now();
+      animate();
+    }
+  }
+
+  let resizeTimeout;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(init, 150);
   });
+
+  prefersReducedMotion.addEventListener('change', init);
 
   const observer = new MutationObserver(mutations => {
     if (mutations.some(m => m.attributeName === 'data-palette')) {
@@ -212,7 +229,5 @@
   });
   observer.observe(document.documentElement, { attributes: true });
 
-  updatePalette();
-  resizeCanvas();
-  animate();
+  init();
 })();

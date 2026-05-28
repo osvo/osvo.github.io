@@ -9,14 +9,20 @@
 
   <!-- Google Search Console verification -->
   <meta name="google-site-verification" content="BI-iyFF0lQpneSe5gL5F-cZA0fiBuTCAGFYFXftKkiU" />
-  
+
   <meta property="og:title" content="Juan Camilo Osorio Oviedo" />
   <meta property="og:description" content="Juan Camilo Osorio Oviedo: experiencia, educación y enlaces." />
   <meta property="og:url" content="https://osvo.github.io/" />
   <meta property="og:type" content="website" />
   <meta name="theme-color" content="#0b0f14" />
-  <link rel="icon" href="https://osvo.github.io/favicon.ico" type="image/x-icon">
-  <link rel="icon" type="image/png" sizes="48x48" href="https://osvo.github.io/favicon-48.png">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="icon" type="image/png" sizes="48x48" href="favicon-48.png">
+  <script>
+    (() => {
+      const palettes = ['one-dark', 'dracula', 'nord', 'solarized', 'gruvbox', 'monokai', 'tokyonight', 'catppuccin', 'night-owl'];
+      document.documentElement.setAttribute('data-palette', palettes[Math.floor(Math.random() * palettes.length)]);
+    })();
+  </script>
   <link rel="stylesheet" href="styles/main.css">
 
   <!-- JSON-LD Person -->
@@ -44,6 +50,9 @@
 <body>
   <h1 class="sr-only">Juan Camilo Osorio Oviedo</h1>
   <a class="badge sr-only" href="#sections">Saltar al contenido</a>
+  <a class="site-mark" href="#sections" aria-label="Volver al índice">
+    <img src="favicon-48.png" width="48" height="48" alt="" decoding="async">
+  </a>
   <div class="wrap">
     <div class="toolbar">
       <button class="btn" id="togglePalette" title="Cambiar paleta de colores"><span id="paletteName">One Dark</span></button>
@@ -69,7 +78,7 @@
       </div>
 
       <!-- Ventana: About -->
-      <div class="terminal" id="about" role="region" aria-label="about.txt" data-adjust-scroll>
+      <div class="terminal maxwide" id="about" role="region" aria-label="about.txt" data-adjust-scroll>
         <div class="topbar">
           <div class="dots">
             <button class="dot red" aria-label="Cerrar"></button>
@@ -83,7 +92,15 @@
           <span class="line"><span class="prompt"><span class="user">osvo</span>@<span class="host">cv</span>:<span class="path">~/</span>$</span> <span class="cmd">cat</span> <span class="file">about.txt</span></span>
           <div class="card" aria-labelledby="h-name">
             <h2 id="h-name" class="sr-only">Sobre Juan Camilo Osorio Oviedo</h2>
-            <!-- El contenido se cargará desde JSON -->
+            <div class="line"><span class="hdr"># Juan Camilo Osorio Oviedo</span></div>
+            <div class="line"><span class="id">osvo</span> <span class="k">=</span> <span class="v">{</span></div>
+            <div class="indent">
+              <div class="line"><span class="k">rol</span>: <span class="v">["Docente", "Estudiante de Maestría en Ciencias — Matemática Aplicada"]</span>,</div>
+              <div class="line"><span class="k">intereses</span>: <span class="v">["Inteligencia artificial", "Machine Learning", "Confiabilidad estructural", "Computer science"]</span>,</div>
+              <div class="line"><span class="k">ubicación</span>: <span class="v">"Manizales - Caldas - Colombia"</span>,</div>
+              <div class="line"><span class="k">email</span>: <a href="mailto:jucosorioov@unal.edu.co?subject=Contacto%20desde%20CV">jucosorioov@unal.edu.co</a></div>
+            </div>
+            <div class="line"><span class="v">}</span></div>
           </div>
         </div>
       </div>
@@ -102,7 +119,11 @@
         <div class="screen">
           <span class="line"><span class="prompt"><span class="user">osvo</span>@<span class="host">cv</span>:<span class="path">~/</span>$</span> <span class="cmd">cat</span> <span class="file">education.md</span></span>
           <section class="card" aria-labelledby="h-edu">
-            <!-- El contenido se cargará desde JSON -->
+            <h2 id="h-edu"># Educación</h2>
+            <ul>
+              <li><strong>Maestría en Ciencias — Matemática Aplicada</strong> — Universidad Nacional de Colombia <span class="badge">En curso</span></li>
+              <li><strong>Ingeniería Civil</strong> — Universidad Nacional de Colombia <span class="badge">2022</span></li>
+            </ul>
           </section>
         </div>
       </div>
@@ -121,7 +142,27 @@
         <div class="screen">
           <span class="line"><span class="prompt"><span class="user">osvo</span>@<span class="host">cv</span>:<span class="path">~/</span>$</span> <span class="cmd">cat</span> <span class="file">experience.log</span></span>
           <section class="card" aria-labelledby="h-exp">
-            <!-- El contenido se cargará desde JSON -->
+            <h2 id="h-exp"># Experiencia</h2>
+            <ul>
+              <li id="expTeaching">
+                <strong>Docente ocasional</strong> — Universidad Nacional de Colombia<br/>
+                <ul>
+                  <li>Estadística I <span class="badge">2024</span></li>
+                  <li>Ecuaciones diferenciales <span class="badge">2024</span></li>
+                  <li>Cálculo diferencial <span class="badge">2022</span></li>
+                  <li>Matemáticas básicas <span class="badge">2022</span></li>
+                </ul>
+              </li>
+              <li id="expMonitors">
+                <strong>Monitorías académicas</strong> — Universidad Nacional de Colombia<br/>
+                <ul>
+                  <li>Programación de computadores <span class="badge">2019</span></li>
+                  <li>Mecánica de sólidos <span class="badge">2020-2021</span></li>
+                  <li>Cálculo integral <span class="badge">2023</span></li>
+                  <li>Álgebra lineal <span class="badge">2025</span></li>
+                </ul>
+              </li>
+            </ul>
           </section>
         </div>
       </div>
@@ -140,7 +181,18 @@
         <div class="screen">
           <span class="line"><span class="prompt"><span class="user">osvo</span>@<span class="host">cv</span>:<span class="path">~/</span>$</span> <span class="cmd">cat</span> <span class="file">skills.json</span></span>
           <section class="card" aria-labelledby="h-skills">
-            <!-- El contenido se cargará desde JSON -->
+            <h2 id="h-skills"># Habilidades</h2>
+            <div class="grid">
+              <ul>
+                <li>Programación: Python y MATLAB/Octave</li>
+                <li>ML: SVM, Regresión y Clasificación</li>
+                <li>Herramientas: Git, LaTeX, Linux</li>
+              </ul>
+              <ul>
+                <li>Idiomas: Español (nativo) e Inglés (C1)</li>
+                <li>Docencia y divulgación científica</li>
+              </ul>
+            </div>
           </section>
         </div>
       </div>
@@ -159,7 +211,11 @@
         <div class="screen">
           <span class="line"><span class="prompt"><span class="user">osvo</span>@<span class="host">cv</span>:<span class="path">~/</span>$</span> <span class="cmd">tree</span> <span class="arg">projects/</span></span>
           <section class="card" aria-labelledby="h-proj">
-            <!-- El contenido se cargará desde JSON -->
+            <h2 id="h-proj"># Proyectos</h2>
+            <ul>
+              <li><a href="https://github.com/osvo/osvo.github.io/" target="_blank" rel="noopener">Código de este sitio web</a></li>
+              <li><a href="https://osvo.github.io/algebra-lineal/" target="_blank" rel="noopener">Laboratorio interactivo de álgebra lineal</a></li>
+            </ul>
           </section>
         </div>
       </div>
@@ -178,7 +234,13 @@
         <div class="screen">
           <span class="line"><span class="prompt"><span class="user">osvo</span>@<span class="host">cv</span>:<span class="path">~/</span>$</span> <span class="cmd">ls</span> <span class="arg">links/</span></span>
           <section class="card" aria-labelledby="h-links">
-            <!-- El contenido se cargará desde JSON -->
+            <h2 id="h-links"># Enlaces</h2>
+            <ul>
+              <li><a href="https://github.com/osvo" target="_blank" rel="noopener">Github</a></li>
+              <li><a href="https://www.linkedin.com/in/osvo/" target="_blank" rel="noopener">Linkedin</a></li>
+              <li><a href="https://www.youtube.com/@caosvo" target="_blank" rel="noopener">YouTube</a></li>
+              <li><a href="https://goodreads.com/osvo" target="_blank" rel="noopener">Goodreads</a></li>
+            </ul>
           </section>
           
         </div>
@@ -188,6 +250,5 @@
   </div>
   <script src="js/main.js" defer></script>
   <script src="js/letter-glitch.js" defer></script>
-  <script src="js/data-loader.js" defer></script>
 </body>
 </html>

@@ -47,45 +47,16 @@
   const paletteBtn = document.getElementById('togglePalette');
   const paletteNameSpan = document.getElementById('paletteName');
 
-  const safeStorage = {
-    get(key) {
-      try {
-        return localStorage.getItem(key);
-      } catch (e) {
-        return null;
-      }
-    },
-    set(key, value) {
-      try {
-        localStorage.setItem(key, value);
-      } catch (e) {
-        // Ignorar si no se puede acceder a localStorage
-      }
-    }
-  };
-
   const getCurrentPalette = () => document.documentElement.getAttribute('data-palette') || PALETTES[0];
 
   const setPalette = (palette) => {
     document.documentElement.setAttribute('data-palette', palette);
-    safeStorage.set('palette', palette);
     if (paletteNameSpan) {
       paletteNameSpan.textContent = PALETTE_NAMES[palette] || palette;
     }
   };
 
-  const savedPalette = safeStorage.get('palette');
-  let initialPalette;
-
-  if (savedPalette && PALETTES.includes(savedPalette)) {
-    // Si hay una paleta guardada, usarla.
-    initialPalette = savedPalette;
-  } else {
-    // Si no, elegir una aleatoria como inicial.
-    initialPalette = PALETTES[Math.floor(Math.random() * PALETTES.length)];
-  }
-
-  setPalette(initialPalette);
+  setPalette(getCurrentPalette());
 
   paletteBtn?.addEventListener('click', () => {
     const current = getCurrentPalette();
@@ -226,10 +197,4 @@
     });
   }
 
-  // Navegación directa al cargar la página con un hash en la URL
-  const initialHash = location.hash ? location.hash.slice(1) : 'about';
-  if (initialHash) {
-    // Esperar un poco para que la página se renderice completamente
-    setTimeout(() => openFocusScroll(initialHash, true), 100);
-  }
 })();

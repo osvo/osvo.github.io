@@ -23,6 +23,31 @@
     }
     ::selection { background: var(--selection); }
     .wrap { max-width: 980px; margin: 24px auto 80px; padding: 0 16px; }
+    .site-mark {
+      position: fixed;
+      top: 8px;
+      left: 16px;
+      z-index: 60;
+      display: grid;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      border: 0;
+      opacity: .82;
+      transition: opacity .2s ease, transform .2s ease;
+    }
+    .site-mark:hover,
+    .site-mark:focus-visible {
+      opacity: 1;
+      transform: translateY(-1px);
+    }
+    .site-mark img {
+      display: block;
+      width: 32px;
+      height: 32px;
+      image-rendering: auto;
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,.65));
+    }
     .terminal {
       background: linear-gradient(180deg, var(--panel), var(--panel-2));
       border: 1px solid var(--border);
@@ -87,7 +112,17 @@ ul ul li {
 }
     .badge { display:inline-block; padding: 2px 8px; border-radius: 999px; border:1px solid var(--border); font-size: 12px; color: var(--muted); }
 
-    .footer { text-align:center; color: var(--muted); margin-top: 18px; font-size: 12px; }
+    .footer {
+      max-width: 720px;
+      margin: 22px auto 0;
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.7;
+      text-align: center;
+      text-shadow: 0 1px 4px #000, 0 0 14px #000, 0 0 28px var(--bg);
+      opacity: .86;
+    }
 
     /* Accesibilidad */
     .sr-only {
@@ -190,6 +225,7 @@ ul ul li {
 .toolbar .btn { padding: 4px 8px; font-size: 12px; border-radius: 8px; }
 @media (max-width: 560px) {
   .wrap { margin: 16px auto 64px; padding: 0 10px; }
+  .site-mark { left: 10px; }
   .screen { padding: 14px; }
   .title { font-size: 13px; }
   .btn { padding: 6px 8px; }
@@ -235,10 +271,4 @@ ul ul li {
     .terminal.maxwide .card .hdr::after {
         animation: none !important;
     }
-}
-/* Evitar mosaico del fondo al hacer scroll */
-body{background-repeat: no-repeat, no-repeat, repeat; background-attachment: fixed, fixed, scroll;}
-/* Fallback en pantallas muy pequeñas: los gradientes acompañan el scroll */
-@media (max-width: 400px) {
-  body { background-attachment: scroll, scroll, scroll; }
 }

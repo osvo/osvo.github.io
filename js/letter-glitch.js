@@ -61,6 +61,7 @@
   let lastGlitchTime = Date.now();
   let animationId;
   let glitchColors = [];
+  let glitchRgbColors = [];
   let canvasWidth = 0;
   let canvasHeight = 0;
 
@@ -75,10 +76,13 @@
 
   function updatePalette() {
     glitchColors = getPaletteColors();
+    glitchRgbColors = glitchColors.map(hexToRgb);
     container.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();
     letters.forEach(l => {
       l.color = getRandomColor();
+      l.rgb = hexToRgb(l.color);
       l.targetColor = getRandomColor();
+      l.targetRgb = hexToRgb(l.targetColor);
       l.colorProgress = 1;
     });
     drawLetters();
@@ -90,6 +94,10 @@
 
   function getRandomColor() {
     return glitchColors[Math.floor(Math.random() * glitchColors.length)];
+  }
+
+  function getRandomRgbColor() {
+    return glitchRgbColors[Math.floor(Math.random() * glitchRgbColors.length)];
   }
 
   function hexToRgb(hex) {
@@ -120,16 +128,22 @@
   function initializeLetters(columns, rows) {
     grid = { columns, rows };
     const total = columns * rows;
-    letters = Array.from({ length: total }, () => ({
-      char: getRandomChar(),
-      color: getRandomColor(),
-      targetColor: getRandomColor(),
-      colorProgress: 1
-    }));
+    letters = Array.from({ length: total }, () => {
+      const rgb = getRandomRgbColor();
+      const targetRgb = getRandomRgbColor();
+      return {
+        char: getRandomChar(),
+        rgb,
+        targetRgb,
+        color: rgb ? `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})` : getRandomColor(),
+        targetColor: targetRgb ? `rgb(${targetRgb.r}, ${targetRgb.g}, ${targetRgb.b})` : getRandomColor(),
+        colorProgress: 1
+      };
+    });
   }
 
   function resizeCanvas() {
-    const dpr = window.devicePixelRatio || 1;
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     const rect = container.getBoundingClientRect();
     canvasWidth = rect.width;
     canvasHeight = rect.height;
@@ -162,9 +176,11 @@
       const l = letters[index];
       if (!l) continue;
       l.char = getRandomChar();
-      l.targetColor = getRandomColor();
+      l.targetRgb = getRandomRgbColor();
+      l.targetColor = l.targetRgb ? `rgb(${l.targetRgb.r}, ${l.targetRgb.g}, ${l.targetRgb.b})` : getRandomColor();
       if (!config.smooth) {
         l.color = l.targetColor;
+        l.rgb = l.targetRgb;
         l.colorProgress = 1;
       } else {
         l.colorProgress = 0;
@@ -178,10 +194,13 @@
       if (l.colorProgress < 1) {
         l.colorProgress += 0.05;
         if (l.colorProgress > 1) l.colorProgress = 1;
-        const start = hexToRgb(l.color);
-        const end = hexToRgb(l.targetColor);
+        const start = l.rgb;
+        const end = l.targetRgb;
         if (start && end) {
           l.color = interpolateColor(start, end, l.colorProgress);
+          if (l.colorProgress === 1) {
+            l.rgb = end;
+          }
           needsRedraw = true;
         }
       }
@@ -192,6 +211,10 @@
   }
 
   function animate() {
+    if (document.hidden || prefersReducedMotion.matches) {
+      animationId = null;
+      return;
+    }
     const now = Date.now();
     if (now - lastGlitchTime >= config.glitchSpeed) {
       updateLetters();
@@ -204,20 +227,35 @@
     animationId = requestAnimationFrame(animate);
   }
 
+  function startAnimation() {
+    if (!animationId && !document.hidden && !prefersReducedMotion.matches) {
+      lastGlitchTime = Date.now();
+      animationId = requestAnimationFrame(animate);
+    }
+  }
+
   function init() {
     cancelAnimationFrame(animationId);
+    animationId = null;
     updatePalette();
     resizeCanvas();
-    if (!prefersReducedMotion.matches) {
-      lastGlitchTime = Date.now();
-      animate();
-    }
+    startAnimation();
   }
 
   let resizeTimeout;
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(init, 150);
+  }, { passive: true });
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      cancelAnimationFrame(animationId);
+      animationId = null;
+    } else {
+      drawLetters();
+      startAnimation();
+    }
   });
 
   prefersReducedMotion.addEventListener('change', init);

@@ -11,7 +11,7 @@
   },
   "about": {
     "title": "Juan Camilo Osorio Oviedo",
-    "rol": ["Docente", "Estudiante de Maestría en Ciencias — Matemática Aplicada"],
+    "rol": ["Docente", "Ing. civil", "M.Sc. (c) Matemática aplicada."],
     "interests": ["Inteligencia artificial", "Machine Learning", "Confiabilidad estructural", "Computer science"],
     "location": "Manizales - Caldas - Colombia",
     "email": "jucosorioov@unal.edu.co"
@@ -82,6 +82,10 @@
       {
         "name": "Laboratorio interactivo de álgebra lineal",
         "url": "https://osvo.github.io/algebra-lineal/"
+      },
+      {
+        "name": "Adaptive Bayesian Support Vector Regression",
+        "url": "https://github.com/osvo/ABSVR"
       }
     ]
   },

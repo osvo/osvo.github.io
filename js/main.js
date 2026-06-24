@@ -37,10 +37,9 @@
   });
 
   // --- LÓGICA DEL INTERRUPTOR DE PALETA DE COLORES ---
-  const PALETTES = ['one-dark', 'dracula', 'nord', 'solarized', 'gruvbox', 'monokai', 'tokyonight', 'catppuccin', 'night-owl'];
+  const PALETTES = ['one-dark', 'dracula', 'nord', 'tokyonight', 'catppuccin', 'night-owl'];
   const PALETTE_NAMES = {
-    'one-dark': 'One Dark', 'dracula': 'Dracula', 'nord': 'Nord', 'solarized': 'Solarized',
-    'gruvbox': 'Gruvbox', 'monokai': 'Monokai', 'tokyonight': 'Tokyo Night',
+    'one-dark': 'One Dark', 'dracula': 'Dracula', 'nord': 'Nord', 'tokyonight': 'Tokyo Night',
     'catppuccin': 'Catppuccin', 'night-owl': 'Night Owl'
   };
 

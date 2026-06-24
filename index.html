@@ -19,8 +19,26 @@
   <link rel="icon" type="image/png" sizes="48x48" href="favicon-48.png">
   <script>
     (() => {
-      const palettes = ['one-dark', 'dracula', 'nord', 'solarized', 'gruvbox', 'monokai', 'tokyonight', 'catppuccin', 'night-owl'];
+      const palettes = ['one-dark', 'dracula', 'nord', 'tokyonight', 'catppuccin', 'night-owl'];
       document.documentElement.setAttribute('data-palette', palettes[Math.floor(Math.random() * palettes.length)]);
+
+      const requestedLanguage = new URLSearchParams(location.search).get('lang');
+      let storedLanguage = null;
+      try {
+        storedLanguage = localStorage.getItem('site-language');
+      } catch (error) {
+        // Algunos modos privados restringen el almacenamiento local.
+      }
+      const browserLanguages = navigator.languages?.length ? navigator.languages : [navigator.language];
+      const detectedLanguage = browserLanguages.find(language => /^(es|en)(-|$)/i.test(language));
+      const language = /^(es|en)$/.test(requestedLanguage)
+        ? requestedLanguage
+        : /^(es|en)$/.test(storedLanguage)
+          ? storedLanguage
+          : detectedLanguage?.toLowerCase().startsWith('en') ? 'en' : 'es';
+
+      document.documentElement.lang = language;
+      document.documentElement.setAttribute('data-language', language);
     })();
   </script>
   <link rel="stylesheet" href="styles/main.css">
@@ -55,6 +73,7 @@
   </a>
   <div class="wrap">
     <div class="toolbar">
+      <button class="btn language-toggle" id="toggleLanguage" type="button" aria-live="polite">EN</button>
       <button class="btn" id="togglePalette" title="Cambiar paleta de colores"><span id="paletteName">One Dark</span></button>
     </div>
     <div class="desk" id="desk">
@@ -136,12 +155,12 @@
             <div class="fetch-info">
               <div class="fetch-title"><span class="user">osvo</span><span class="muted">@</span><span class="host">cv</span></div>
               <div class="fetch-rule" aria-hidden="true"></div>
-              <div class="fetch-row"><span class="fetch-key">Name</span><span class="fetch-value">Juan Camilo Osorio Oviedo</span></div>
-              <div class="fetch-row"><span class="fetch-key">Role</span><span class="fetch-value">Docente · Ing. civil · M.Sc. (c) Matemática aplicada.</span></div>
-              <div class="fetch-row"><span class="fetch-key">Focus</span><span class="fetch-value">AI · Machine Learning · Confiabilidad estructural</span></div>
-              <div class="fetch-row"><span class="fetch-key">Stack</span><span class="fetch-value">Python · MATLAB/Octave · LaTeX · Linux</span></div>
-              <div class="fetch-row"><span class="fetch-key">Location</span><span class="fetch-value">Manizales, Caldas, Colombia</span></div>
-              <div class="fetch-row"><span class="fetch-key">Email</span><span class="fetch-value"><a href="mailto:jucosorioov@unal.edu.co?subject=Contacto%20desde%20CV">jucosorioov@unal.edu.co</a></span></div>
+              <div class="fetch-row"><span class="fetch-key">Nombre</span><span class="fetch-value">Juan Camilo Osorio Oviedo</span></div>
+              <div class="fetch-row"><span class="fetch-key">Rol</span><span class="fetch-value">Docente · Ing. civil · M. Sc. Matemática aplicada.</span></div>
+              <div class="fetch-row"><span class="fetch-key">Enfoque</span><span class="fetch-value">IA · Aprendizaje automático · Confiabilidad estructural</span></div>
+              <div class="fetch-row"><span class="fetch-key">Tecnologías</span><span class="fetch-value">Python · MATLAB/Octave · LaTeX · Linux</span></div>
+              <div class="fetch-row"><span class="fetch-key">Ubicación</span><span class="fetch-value">Manizales, Caldas, Colombia</span></div>
+              <div class="fetch-row"><span class="fetch-key">Correo</span><span class="fetch-value"><a href="mailto:jucosorioov@unal.edu.co?subject=Contacto%20desde%20CV">jucosorioov@unal.edu.co</a></span></div>
               <div class="fetch-palette" aria-hidden="true">
                 <span class="swatch red"></span><span class="swatch orange"></span><span class="swatch yellow"></span><span class="swatch green"></span><span class="swatch cyan"></span><span class="swatch blue"></span><span class="swatch magenta"></span>
               </div>
@@ -150,10 +169,10 @@
             <div class="line"><span class="hdr"># Juan Camilo Osorio Oviedo</span></div>
             <div class="line"><span class="id">osvo</span> <span class="k">=</span> <span class="v">{</span></div>
             <div class="indent">
-              <div class="line"><span class="k">rol</span>: <span class="v">"Docente · Ing. civil · M.Sc. (c) Matemática aplicada."</span>,</div>
-              <div class="line"><span class="k">intereses</span>: <span class="v">["Inteligencia artificial", "Machine Learning", "Confiabilidad estructural", "Computer science"]</span>,</div>
+              <div class="line"><span class="k">rol</span>: <span class="v">"Docente · Ing. civil · M. Sc. Matemática aplicada."</span>,</div>
+              <div class="line"><span class="k">intereses</span>: <span class="v">["Inteligencia artificial", "Aprendizaje automático", "Confiabilidad estructural", "Ciencias de la computación"]</span>,</div>
               <div class="line"><span class="k">ubicación</span>: <span class="v">"Manizales - Caldas - Colombia"</span>,</div>
-              <div class="line"><span class="k">email</span>: <a href="mailto:jucosorioov@unal.edu.co?subject=Contacto%20desde%20CV">jucosorioov@unal.edu.co</a></div>
+              <div class="line"><span class="k">correo</span>: <a href="mailto:jucosorioov@unal.edu.co?subject=Contacto%20desde%20CV">jucosorioov@unal.edu.co</a></div>
             </div>
             <div class="line"><span class="v">}</span></div>
             </div>
@@ -178,7 +197,7 @@
           <section class="card" aria-labelledby="h-edu">
             <h2 id="h-edu"># Educación</h2>
             <ul>
-              <li><strong>Maestría en Ciencias — Matemática Aplicada</strong> — Universidad Nacional de Colombia <span class="badge">En curso</span></li>
+              <li><strong>Maestría en Ciencias — Matemática Aplicada</strong> — Universidad Nacional de Colombia <span class="badge">2026</span> <span class="badge">Mención meritoria</span></li>
               <li><strong>Ingeniería Civil</strong> — Universidad Nacional de Colombia <span class="badge">2022</span></li>
             </ul>
           </section>
@@ -306,6 +325,7 @@
     </div>
       <div class="footer">© <span id="yearRoman"></span> — Juan Camilo Osorio Oviedo — Hecho con HTML, CSS y JavaScript.</div>
   </div>
+  <script src="js/i18n.js" defer></script>
   <script src="js/main.js" defer></script>
   <script src="js/letter-glitch.js" defer></script>
 </body>

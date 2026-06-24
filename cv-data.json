@@ -2,7 +2,7 @@
   "person": {
     "name": "Juan Camilo Osorio Oviedo",
     "alternateName": "osvo",
-    "jobTitle": "Estudiante de Maestría en Ciencias — Matemática Aplicada",
+    "jobTitle": "Docente · Ingeniero civil · M. Sc. en Matemática Aplicada",
     "url": "https://osvo.github.io/",
     "sameAs": [
       "https://github.com/osvo",
@@ -11,8 +11,8 @@
   },
   "about": {
     "title": "Juan Camilo Osorio Oviedo",
-    "rol": ["Docente", "Ing. civil", "M.Sc. (c) Matemática aplicada."],
-    "interests": ["Inteligencia artificial", "Machine Learning", "Confiabilidad estructural", "Computer science"],
+    "rol": ["Docente", "Ing. civil", "M. Sc. Matemática aplicada."],
+    "interests": ["Inteligencia artificial", "Aprendizaje automático", "Confiabilidad estructural", "Ciencias de la computación"],
     "location": "Manizales - Caldas - Colombia",
     "email": "jucosorioov@unal.edu.co"
   },
@@ -22,7 +22,8 @@
       {
         "degree": "Maestría en Ciencias — Matemática Aplicada",
         "institution": "Universidad Nacional de Colombia",
-        "status": "En curso"
+        "status": "2026",
+        "distinction": "Mención meritoria"
       },
       {
         "degree": "Ingeniería Civil",

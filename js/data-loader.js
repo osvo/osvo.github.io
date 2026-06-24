@@ -129,12 +129,19 @@
    */
   function generateEducationHtml(education) {
     if (!education) return '';
-    const itemsHtml = education.items.map(item => `
-      <li>
-        <strong>${escapeHtml(item.degree)}</strong> — ${escapeHtml(item.institution)}
-        ${item.status ? ` <span class="badge">${escapeHtml(item.status)}</span>` : ''}
-      </li>
-    `).join('');
+    const itemsHtml = education.items.map(item => {
+      const badges = [item.status, item.distinction]
+        .filter(Boolean)
+        .map(badge => ` <span class="badge">${escapeHtml(badge)}</span>`)
+        .join('');
+
+      return `
+        <li>
+          <strong>${escapeHtml(item.degree)}</strong> — ${escapeHtml(item.institution)}
+          ${badges}
+        </li>
+      `;
+    }).join('');
     return `<h2 id="h-edu"># ${escapeHtml(education.title)}</h2><ul>${itemsHtml}</ul>`;
   }
 

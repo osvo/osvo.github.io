@@ -130,19 +130,29 @@
   function generateEducationHtml(education) {
     if (!education) return '';
     const itemsHtml = education.items.map(item => {
-      const badges = [item.status, item.distinction]
-        .filter(Boolean)
-        .map(badge => ` <span class="badge">${escapeHtml(badge)}</span>`)
-        .join('');
+      const year = item.status
+        ? `<span class="badge education-year">${escapeHtml(item.status)}</span>`
+        : '';
+      const distinction = item.distinction
+        ? `<span class="badge education-distinction">${escapeHtml(item.distinction)}</span>`
+        : '';
+      const thesisTitle = item.thesis?.url
+        ? `<a class="education-thesis-title" href="${escapeHtml(item.thesis.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(item.thesis.title)}</a>`
+        : `<span class="education-thesis-title">${escapeHtml(item.thesis?.title)}</span>`;
+      const thesis = item.thesis
+        ? `<div class="education-thesis"><div class="education-thesis-heading"><span class="education-thesis-label">${escapeHtml(item.thesis.label)}</span>${distinction}</div>${thesisTitle}</div>`
+        : '';
+      const standaloneDistinction = item.thesis ? '' : distinction;
 
       return `
-        <li>
-          <strong>${escapeHtml(item.degree)}</strong> — ${escapeHtml(item.institution)}
-          ${badges}
+        <li class="education-item">
+          <div class="education-heading"><strong class="education-degree">${escapeHtml(item.degree)}</strong>${year}</div>
+          <div class="education-meta"><div class="education-institution">${escapeHtml(item.institution)}</div>${standaloneDistinction}</div>
+          ${thesis}
         </li>
       `;
     }).join('');
-    return `<h2 id="h-edu"># ${escapeHtml(education.title)}</h2><ul>${itemsHtml}</ul>`;
+    return `<h2 id="h-edu"># ${escapeHtml(education.title)}</h2><ul class="education-list">${itemsHtml}</ul>`;
   }
 
   /**
@@ -152,15 +162,21 @@
    */
   function generateExperienceHtml(experience) {
     if (!experience) return '';
+    const renderYears = value => {
+      const years = (Array.isArray(value) ? value : [value]).filter(Boolean);
+      if (!years.length) return '';
+      return `<span class="experience-years">${years.map(year => `<span class="badge">${escapeHtml(year)}</span>`).join('')}</span>`;
+    };
     const itemsHtml = experience.items.map(item => `
-        <li id="${escapeHtml(item.id)}">
-            <strong>${escapeHtml(item.rol)}</strong> — ${escapeHtml(item.institution)}<br/>
-            <ul>
-                ${item.tasks.map(task => `<li>${escapeHtml(task.name)}${task.year ? ` <span class="badge">${escapeHtml(task.year)}</span>` : ''}</li>`).join('')}
-            </ul>
+        <li class="experience-item" id="${escapeHtml(item.id)}">
+          <strong class="experience-role">${escapeHtml(item.rol)}</strong>
+          <div class="experience-institution">${escapeHtml(item.institution)}</div>
+          <ul class="experience-tasks">
+            ${item.tasks.map(task => `<li class="experience-task"><span>${escapeHtml(task.name)}</span>${renderYears(task.year)}</li>`).join('')}
+          </ul>
         </li>
     `).join('');
-    return `<h2 id="h-exp"># ${escapeHtml(experience.title)}</h2><ul>${itemsHtml}</ul>`;
+    return `<h2 id="h-exp"># ${escapeHtml(experience.title)}</h2><ul class="experience-list">${itemsHtml}</ul>`;
   }
 
   /**

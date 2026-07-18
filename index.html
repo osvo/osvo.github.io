@@ -158,7 +158,7 @@
               <div class="fetch-row"><span class="fetch-key">Nombre</span><span class="fetch-value">Juan Camilo Osorio Oviedo</span></div>
               <div class="fetch-row"><span class="fetch-key">Rol</span><span class="fetch-value">Docente · Ing. civil · M. Sc. Matemática aplicada.</span></div>
               <div class="fetch-row"><span class="fetch-key">Enfoque</span><span class="fetch-value">IA · Aprendizaje automático · Confiabilidad estructural</span></div>
-              <div class="fetch-row"><span class="fetch-key">Tecnologías</span><span class="fetch-value">Python · MATLAB/Octave · LaTeX · Linux</span></div>
+              <div class="fetch-row"><span class="fetch-key">Tecnologías</span><span class="fetch-value">Python · MATLAB · LaTeX · Linux</span></div>
               <div class="fetch-row"><span class="fetch-key">Ubicación</span><span class="fetch-value">Manizales, Caldas, Colombia</span></div>
               <div class="fetch-row"><span class="fetch-key">Correo</span><span class="fetch-value"><a href="mailto:jucosorioov@unal.edu.co?subject=Contacto%20desde%20CV">jucosorioov@unal.edu.co</a></span></div>
               <div class="fetch-palette" aria-hidden="true">
@@ -196,9 +196,17 @@
           <span class="line"><span class="prompt"><span class="user">osvo</span>@<span class="host">cv</span>:<span class="path">~/</span>$</span> <span class="cmd">cat</span> <span class="file">education.md</span></span>
           <section class="card" aria-labelledby="h-edu">
             <h2 id="h-edu"># Educación</h2>
-            <ul>
-              <li><strong>Maestría en Ciencias — Matemática Aplicada</strong> — Universidad Nacional de Colombia <span class="badge">2026</span> <span class="badge">Mención meritoria</span></li>
-              <li><strong>Ingeniería Civil</strong> — Universidad Nacional de Colombia <span class="badge">2022</span></li>
+            <ul class="education-list">
+              <li class="education-item">
+                <div class="education-heading"><strong class="education-degree">Maestría en Ciencias — Matemática Aplicada</strong><span class="badge education-year">2026</span></div>
+                <div class="education-meta"><div class="education-institution">Universidad Nacional de Colombia</div></div>
+                <div class="education-thesis"><div class="education-thesis-heading"><span class="education-thesis-label">Tesis</span><span class="badge education-distinction">Distinción Meritoria</span></div><a class="education-thesis-title" href="https://repositorio.unal.edu.co/handle/unal/90216" target="_blank" rel="noopener noreferrer">«An adaptive Bayesian Support Vector Regression Proposal for structural reliability»</a></div>
+              </li>
+              <li class="education-item">
+                <div class="education-heading"><strong class="education-degree">Ingeniería Civil</strong><span class="badge education-year">2022</span></div>
+                <div class="education-meta"><div class="education-institution">Universidad Nacional de Colombia</div></div>
+                <div class="education-thesis"><div class="education-thesis-heading"><span class="education-thesis-label">Tesis</span></div><span class="education-thesis-title">«On the use of Support Vector Machines in structural reliability»</span></div>
+              </li>
             </ul>
           </section>
         </div>
@@ -219,23 +227,25 @@
           <span class="line"><span class="prompt"><span class="user">osvo</span>@<span class="host">cv</span>:<span class="path">~/</span>$</span> <span class="cmd">cat</span> <span class="file">experience.log</span></span>
           <section class="card" aria-labelledby="h-exp">
             <h2 id="h-exp"># Experiencia</h2>
-            <ul>
-              <li id="expTeaching">
-                <strong>Docente ocasional</strong> — Universidad Nacional de Colombia<br/>
-                <ul>
-                  <li>Estadística I <span class="badge">2024</span></li>
-                  <li>Ecuaciones diferenciales <span class="badge">2024</span></li>
-                  <li>Cálculo diferencial <span class="badge">2022</span></li>
-                  <li>Matemáticas básicas <span class="badge">2022</span></li>
+            <ul class="experience-list">
+              <li class="experience-item" id="expTeaching">
+                <strong class="experience-role">Docente ocasional</strong>
+                <div class="experience-institution">Universidad Nacional de Colombia</div>
+                <ul class="experience-tasks">
+                  <li class="experience-task"><span>Estadística I</span><span class="experience-years"><span class="badge">2024</span></span></li>
+                  <li class="experience-task"><span>Ecuaciones diferenciales</span><span class="experience-years"><span class="badge">2024</span></span></li>
+                  <li class="experience-task"><span>Cálculo diferencial</span><span class="experience-years"><span class="badge">2022</span></span></li>
+                  <li class="experience-task"><span>Matemáticas básicas</span><span class="experience-years"><span class="badge">2022</span></span></li>
                 </ul>
               </li>
-              <li id="expMonitors">
-                <strong>Monitorías académicas</strong> — Universidad Nacional de Colombia<br/>
-                <ul>
-                  <li>Programación de computadores <span class="badge">2019</span></li>
-                  <li>Mecánica de sólidos <span class="badge">2020-2021</span></li>
-                  <li>Cálculo integral <span class="badge">2023</span></li>
-                  <li>Álgebra lineal <span class="badge">2025</span></li>
+              <li class="experience-item" id="expMonitors">
+                <strong class="experience-role">Monitorías académicas</strong>
+                <div class="experience-institution">Universidad Nacional de Colombia</div>
+                <ul class="experience-tasks">
+                  <li class="experience-task"><span>Programación de computadores</span><span class="experience-years"><span class="badge">2019</span></span></li>
+                  <li class="experience-task"><span>Mecánica de sólidos</span><span class="experience-years"><span class="badge">2020</span><span class="badge">2021</span></span></li>
+                  <li class="experience-task"><span>Cálculo integral</span><span class="experience-years"><span class="badge">2023</span></span></li>
+                  <li class="experience-task"><span>Álgebra lineal</span><span class="experience-years"><span class="badge">2025</span></span></li>
                 </ul>
               </li>
             </ul>
@@ -260,8 +270,8 @@
             <h2 id="h-skills"># Habilidades</h2>
             <div class="grid">
               <ul>
-                <li>Programación: Python y MATLAB/Octave</li>
-                <li>ML: SVM, Regresión y Clasificación</li>
+                <li>Programación: Python y MATLAB</li>
+                <li>ML: scikit-learn, PyTorch y TensorFlow</li>
                 <li>Herramientas: Git, LaTeX, Linux</li>
               </ul>
               <ul>

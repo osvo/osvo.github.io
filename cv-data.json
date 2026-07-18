@@ -23,12 +23,21 @@
         "degree": "Maestría en Ciencias — Matemática Aplicada",
         "institution": "Universidad Nacional de Colombia",
         "status": "2026",
-        "distinction": "Mención meritoria"
+        "distinction": "Distinción Meritoria",
+        "thesis": {
+          "label": "Tesis",
+          "title": "«An adaptive Bayesian Support Vector Regression Proposal for structural reliability»",
+          "url": "https://repositorio.unal.edu.co/handle/unal/90216"
+        }
       },
       {
         "degree": "Ingeniería Civil",
         "institution": "Universidad Nacional de Colombia",
-        "status": "2022"
+        "status": "2022",
+        "thesis": {
+          "label": "Tesis",
+          "title": "«On the use of Support Vector Machines in structural reliability»"
+        }
       }
     ]
   },
@@ -52,7 +61,7 @@
         "institution": "Universidad Nacional de Colombia",
         "tasks": [
           { "name": "Programación de computadores", "year": "2019" },
-          { "name": "Mecánica de sólidos", "year": "2020-2021" },
+          { "name": "Mecánica de sólidos", "year": ["2020", "2021"] },
           { "name": "Cálculo integral", "year": "2023" },
           { "name": "Álgebra lineal", "year": "2025" }
         ]
@@ -63,8 +72,8 @@
     "title": "Habilidades",
     "columns": [
       [
-        "Programación: Python y MATLAB/Octave",
-        "ML: SVM, Regresión y Clasificación",
+        "Programación: Python y MATLAB",
+        "ML: scikit-learn, PyTorch y TensorFlow",
         "Herramientas: Git, LaTeX, Linux"
       ],
       [

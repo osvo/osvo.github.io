@@ -5,6 +5,8 @@
 (function() {
   'use strict';
 
+  const MASTER_THESIS_URL = 'https://repositorio.unal.edu.co/handle/unal/90216';
+
   const translations = {
     es: {
       metaDescription: 'Juan Camilo Osorio Oviedo: experiencia, educación y enlaces.',
@@ -41,8 +43,11 @@
         title: 'Educación',
         master: 'Maestría en Ciencias — Matemática Aplicada',
         university: 'Universidad Nacional de Colombia',
-        distinction: 'Mención meritoria',
-        civilEngineering: 'Ingeniería Civil'
+        distinction: 'Distinción Meritoria',
+        civilEngineering: 'Ingeniería Civil',
+        thesisLabel: 'Tesis',
+        masterThesis: '«An adaptive Bayesian Support Vector Regression Proposal for structural reliability»',
+        undergraduateThesis: '«On the use of Support Vector Machines in structural reliability»'
       },
       experience: {
         title: 'Experiencia',
@@ -60,8 +65,8 @@
       },
       skills: {
         title: 'Habilidades',
-        programming: 'Programación: Python y MATLAB/Octave',
-        ml: 'ML: SVM, Regresión y Clasificación',
+        programming: 'Programación: Python y MATLAB',
+        ml: 'ML: scikit-learn, PyTorch y TensorFlow',
         tools: 'Herramientas: Git, LaTeX, Linux',
         languages: 'Idiomas: Español (nativo) e Inglés (C1)',
         teaching: 'Docencia y divulgación científica'
@@ -111,7 +116,10 @@
         master: 'Master of Science — Applied Mathematics',
         university: 'National University of Colombia',
         distinction: 'Meritorious distinction',
-        civilEngineering: 'Civil Engineering'
+        civilEngineering: 'Civil Engineering',
+        thesisLabel: 'Thesis',
+        masterThesis: '“An adaptive Bayesian Support Vector Regression Proposal for structural reliability”',
+        undergraduateThesis: '“On the use of Support Vector Machines in structural reliability”'
       },
       experience: {
         title: 'Experience',
@@ -129,8 +137,8 @@
       },
       skills: {
         title: 'Skills',
-        programming: 'Programming: Python and MATLAB/Octave',
-        ml: 'ML: SVM, Regression, and Classification',
+        programming: 'Programming: Python and MATLAB',
+        ml: 'ML: scikit-learn, PyTorch, and TensorFlow',
         tools: 'Tools: Git, LaTeX, Linux',
         languages: 'Languages: Spanish (native) and English (C1)',
         teaching: 'Teaching and science communication'
@@ -179,7 +187,7 @@
       <div class="fetch-row"><span class="fetch-key">${copy.nameKey}</span><span class="fetch-value">Juan Camilo Osorio Oviedo</span></div>
       <div class="fetch-row"><span class="fetch-key">${copy.roleKey}</span><span class="fetch-value">${copy.role}</span></div>
       <div class="fetch-row"><span class="fetch-key">${copy.focusKey}</span><span class="fetch-value">${copy.focus}</span></div>
-      <div class="fetch-row"><span class="fetch-key">${copy.stackKey}</span><span class="fetch-value">Python · MATLAB/Octave · LaTeX · Linux</span></div>
+      <div class="fetch-row"><span class="fetch-key">${copy.stackKey}</span><span class="fetch-value">Python · MATLAB · LaTeX · Linux</span></div>
       <div class="fetch-row"><span class="fetch-key">${copy.locationKey}</span><span class="fetch-value">${copy.location}</span></div>
       <div class="fetch-row"><span class="fetch-key">${copy.emailKey}</span><span class="fetch-value"><a href="mailto:jucosorioov@unal.edu.co?subject=${subject}">jucosorioov@unal.edu.co</a></span></div>
       <div class="fetch-palette" aria-hidden="true">
@@ -203,31 +211,41 @@
   const renderSections = (copy) => {
     setHtml('#education .card', `
       <h2 id="h-edu"># ${copy.education.title}</h2>
-      <ul>
-        <li><strong>${copy.education.master}</strong> — ${copy.education.university} <span class="badge">2026</span> <span class="badge">${copy.education.distinction}</span></li>
-        <li><strong>${copy.education.civilEngineering}</strong> — ${copy.education.university} <span class="badge">2022</span></li>
+      <ul class="education-list">
+        <li class="education-item">
+          <div class="education-heading"><strong class="education-degree">${copy.education.master}</strong><span class="badge education-year">2026</span></div>
+          <div class="education-meta"><div class="education-institution">${copy.education.university}</div></div>
+          <div class="education-thesis"><div class="education-thesis-heading"><span class="education-thesis-label">${copy.education.thesisLabel}</span><span class="badge education-distinction">${copy.education.distinction}</span></div><a class="education-thesis-title" href="${MASTER_THESIS_URL}" target="_blank" rel="noopener noreferrer">${copy.education.masterThesis}</a></div>
+        </li>
+        <li class="education-item">
+          <div class="education-heading"><strong class="education-degree">${copy.education.civilEngineering}</strong><span class="badge education-year">2022</span></div>
+          <div class="education-meta"><div class="education-institution">${copy.education.university}</div></div>
+          <div class="education-thesis"><div class="education-thesis-heading"><span class="education-thesis-label">${copy.education.thesisLabel}</span></div><span class="education-thesis-title">${copy.education.undergraduateThesis}</span></div>
+        </li>
       </ul>
     `);
 
     setHtml('#experience .card', `
       <h2 id="h-exp"># ${copy.experience.title}</h2>
-      <ul>
-        <li id="expTeaching">
-          <strong>${copy.experience.teacher}</strong> — ${copy.experience.university}<br/>
-          <ul>
-            <li>${copy.experience.statistics} <span class="badge">2024</span></li>
-            <li>${copy.experience.differentialEquations} <span class="badge">2024</span></li>
-            <li>${copy.experience.differentialCalculus} <span class="badge">2022</span></li>
-            <li>${copy.experience.basicMath} <span class="badge">2022</span></li>
+      <ul class="experience-list">
+        <li class="experience-item" id="expTeaching">
+          <strong class="experience-role">${copy.experience.teacher}</strong>
+          <div class="experience-institution">${copy.experience.university}</div>
+          <ul class="experience-tasks">
+            <li class="experience-task"><span>${copy.experience.statistics}</span><span class="experience-years"><span class="badge">2024</span></span></li>
+            <li class="experience-task"><span>${copy.experience.differentialEquations}</span><span class="experience-years"><span class="badge">2024</span></span></li>
+            <li class="experience-task"><span>${copy.experience.differentialCalculus}</span><span class="experience-years"><span class="badge">2022</span></span></li>
+            <li class="experience-task"><span>${copy.experience.basicMath}</span><span class="experience-years"><span class="badge">2022</span></span></li>
           </ul>
         </li>
-        <li id="expMonitors">
-          <strong>${copy.experience.assistantships}</strong> — ${copy.experience.university}<br/>
-          <ul>
-            <li>${copy.experience.programming} <span class="badge">2019</span></li>
-            <li>${copy.experience.solidMechanics} <span class="badge">2020-2021</span></li>
-            <li>${copy.experience.integralCalculus} <span class="badge">2023</span></li>
-            <li>${copy.experience.linearAlgebra} <span class="badge">2025</span></li>
+        <li class="experience-item" id="expMonitors">
+          <strong class="experience-role">${copy.experience.assistantships}</strong>
+          <div class="experience-institution">${copy.experience.university}</div>
+          <ul class="experience-tasks">
+            <li class="experience-task"><span>${copy.experience.programming}</span><span class="experience-years"><span class="badge">2019</span></span></li>
+            <li class="experience-task"><span>${copy.experience.solidMechanics}</span><span class="experience-years"><span class="badge">2020</span><span class="badge">2021</span></span></li>
+            <li class="experience-task"><span>${copy.experience.integralCalculus}</span><span class="experience-years"><span class="badge">2023</span></span></li>
+            <li class="experience-task"><span>${copy.experience.linearAlgebra}</span><span class="experience-years"><span class="badge">2025</span></span></li>
           </ul>
         </li>
       </ul>

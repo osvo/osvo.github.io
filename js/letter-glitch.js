@@ -9,6 +9,12 @@
   };
 
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let motionOverride = false;
+  try {
+    motionOverride = localStorage.getItem('site-background-motion') === 'on';
+  } catch (error) {
+    // El almacenamiento puede estar deshabilitado en modo privado.
+  }
 
   const fontSize = 16;
   const charWidth = 10;
@@ -211,7 +217,7 @@
   }
 
   function animate() {
-    if (document.hidden || prefersReducedMotion.matches) {
+    if (document.hidden || (prefersReducedMotion.matches && !motionOverride)) {
       animationId = null;
       return;
     }
@@ -228,7 +234,7 @@
   }
 
   function startAnimation() {
-    if (!animationId && !document.hidden && !prefersReducedMotion.matches) {
+    if (!animationId && !document.hidden && (!prefersReducedMotion.matches || motionOverride)) {
       lastGlitchTime = Date.now();
       animationId = requestAnimationFrame(animate);
     }
@@ -258,7 +264,35 @@
     }
   });
 
-  prefersReducedMotion.addEventListener('change', init);
+  const motionButton = document.createElement('button');
+  motionButton.type = 'button';
+  motionButton.className = 'btn';
+  document.querySelector('.toolbar').appendChild(motionButton);
+
+  function updateMotionButton() {
+    motionButton.hidden = !prefersReducedMotion.matches;
+    const english = document.documentElement.lang === 'en';
+    motionButton.textContent = english ? 'Animate' : 'Animar';
+    motionButton.setAttribute('aria-label', english ? 'Animated background' : 'Fondo animado');
+    motionButton.setAttribute('aria-pressed', String(motionOverride));
+  }
+
+  motionButton.addEventListener('click', () => {
+    motionOverride = !motionOverride;
+    try {
+      localStorage.setItem('site-background-motion', motionOverride ? 'on' : 'off');
+    } catch (error) {
+      // La preferencia funciona en esta visita aunque no se pueda guardar.
+    }
+    updateMotionButton();
+    init();
+  });
+  document.addEventListener('site-language-change', updateMotionButton);
+  prefersReducedMotion.addEventListener('change', () => {
+    updateMotionButton();
+    init();
+  });
+  updateMotionButton();
 
   const observer = new MutationObserver(mutations => {
     if (mutations.some(m => m.attributeName === 'data-palette')) {

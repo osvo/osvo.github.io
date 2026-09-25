@@ -8,7 +8,6 @@
     outerVignette: true
   };
 
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   let motionEnabled = true;
   try {
     motionEnabled = localStorage.getItem('site-background-motion') !== 'off';
@@ -176,7 +175,7 @@
   }
 
   function updateLetters() {
-    const updateCount = Math.max(1, Math.floor(letters.length * (prefersReducedMotion.matches ? 0.01 : 0.05)));
+    const updateCount = Math.max(1, Math.floor(letters.length * 0.05));
     for (let i = 0; i < updateCount; i++) {
       const index = Math.floor(Math.random() * letters.length);
       const l = letters[index];
@@ -184,7 +183,7 @@
       l.char = getRandomChar();
       l.targetRgb = getRandomRgbColor();
       l.targetColor = l.targetRgb ? `rgb(${l.targetRgb.r}, ${l.targetRgb.g}, ${l.targetRgb.b})` : getRandomColor();
-      if (!config.smooth || prefersReducedMotion.matches) {
+      if (!config.smooth) {
         l.color = l.targetColor;
         l.rgb = l.targetRgb;
         l.colorProgress = 1;
@@ -222,12 +221,12 @@
       return;
     }
     const now = Date.now();
-    if (now - lastGlitchTime >= config.glitchSpeed * (prefersReducedMotion.matches ? 8 : 1)) {
+    if (now - lastGlitchTime >= config.glitchSpeed) {
       updateLetters();
       drawLetters();
       lastGlitchTime = now;
     }
-    if (config.smooth && !prefersReducedMotion.matches) {
+    if (config.smooth) {
       handleSmoothTransitions();
     }
     animationId = requestAnimationFrame(animate);
@@ -292,10 +291,6 @@
     }
   });
   document.addEventListener('site-language-change', updateMotionButton);
-  prefersReducedMotion.addEventListener('change', () => {
-    updateMotionButton();
-    init();
-  });
   updateMotionButton();
 
   const observer = new MutationObserver(mutations => {

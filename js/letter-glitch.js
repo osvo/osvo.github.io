@@ -9,9 +9,9 @@
   };
 
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  let motionOverride = false;
+  let motionEnabled = true;
   try {
-    motionOverride = localStorage.getItem('site-background-motion') === 'on';
+    motionEnabled = localStorage.getItem('site-background-motion') !== 'off';
   } catch (error) {
     // El almacenamiento puede estar deshabilitado en modo privado.
   }
@@ -176,7 +176,7 @@
   }
 
   function updateLetters() {
-    const updateCount = Math.max(1, Math.floor(letters.length * 0.05));
+    const updateCount = Math.max(1, Math.floor(letters.length * (prefersReducedMotion.matches ? 0.01 : 0.05)));
     for (let i = 0; i < updateCount; i++) {
       const index = Math.floor(Math.random() * letters.length);
       const l = letters[index];
@@ -184,7 +184,7 @@
       l.char = getRandomChar();
       l.targetRgb = getRandomRgbColor();
       l.targetColor = l.targetRgb ? `rgb(${l.targetRgb.r}, ${l.targetRgb.g}, ${l.targetRgb.b})` : getRandomColor();
-      if (!config.smooth) {
+      if (!config.smooth || prefersReducedMotion.matches) {
         l.color = l.targetColor;
         l.rgb = l.targetRgb;
         l.colorProgress = 1;
@@ -217,24 +217,24 @@
   }
 
   function animate() {
-    if (document.hidden || (prefersReducedMotion.matches && !motionOverride)) {
+    if (document.hidden || !motionEnabled) {
       animationId = null;
       return;
     }
     const now = Date.now();
-    if (now - lastGlitchTime >= config.glitchSpeed) {
+    if (now - lastGlitchTime >= config.glitchSpeed * (prefersReducedMotion.matches ? 8 : 1)) {
       updateLetters();
       drawLetters();
       lastGlitchTime = now;
     }
-    if (config.smooth) {
+    if (config.smooth && !prefersReducedMotion.matches) {
       handleSmoothTransitions();
     }
     animationId = requestAnimationFrame(animate);
   }
 
   function startAnimation() {
-    if (!animationId && !document.hidden && (!prefersReducedMotion.matches || motionOverride)) {
+    if (!animationId && !document.hidden && motionEnabled) {
       lastGlitchTime = Date.now();
       animationId = requestAnimationFrame(animate);
     }
@@ -270,22 +270,26 @@
   document.querySelector('.toolbar').appendChild(motionButton);
 
   function updateMotionButton() {
-    motionButton.hidden = !prefersReducedMotion.matches;
     const english = document.documentElement.lang === 'en';
-    motionButton.textContent = english ? 'Animate' : 'Animar';
+    motionButton.textContent = motionEnabled ? (english ? 'Pause' : 'Pausar') : (english ? 'Animate' : 'Animar');
     motionButton.setAttribute('aria-label', english ? 'Animated background' : 'Fondo animado');
-    motionButton.setAttribute('aria-pressed', String(motionOverride));
+    motionButton.setAttribute('aria-pressed', String(motionEnabled));
   }
 
   motionButton.addEventListener('click', () => {
-    motionOverride = !motionOverride;
+    motionEnabled = !motionEnabled;
     try {
-      localStorage.setItem('site-background-motion', motionOverride ? 'on' : 'off');
+      localStorage.setItem('site-background-motion', motionEnabled ? 'on' : 'off');
     } catch (error) {
       // La preferencia funciona en esta visita aunque no se pueda guardar.
     }
     updateMotionButton();
-    init();
+    if (motionEnabled) {
+      startAnimation();
+    } else {
+      cancelAnimationFrame(animationId);
+      animationId = null;
+    }
   });
   document.addEventListener('site-language-change', updateMotionButton);
   prefersReducedMotion.addEventListener('change', () => {

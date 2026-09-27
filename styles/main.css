@@ -65,7 +65,7 @@
     .dot.green { background: #27c93f; }
     .title { font-weight: 700; letter-spacing: .3px; color: var(--muted); }
     .actions { display:flex; gap:8px; }
-    .btn { border: 1px solid var(--border); background: transparent; color: var(--muted); padding:6px 10px; border-radius: 10px; cursor:pointer; transition: transform .06s ease, background .2s ease; }
+    .btn { font-family: inherit; border: 1px solid var(--border); background: transparent; color: var(--muted); padding:6px 10px; border-radius: 10px; cursor:pointer; transition: transform .06s ease, background .2s ease; }
     .btn:hover { background: rgba(255,255,255,.03); }
     .btn:active { transform: translateY(1px); }
     .screen { padding: 18px; }
@@ -506,4 +506,78 @@ ul ul li {
     .terminal.maxwide .card .hdr::after {
         animation: none !important;
     }
+}
+
+/* --- Barra de botones legible sobre el contenido al hacer scroll --- */
+.toolbar .btn {
+  background: var(--panel);
+  background: color-mix(in srgb, var(--panel) 88%, transparent);
+  color: var(--text);
+}
+.toolbar .btn:hover { background: var(--panel-2); }
+
+/* Móvil: la barra fija y el ícono no deben tapar la primera ventana al cargar. */
+@media (max-width: 760px) {
+  .wrap { padding-top: 40px; }
+}
+
+/* --- Terminal interactiva (js/shell.js) --- */
+.shell { margin-top: 12px; cursor: text; }
+.shell-out {
+  max-height: min(45vh, 360px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  margin-bottom: 2px;
+}
+.shell-out:empty { display: none; }
+.shell-out .line { min-height: 1.6em; }
+.shell-form {
+  display: flex;
+  align-items: baseline;
+  gap: 1ch;
+  border-bottom: 1px dashed transparent;
+  transition: border-color .2s ease;
+}
+.shell-form:focus-within { border-bottom-color: var(--border); }
+.shell-form .prompt { flex: none; cursor: text; }
+.shell-input {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 16px; /* 16px evita el zoom automático de iOS */
+  caret-color: var(--green);
+}
+.shell-input:focus { outline: none; }
+.shell-input::placeholder { color: var(--muted); opacity: .6; }
+.shell-error { color: var(--red); }
+
+/* --- Efecto de escritura (js/typewriter.js) --- */
+.terminal .card,
+.shell { transition: opacity .35s ease, transform .35s ease; }
+.typing .terminal .screen > .line:first-child > :not(.prompt) { visibility: hidden; }
+.typing .terminal .card,
+.typing .shell,
+.type-pending .card,
+.type-pending .shell { opacity: 0; transform: translateY(6px); }
+.line.is-typing::after { content: "▌"; color: var(--text); }
+
+/* --- Impresión: CV limpio, todas las ventanas abiertas --- */
+@media print {
+  .bg-glitch, .toolbar, .site-mark, .shell { display: none !important; }
+  .footer { color: #000; text-shadow: none; }
+  /* Colores oscuros sobre papel blanco, sea cual sea la paleta activa. */
+  html[data-palette] {
+    --bg: #fff; --panel: #fff; --panel-2: #fff; --border: #bbb; --text: #111; --muted: #555;
+    --red: #b3261e; --orange: #a4521b; --yellow: #8a6100; --green: #3d7a1f;
+    --cyan: #0b6e79; --blue: #1d5fa8; --magenta: #7a3b98; --link: #0b6e79;
+  }
+  .terminal, .terminal.maxwide { width: 100%; background: #fff; border-color: #ccc; box-shadow: none; transform: none; break-inside: avoid; margin-bottom: 12px; }
+  .card a[href^="http"]::after { content: " (" attr(href) ")"; color: #555; font-size: 11px; word-break: break-all; }
+  .terminal.closed .screen, .terminal.minimized .screen { display: block; }
+  .type-pending .card { opacity: 1; transform: none; }
+  .terminal.maxwide .card h2::after, .terminal.maxwide .card .hdr::after { content: none; }
 }

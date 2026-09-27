@@ -12,7 +12,10 @@
 
   <meta property="og:title" content="Juan Camilo Osorio Oviedo" />
   <meta property="og:description" content="Juan Camilo Osorio Oviedo: experiencia, educación y enlaces." />
-  <meta property="og:url" content="https://osvo.github.io/" />
+  <meta property="og:url" content="https://osvo.com.co/" />
+  <meta property="og:locale" content="es_CO" />
+  <meta property="og:locale:alternate" content="en_US" />
+  <link rel="canonical" href="https://osvo.com.co/" />
   <meta property="og:type" content="website" />
   <meta name="theme-color" content="#0b0f14" />
   <link rel="icon" href="favicon.ico" type="image/x-icon">
@@ -39,6 +42,15 @@
 
       document.documentElement.lang = language;
       document.documentElement.setAttribute('data-language', language);
+
+      // Efecto de escritura (js/typewriter.js). Se oculta el texto antes del primer
+      // pintado para evitar parpadeos; si el script no llega a ejecutarse, se muestra igual.
+      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.documentElement.classList.add('typing');
+        setTimeout(() => {
+          if (!window.__typewriterReady) document.documentElement.classList.remove('typing');
+        }, 2500);
+      }
     })();
   </script>
   <link rel="stylesheet" href="styles/main.css">
@@ -48,11 +60,11 @@
   {
     "@context": "https://schema.org",
     "@type": "Person",
-    "image": "https://osvo.github.io/favicon.ico",
+    "image": "https://osvo.com.co/favicon-48.png",
     "name": "Juan Camilo Osorio Oviedo",
     "alternateName": ["osvo", "Camilo Osorio", "Juan Camilo Osorio", "Camilo Osorio Oviedo"],
     "jobTitle": "Docente",
-    "url": "https://osvo.github.io/",
+    "url": "https://osvo.com.co/",
     "affiliation": {
       "@type": "CollegeOrUniversity",
       "name": "Universidad Nacional de Colombia"
@@ -61,7 +73,10 @@
       "https://github.com/osvo",
       "https://www.linkedin.com/in/osvo/"
     ],
-    "alumniOf": []
+    "alumniOf": {
+      "@type": "CollegeOrUniversity",
+      "name": "Universidad Nacional de Colombia"
+    }
   }
   </script>
 </head>
@@ -171,7 +186,7 @@
             <div class="indent">
               <div class="line"><span class="k">rol</span>: <span class="v">"Docente · Ing. civil · M. Sc. Matemática aplicada."</span>,</div>
               <div class="line"><span class="k">intereses</span>: <span class="v">["Inteligencia artificial", "Aprendizaje automático", "Confiabilidad estructural", "Ciencias de la computación"]</span>,</div>
-              <div class="line"><span class="k">ubicación</span>: <span class="v">"Manizales - Caldas - Colombia"</span>,</div>
+              <div class="line"><span class="k">ubicación</span>: <span class="v">"Manizales, Caldas, Colombia"</span>,</div>
               <div class="line"><span class="k">correo</span>: <a href="mailto:jucosorioov@unal.edu.co?subject=Contacto%20desde%20CV">jucosorioov@unal.edu.co</a></div>
             </div>
             <div class="line"><span class="v">}</span></div>
@@ -323,8 +338,8 @@
           <section class="card" aria-labelledby="h-links">
             <h2 id="h-links"># Enlaces</h2>
             <ul>
-              <li><a href="https://github.com/osvo" target="_blank" rel="noopener">Github</a></li>
-              <li><a href="https://www.linkedin.com/in/osvo/" target="_blank" rel="noopener">Linkedin</a></li>
+              <li><a href="https://github.com/osvo" target="_blank" rel="noopener">GitHub</a></li>
+              <li><a href="https://www.linkedin.com/in/osvo/" target="_blank" rel="noopener">LinkedIn</a></li>
               <li><a href="https://www.youtube.com/@caosvo" target="_blank" rel="noopener">YouTube</a></li>
               <li><a href="https://goodreads.com/osvo" target="_blank" rel="noopener">Goodreads</a></li>
             </ul>
@@ -333,10 +348,12 @@
         </div>
       </div>
     </div>
-      <div class="footer">© <span id="yearRoman"></span> — Juan Camilo Osorio Oviedo — Hecho con HTML, CSS y JavaScript.</div>
+      <div class="footer">© <span id="yearRoman">MMXXVI</span> — Juan Camilo Osorio Oviedo — Hecho con HTML, CSS y JavaScript.</div>
   </div>
   <script src="js/i18n.js" defer></script>
   <script src="js/main.js" defer></script>
   <script src="js/letter-glitch.js" defer></script>
+  <script src="js/shell.js" defer></script>
+  <script src="js/typewriter.js" defer></script>
 </body>
 </html>

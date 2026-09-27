@@ -20,7 +20,7 @@ jobs:
       - name: Generate sitemap
         uses: cicirello/generate-sitemap@v1
         with:
-          base-url-path: https://osvo.github.io/
+          base-url-path: https://osvo.com.co/
 
       - name: Commit sitemap.xml
         uses: EndBug/add-and-commit@v9

@@ -48,11 +48,18 @@
 
   const getCurrentPalette = () => document.documentElement.getAttribute('data-palette') || PALETTES[0];
 
+  const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+
   const setPalette = (palette) => {
+    if (!PALETTES.includes(palette)) return false;
     document.documentElement.setAttribute('data-palette', palette);
     if (paletteNameSpan) {
       paletteNameSpan.textContent = PALETTE_NAMES[palette] || palette;
     }
+    // La barra del navegador móvil toma el color de fondo de la paleta.
+    const bg = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();
+    if (themeColorMeta && bg) themeColorMeta.setAttribute('content', bg);
+    return true;
   };
 
   setPalette(getCurrentPalette());
@@ -63,6 +70,9 @@
     const nextPalette = PALETTES[nextIndex];
     setPalette(nextPalette);
   });
+
+  // Usado por la terminal interactiva (js/shell.js).
+  window.__palettes = { list: PALETTES, names: PALETTE_NAMES, get: getCurrentPalette, set: setPalette };
 
 
   // --- LÓGICA DE CONTROLES DE VENTANA (TERMINAL) ---

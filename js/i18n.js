@@ -303,7 +303,9 @@
     }
   };
 
-  const applyLanguage = (language, persist = false) => {
+  // El HTML ya viene en español: en la primera carga en español no hace falta
+  // volver a pintar las secciones (evita trabajo y reflujos innecesarios).
+  const applyLanguage = (language, persist = false, initial = false) => {
     const normalizedLanguage = language === 'en' ? 'en' : 'es';
     const copy = translations[normalizedLanguage];
     const root = document.documentElement;
@@ -329,11 +331,13 @@
     document.querySelectorAll('.dot.yellow').forEach(button => button.setAttribute('aria-label', copy.windowControls.minimize));
     document.querySelectorAll('.dot.green').forEach(button => button.setAttribute('aria-label', copy.windowControls.maximize));
 
-    renderAbout(copy.about);
-    renderSections(copy);
-    const renderedYear = document.getElementById('yearRoman')?.textContent || '';
-    setHtml('.footer', `© <span id="yearRoman"></span> — Juan Camilo Osorio Oviedo — ${copy.footer}`);
-    if (renderedYear) setText('#yearRoman', renderedYear);
+    if (!(initial && normalizedLanguage === 'es')) {
+      renderAbout(copy.about);
+      renderSections(copy);
+      const renderedYear = document.getElementById('yearRoman')?.textContent || '';
+      setHtml('.footer', `© <span id="yearRoman"></span> — Juan Camilo Osorio Oviedo — ${copy.footer}`);
+      if (renderedYear) setText('#yearRoman', renderedYear);
+    }
     updateMetadata(copy);
 
     document.dispatchEvent(new CustomEvent('site-language-change', {
@@ -342,7 +346,7 @@
   };
 
   let currentLanguage = getInitialLanguage();
-  applyLanguage(currentLanguage);
+  applyLanguage(currentLanguage, false, true);
 
   document.getElementById('toggleLanguage')?.addEventListener('click', () => {
     currentLanguage = currentLanguage === 'es' ? 'en' : 'es';

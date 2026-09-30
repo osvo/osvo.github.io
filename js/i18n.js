@@ -233,6 +233,9 @@
     setHtml('#experience .card', `
       <h2 id="h-exp"># ${copy.experience.title}</h2>
       <ul class="experience-list">
+        <li class="experience-item" id="expCapitel">
+          <strong class="experience-role">Capitel Ingeniería <span class="badge">2026</span></strong>
+        </li>
         <li class="experience-item" id="expTeaching">
           <strong class="experience-role">${copy.experience.teacher}</strong>
           <div class="experience-institution">${copy.experience.university}</div>

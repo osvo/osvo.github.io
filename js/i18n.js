@@ -45,6 +45,7 @@
         university: 'Universidad Nacional de Colombia',
         distinction: 'Distinción Meritoria',
         civilEngineering: 'Ingeniería Civil',
+        teachingDiploma: 'Diplomado en Docencia Universitaria',
         thesisLabel: 'Tesis',
         masterThesis: '«An adaptive Bayesian Support Vector Regression Proposal for structural reliability»',
         undergraduateThesis: '«On the use of Support Vector Machines in structural reliability»'
@@ -117,6 +118,7 @@
         university: 'National University of Colombia',
         distinction: 'Meritorious distinction',
         civilEngineering: 'Civil Engineering',
+        teachingDiploma: 'Diploma in University Teaching',
         thesisLabel: 'Thesis',
         masterThesis: '“An adaptive Bayesian Support Vector Regression Proposal for structural reliability”',
         undergraduateThesis: '“On the use of Support Vector Machines in structural reliability”'
@@ -221,6 +223,10 @@
           <div class="education-heading"><strong class="education-degree">${copy.education.civilEngineering}</strong><span class="badge education-year">2022</span></div>
           <div class="education-meta"><div class="education-institution">${copy.education.university}</div></div>
           <div class="education-thesis"><div class="education-thesis-heading"><span class="education-thesis-label">${copy.education.thesisLabel}</span></div><span class="education-thesis-title">${copy.education.undergraduateThesis}</span></div>
+        </li>
+        <li class="education-item">
+          <div class="education-heading"><strong class="education-degree">${copy.education.teachingDiploma}</strong><span class="badge education-year">2025</span></div>
+          <div class="education-meta"><div class="education-institution">${copy.education.university}</div></div>
         </li>
       </ul>
     `);

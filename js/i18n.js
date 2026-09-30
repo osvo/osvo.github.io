@@ -26,15 +26,13 @@
         nameKey: 'Nombre',
         roleKey: 'Rol',
         role: 'Docente · Ing. civil · M. Sc. Matemática aplicada.',
-        focusKey: 'Enfoque',
-        focus: 'Computación científica · IA · Confiabilidad estructural',
-        stackKey: 'Tecnologías',
+        profileKey: 'Perfil',
+        profile: 'Aplico computación científica, aprendizaje automático e IA a la ingeniería civil y la docencia, con énfasis en confiabilidad estructural y automatización.',
         locationKey: 'Ubicación',
         location: 'Manizales, Caldas, Colombia',
         emailKey: 'Correo',
         codeRoleKey: 'rol',
-        interestsKey: 'intereses',
-        interests: '["Computación científica", "Aprendizaje automático", "Automatización e IA", "Confiabilidad estructural"]',
+        codeProfileKey: 'perfil',
         codeLocationKey: 'ubicación',
         codeEmailKey: 'correo',
         emailSubject: 'Contacto desde CV'
@@ -72,7 +70,7 @@
         engineering: '<strong>Ingeniería civil:</strong> AutoCAD, Robot, Revit, ETABS y memorias de cálculo.',
         teaching: '<strong>Docencia:</strong> matemáticas, estadística y recursos educativos digitales.',
         tools: '<strong>Herramientas:</strong> Git, LaTeX y Linux.',
-        languages: 'Español (nativo) · Inglés (C1)'
+        languages: '<strong>Idiomas:</strong> Español (nativo) · Inglés (C1).'
       },
       projects: {
         title: 'Proyectos',
@@ -101,15 +99,13 @@
         nameKey: 'Name',
         roleKey: 'Role',
         role: 'Lecturer · Civil Engineer · M. Sc. Applied Mathematics',
-        focusKey: 'Focus',
-        focus: 'Scientific computing · AI · Structural reliability',
-        stackKey: 'Stack',
+        profileKey: 'Profile',
+        profile: 'I apply scientific computing, machine learning and AI to civil engineering and teaching, with a focus on structural reliability and automation.',
         locationKey: 'Location',
         location: 'Manizales, Caldas, Colombia',
         emailKey: 'Email',
         codeRoleKey: 'role',
-        interestsKey: 'interests',
-        interests: '["Scientific computing", "Machine learning", "Automation & AI", "Structural reliability"]',
+        codeProfileKey: 'profile',
         codeLocationKey: 'location',
         codeEmailKey: 'email',
         emailSubject: 'Contact from CV'
@@ -147,7 +143,7 @@
         engineering: '<strong>Civil engineering:</strong> AutoCAD, Robot, Revit, ETABS and engineering calculation reports.',
         teaching: '<strong>Teaching:</strong> mathematics, statistics and digital learning resources.',
         tools: '<strong>Tools:</strong> Git, LaTeX and Linux.',
-        languages: 'Spanish (native) · English (C1)'
+        languages: '<strong>Languages:</strong> Spanish (native) · English (C1).'
       },
       projects: {
         title: 'Projects',
@@ -192,8 +188,7 @@
       <div class="fetch-rule" aria-hidden="true"></div>
       <div class="fetch-row"><span class="fetch-key">${copy.nameKey}</span><span class="fetch-value">Juan Camilo Osorio Oviedo</span></div>
       <div class="fetch-row"><span class="fetch-key">${copy.roleKey}</span><span class="fetch-value">${copy.role}</span></div>
-      <div class="fetch-row"><span class="fetch-key">${copy.focusKey}</span><span class="fetch-value">${copy.focus}</span></div>
-      <div class="fetch-row"><span class="fetch-key">${copy.stackKey}</span><span class="fetch-value">Python · MATLAB · LaTeX · Linux</span></div>
+      <div class="fetch-row"><span class="fetch-key">${copy.profileKey}</span><span class="fetch-value">${copy.profile}</span></div>
       <div class="fetch-row"><span class="fetch-key">${copy.locationKey}</span><span class="fetch-value">${copy.location}</span></div>
       <div class="fetch-row"><span class="fetch-key">${copy.emailKey}</span><span class="fetch-value"><a href="mailto:jucosorioov@unal.edu.co?subject=${subject}">jucosorioov@unal.edu.co</a></span></div>
       <div class="fetch-palette" aria-hidden="true">
@@ -206,7 +201,7 @@
       <div class="line"><span class="id">osvo</span> <span class="k">=</span> <span class="v">{</span></div>
       <div class="indent">
         <div class="line"><span class="k">${copy.codeRoleKey}</span>: <span class="v">"${copy.role}"</span>,</div>
-        <div class="line"><span class="k">${copy.interestsKey}</span>: <span class="v">${copy.interests}</span>,</div>
+        <div class="line"><span class="k">${copy.codeProfileKey}</span>: <span class="v">"${copy.profile}"</span>,</div>
         <div class="line"><span class="k">${copy.codeLocationKey}</span>: <span class="v">"${copy.location}"</span>,</div>
         <div class="line"><span class="k">${copy.codeEmailKey}</span>: <a href="mailto:jucosorioov@unal.edu.co?subject=${subject}">jucosorioov@unal.edu.co</a></div>
       </div>
@@ -273,9 +268,9 @@
           <li>${copy.skills.engineering}</li>
           <li>${copy.skills.teaching}</li>
           <li>${copy.skills.tools}</li>
+          <li>${copy.skills.languages}</li>
         </ul>
       </div>
-      <p class="muted">${copy.skills.languages}</p>
     `);
 
     setHtml('#projects .card', `

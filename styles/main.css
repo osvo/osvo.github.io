@@ -318,7 +318,10 @@ ul ul li {
       color: var(--link);
     }
     .experience-role {
-      display: block;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
       color: var(--text);
       font-size: 16px;
       font-weight: 800;

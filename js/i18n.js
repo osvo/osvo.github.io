@@ -27,14 +27,14 @@
         roleKey: 'Rol',
         role: 'Docente · Ing. civil · M. Sc. Matemática aplicada.',
         focusKey: 'Enfoque',
-        focus: 'IA · Aprendizaje automático · Confiabilidad estructural',
+        focus: 'Computación científica · IA · Confiabilidad estructural',
         stackKey: 'Tecnologías',
         locationKey: 'Ubicación',
         location: 'Manizales, Caldas, Colombia',
         emailKey: 'Correo',
         codeRoleKey: 'rol',
         interestsKey: 'intereses',
-        interests: '["Inteligencia artificial", "Aprendizaje automático", "Confiabilidad estructural", "Ciencias de la computación"]',
+        interests: '["Computación científica", "Aprendizaje automático", "Automatización e IA", "Confiabilidad estructural"]',
         codeLocationKey: 'ubicación',
         codeEmailKey: 'correo',
         emailSubject: 'Contacto desde CV'
@@ -66,11 +66,13 @@
       },
       skills: {
         title: 'Habilidades',
-        programming: 'Programación: Python y MATLAB',
-        ml: 'ML: scikit-learn, PyTorch y TensorFlow',
-        tools: 'Herramientas: Git, LaTeX, Linux',
-        languages: 'Idiomas: Español (nativo) e Inglés (C1)',
-        teaching: 'Docencia y divulgación científica'
+        scientific: '<strong>Computación científica:</strong> Python, MATLAB y métodos numéricos.',
+        ml: '<strong>Aprendizaje automático:</strong> scikit-learn, PyTorch y TensorFlow.',
+        automation: '<strong>Automatización e IA:</strong> agentes y flujos de trabajo reproducibles.',
+        engineering: '<strong>Ingeniería civil:</strong> AutoCAD, Robot, Revit, ETABS y memorias de cálculo.',
+        teaching: '<strong>Docencia:</strong> matemáticas, estadística y recursos educativos digitales.',
+        tools: '<strong>Herramientas:</strong> Git, LaTeX y Linux.',
+        languages: 'Español (nativo) · Inglés (C1)'
       },
       projects: {
         title: 'Proyectos',
@@ -100,14 +102,14 @@
         roleKey: 'Role',
         role: 'Lecturer · Civil Engineer · M. Sc. Applied Mathematics',
         focusKey: 'Focus',
-        focus: 'AI · Machine Learning · Structural Reliability',
+        focus: 'Scientific computing · AI · Structural reliability',
         stackKey: 'Stack',
         locationKey: 'Location',
         location: 'Manizales, Caldas, Colombia',
         emailKey: 'Email',
         codeRoleKey: 'role',
         interestsKey: 'interests',
-        interests: '["Artificial intelligence", "Machine Learning", "Structural reliability", "Computer science"]',
+        interests: '["Scientific computing", "Machine learning", "Automation & AI", "Structural reliability"]',
         codeLocationKey: 'location',
         codeEmailKey: 'email',
         emailSubject: 'Contact from CV'
@@ -139,11 +141,13 @@
       },
       skills: {
         title: 'Skills',
-        programming: 'Programming: Python and MATLAB',
-        ml: 'ML: scikit-learn, PyTorch, and TensorFlow',
-        tools: 'Tools: Git, LaTeX, Linux',
-        languages: 'Languages: Spanish (native) and English (C1)',
-        teaching: 'Teaching and science communication'
+        scientific: '<strong>Scientific computing:</strong> Python, MATLAB and numerical methods.',
+        ml: '<strong>Machine learning:</strong> scikit-learn, PyTorch and TensorFlow.',
+        automation: '<strong>Automation & AI:</strong> agents and reproducible workflows.',
+        engineering: '<strong>Civil engineering:</strong> AutoCAD, Robot, Revit, ETABS and engineering calculation reports.',
+        teaching: '<strong>Teaching:</strong> mathematics, statistics and digital learning resources.',
+        tools: '<strong>Tools:</strong> Git, LaTeX and Linux.',
+        languages: 'Spanish (native) · English (C1)'
       },
       projects: {
         title: 'Projects',
@@ -261,15 +265,17 @@
       <h2 id="h-skills"># ${copy.skills.title}</h2>
       <div class="grid">
         <ul>
-          <li>${copy.skills.programming}</li>
+          <li>${copy.skills.scientific}</li>
           <li>${copy.skills.ml}</li>
-          <li>${copy.skills.tools}</li>
+          <li>${copy.skills.automation}</li>
         </ul>
         <ul>
-          <li>${copy.skills.languages}</li>
+          <li>${copy.skills.engineering}</li>
           <li>${copy.skills.teaching}</li>
+          <li>${copy.skills.tools}</li>
         </ul>
       </div>
+      <p class="muted">${copy.skills.languages}</p>
     `);
 
     setHtml('#projects .card', `

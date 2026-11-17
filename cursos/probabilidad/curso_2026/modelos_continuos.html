@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="es" data-publico="1">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Modelos de probabilidad continuos</title>
+  <link rel="stylesheet" href="vendor/reveal/reset.css">
+  <link rel="stylesheet" href="vendor/reveal/reveal.css">
+  <link rel="stylesheet" href="../vendor/katex/katex.min.css">
+  <link rel="stylesheet" href="curso.css?v=20261116r1">
+  <script src="vendor/reveal/reveal.js" defer></script>
+  <script src="../vendor/katex/katex.min.js" defer></script>
+  <script src="clase_figuras.js?v=20261116r1" defer></script>
+  <script src="modelos_continuos.js?v=20261116r1" defer></script>
+  <script src="visuales.js?v=20261116r1" defer></script>
+  <script src="curso.js?v=20261116r1" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#deck">Ir a las diapositivas</a>
+  <div class="course-app">
+    <header class="chrome chrome-top" aria-label="Controles del curso">
+      <div class="course-ident"><span class="course-ident-rule" aria-hidden="true"></span><span id="course-short-title">Probabilidad y estadística</span></div>
+      <nav class="chrome-actions" aria-label="Herramientas">
+        <button type="button" id="index-button" aria-haspopup="dialog">Índice</button>
+        <button type="button" id="notes-button">Notas</button>
+        <button type="button" id="present-button" title="Pantalla completa sin barras (tecla F)">Presentar</button>
+        <a id="mode-link" href="?lectura=1">Modo lectura</a>
+      </nav>
+    </header>
+
+    <div class="reveal" id="deck" aria-label="Presentación del curso"><div class="slides" id="slides"></div></div>
+    <main id="reading" class="reading-view" aria-label="Lectura continua del curso"></main>
+
+    <footer class="chrome chrome-bottom" aria-label="Navegación de diapositivas">
+      <div class="slide-context"><span id="module-context">Portada</span><span class="context-separator" aria-hidden="true">/</span><span id="slide-context">Presentación</span></div>
+      <div class="slide-controls"><button type="button" id="prev-button" aria-label="Diapositiva anterior">← Anterior</button><span id="slide-counter" aria-live="polite">1 / 1</span><button type="button" id="next-button" aria-label="Diapositiva siguiente">Siguiente →</button></div>
+      <div class="progress-track" aria-label="Progreso del curso"><span id="progress-fill"></span></div>
+    </footer>
+  </div>
+
+  <dialog id="index-dialog" class="course-dialog" aria-labelledby="index-title"><div class="dialog-head"><div><p class="dialog-kicker">Navegación</p><h2 id="index-title">Índice del curso</h2></div><button type="button" class="dialog-close" data-close="index-dialog" aria-label="Cerrar índice">×</button></div><div id="index-list" class="index-list"></div></dialog>
+  <dialog id="notes-dialog" class="course-dialog notes-dialog" aria-labelledby="notes-title"><div class="dialog-head"><div><p class="dialog-kicker">Solo para consulta docente</p><h2 id="notes-title">Notas de la diapositiva</h2></div><button type="button" class="dialog-close" data-close="notes-dialog" aria-label="Cerrar notas">×</button></div><p id="notes-slide-title" class="notes-slide-title"></p><div id="notes-content" class="notes-content"></div><div class="notes-source"><strong>Fuente</strong><p id="notes-source"></p></div></dialog>
+</body>
+</html>

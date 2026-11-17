@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="es" data-publico="1">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Fórmulas · Probabilidad y Estadística</title>
+  <link rel="stylesheet" href="../vendor/katex/katex.min.css">
+  <link rel="stylesheet" href="curso.css">
+  <style>
+    :root{--paper:#fff}
+    html{scroll-behavior:smooth;scroll-padding-top:24px}
+    body{background:#fff;color:var(--ink)}
+    .pagina{max-width:1320px;margin:0 auto;padding:56px 40px 96px;display:grid;grid-template-columns:260px minmax(0,1fr);gap:64px}
+    header.cab{grid-column:1/-1;display:flex;justify-content:space-between;align-items:flex-end;gap:24px;padding-bottom:28px;border-bottom:2px solid var(--ink)}
+    header.cab h1{font:700 58px/1 var(--serif);letter-spacing:-.02em;margin:0}
+    header.cab p{font:400 18px/1.3 var(--sans);color:var(--muted);margin:12px 0 0}
+    header.cab nav a{font:600 17px var(--sans);color:var(--green);text-underline-offset:5px}
+    aside{position:sticky;top:24px;align-self:start;max-height:calc(100dvh - 48px);overflow:auto;padding-right:8px}
+    .buscador{position:relative}
+    .buscador svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--muted)}
+    #buscar{width:100%;font:400 17px var(--sans);padding:11px 12px 11px 40px;border:1px solid var(--rule);border-radius:8px;background:#fff;color:var(--ink)}
+    #buscar:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(70,107,63,.18)}
+    #vistas{display:grid;grid-template-columns:1fr 1fr;margin:14px 0 6px;border:1px solid var(--rule);border-radius:8px;overflow:hidden}
+    #vistas button{font:600 15px var(--sans);padding:9px 6px;border:0;background:#fff;color:var(--muted);cursor:pointer}
+    #vistas button+button{border-left:1px solid var(--rule)}
+    #vistas button[aria-pressed="true"]{background:var(--green);color:#fff}
+    #cuenta{font:400 14px var(--sans);color:var(--muted);margin:10px 0 22px}
+    #indice{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
+    #indice a{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid #e6e8e3;font:400 16px/1.25 var(--sans);color:var(--ink);text-decoration:none}
+    #indice a .n{color:var(--muted);font-variant-numeric:tabular-nums}
+    #indice a:hover{color:var(--green)}
+    #indice a.on{color:var(--green);font-weight:700}
+    .ayuda{font:400 13px/1.45 var(--sans);color:var(--muted);margin:18px 0 0}
+    kbd{font:600 12px var(--sans);border:1px solid var(--rule);border-bottom-width:2px;border-radius:4px;padding:0 5px}
+    main section{margin:0 0 56px}
+    main h2{font:700 32px/1.15 var(--serif);margin:0 0 6px;padding-top:6px}
+    main h2 a{color:inherit;text-decoration:none}
+    main h2 a:hover{color:var(--green)}
+    .fila{display:grid;grid-template-columns:minmax(220px,300px) minmax(0,1fr);gap:36px;align-items:center;padding:20px 0;border-bottom:1px solid #e3e6e0}
+    .fila h3{font:700 20px/1.25 var(--serif);margin:0;color:var(--ink)}
+    .fila p{font:400 15px/1.45 var(--sans);color:#4d5550;margin:6px 0 8px}
+    .fila a{font:600 14px var(--sans);color:var(--green);text-decoration:none}
+    .fila a::after{content:" →"}
+    .fila a:hover{text-decoration:underline;text-underline-offset:4px}
+    .eq{font-size:22px;overflow-x:auto;overflow-y:hidden;min-width:0}
+    .eq .katex-display{margin:0;text-align:left}
+    .eq .katex-display>.katex{text-align:left}
+    ul.lista{list-style:none;margin:0;padding:0}
+    ul.lista li{display:flex;justify-content:space-between;align-items:baseline;gap:20px;padding:11px 0;border-bottom:1px solid #e3e6e0;font:400 18px/1.35 var(--sans)}
+    ul.lista li.sub{padding-left:26px;font-size:16px}
+    ul.lista li a{color:var(--ink);text-decoration:none}
+    ul.lista li a:hover{color:var(--green);text-decoration:underline;text-underline-offset:4px}
+    ul.lista .mod{font:400 13px var(--sans);color:var(--muted);white-space:nowrap}
+    @media(max-width:900px){.pagina{grid-template-columns:1fr;gap:28px;padding:32px 20px 64px}aside{position:static;max-height:none}#indice{display:none}.fila{grid-template-columns:1fr;gap:8px}header.cab h1{font-size:42px}ul.lista .mod{display:none}}
+    @media print{aside,header.cab nav{display:none}.pagina{display:block}.fila{break-inside:avoid}}
+  </style>
+  <script src="../vendor/katex/katex.min.js" defer></script>
+  <script src="clase_figuras.js" defer></script>
+  <script src="formulario.js" defer></script>
+</head>
+<body>
+  <div class="pagina">
+    <header class="cab">
+      <div><h1>Fórmulas</h1><p>Probabilidad y Estadística · Ing., M. Sc. Juan Camilo Osorio Oviedo</p></div>
+      <nav><a href="clases.html">Todas las clases</a></nav>
+    </header>
+    <aside>
+      <label class="buscador"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="buscar" type="search" autocomplete="off" aria-label="Buscar"></label>
+      <div id="vistas" role="group" aria-label="Qué buscar"><button type="button" data-vista="formulas">Fórmulas</button><button type="button" data-vista="temas">Diapositivas</button></div>
+      <p id="cuenta" aria-live="polite"></p>
+      <ul id="indice"></ul>
+      <p class="ayuda">Tecla <kbd>/</kbd> para buscar. Cada fórmula enlaza con la diapositiva donde se explica.</p>
+    </aside>
+    <main id="resultados"></main>
+  </div>
+</body>
+</html>

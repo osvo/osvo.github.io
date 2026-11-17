@@ -1,0 +1,28 @@
+{
+  "package": "reveal.js",
+  "version": "5.2.1",
+  "repository": "https://github.com/hakimel/reveal.js",
+  "tag": "https://github.com/hakimel/reveal.js/releases/tag/5.2.1",
+  "package_version_url": "https://raw.githubusercontent.com/hakimel/reveal.js/5.2.1/package.json",
+  "version_note": "package.json del tag declara 5.2.1; el banner textual de dist/reveal.js en ese mismo tag todavía dice 5.2.0",
+  "license": "MIT",
+  "downloaded_at_utc": "2026-10-31T03:31:12Z",
+  "files": {
+    "reveal.js": {
+      "url": "https://raw.githubusercontent.com/hakimel/reveal.js/5.2.1/dist/reveal.js",
+      "sha256": "46538B52DB48724192F59BF46F5E851A18E302777C46F4A34C32709D010D6A29"
+    },
+    "reveal.css": {
+      "url": "https://raw.githubusercontent.com/hakimel/reveal.js/5.2.1/dist/reveal.css",
+      "sha256": "68F915A11EBF7203C0446576B7E952FF61C5DD02134A8A226FFAF62ED42136D2"
+    },
+    "reset.css": {
+      "url": "https://raw.githubusercontent.com/hakimel/reveal.js/5.2.1/dist/reset.css",
+      "sha256": "1AA8E84C9CABCBFE4D95B19879FE48B9C2C5E6D54574CBE679BC22EDB9FE12B6"
+    },
+    "LICENSE": {
+      "url": "https://raw.githubusercontent.com/hakimel/reveal.js/5.2.1/LICENSE",
+      "sha256": "34014800F4126AC2525E224166F099F26628612E95C41F76D70841B63138C989"
+    }
+  }
+}

@@ -3,6 +3,7 @@
 (function () {
   "use strict";
 
+  const version = new URL(document.currentScript.src).search;
   const UNIDADES = [
     ["repaso_probabilidad_y_variables", "Sesión de repaso"],
     ["probabilidad_y_conteo", "Probabilidad y conteo"],
@@ -66,16 +67,16 @@
     ["disc", "Binomial", String.raw`P(X=x)=\binom{n}{x}p^x(1-p)^{n-x}\qquad E(X)=np\qquad \mathrm{Var}(X)=np(1-p)`, "Número de éxitos en n ensayos independientes con la misma p.", MD, "md-2", "binomial éxitos ensayos"],
     ["disc", "Geométrica", String.raw`P(X=x)=(1-p)^{x-1}p\qquad E(X)=\frac1p\qquad \mathrm{Var}(X)=\frac{1-p}{p^2}`, "Intento en que aparece el primer éxito.", MD, "md-4", "geométrica primer éxito espera"],
     ["disc", "Binomial negativa", String.raw`P(X=x)=\binom{x-1}{r-1}p^r(1-p)^{x-r}\qquad E(X)=\frac rp`, "Intento en que aparece el éxito número r.", MD, "md-4", "pascal r éxitos"],
-    ["disc", "Excedencia y periodo de retorno", String.raw`P(\text{al menos una excedencia en }n\text{ años})=1-\left(1-\tfrac1T\right)^n`, "Hidrología: «una vez cada T años» es un promedio.", MD, "md-4b", "periodo retorno creciente lluvia"],
+    ["disc", "Excedencia y periodo de retorno", String.raw`P(\text{al menos una excedencia en }n\text{ años})=1-\left(1-\tfrac1T\right)^n`, "Años independientes con probabilidad anual p = 1/T. «Una vez cada T años» es un promedio.", MD, "md-4b", "periodo retorno creciente lluvia"],
     ["disc", "Hipergeométrica", String.raw`P(X=x)=\frac{\binom{r}{x}\binom{N-r}{n-x}}{\binom{N}{n}}\qquad E(X)=n\frac rN`, "Muestra sin reemplazo de un lote finito.", MD, "md-5", "sin reemplazo lote defectuosos"],
-    ["disc", "Poisson", String.raw`P(X=x)=\frac{e^{-\lambda}\lambda^x}{x!}\qquad E(X)=\mathrm{Var}(X)=\lambda`, "Conteos en una ventana de tiempo, longitud o área.", MD, "md-6", "poisson llegadas conteo tasa"],
+    ["disc", "Poisson", String.raw`P(X=x)=\frac{e^{-\lambda}\lambda^x}{x!}\qquad E(X)=\mathrm{Var}(X)=\lambda`, "Conteos en una ventana de tiempo, longitud o área, con tasa constante.", MD, "md-6", "poisson llegadas conteo tasa"],
     ["disc", "Poisson como límite", String.raw`B(n,p)\approx P(\lambda),\quad \lambda=np`, "n grande y p pequeño.", MD, "md-6b", "aproximación binomial poisson"],
 
     ["cont", "Uniforme", String.raw`f(x)=\frac1{b-a}\qquad E(X)=\frac{a+b}2\qquad \mathrm{Var}(X)=\frac{(b-a)^2}{12}`, "Todos los intervalos de igual longitud son igual de probables.", MC, "mc-1", "uniforme rectangular"],
     ["cont", "Exponencial", String.raw`\begin{aligned}&f(t)=\lambda e^{-\lambda t},\quad P(T>t)=e^{-\lambda t}\\&E(T)=\frac1\lambda,\quad \mathrm{Var}(T)=\frac1{\lambda^2}\end{aligned}`, "Tiempo hasta el primer evento de Poisson.", MC, "mc-2", "exponencial espera falla"],
     ["cont", "Falta de memoria", String.raw`P(T>s+t\mid T>s)=P(T>t)`, "Propiedad de la exponencial: no envejece.", MC, "mc-2", "sin memoria exponencial"],
-    ["cont", "Gamma", String.raw`f(x)=\frac{x^{\alpha-1}e^{-x/\beta}}{\beta^\alpha\,\Gamma(\alpha)}\qquad E(X)=\alpha\beta\qquad \mathrm{Var}(X)=\alpha\beta^2`, "Tiempo hasta α eventos de Poisson; β = 1/λ.", MC, "mc-2g", "gamma erlang segunda llamada"],
-    ["cont", "Función gamma", String.raw`\Gamma(\alpha)=\int_0^\infty x^{\alpha-1}e^{-x}dx\qquad \Gamma(n)=(n-1)!\qquad \Gamma(\tfrac12)=\sqrt\pi`, "Aparece en las densidades gamma y Weibull.", MC, "mc-2g", "función gamma factorial"],
+    ["cont", "Gamma", String.raw`f(x)=\frac{x^{\alpha-1}e^{-x/\beta}}{\beta^\alpha\,\Gamma(\alpha)}\qquad E(X)=\alpha\beta\qquad \mathrm{Var}(X)=\alpha\beta^2`, "Con α entero: tiempo hasta α eventos de Poisson; β = 1/λ.", MC, "mc-2g", "gamma erlang segunda llamada"],
+    ["cont", "Función gamma", String.raw`\Gamma(\alpha)=\int_0^\infty x^{\alpha-1}e^{-x}dx\qquad \Gamma(n)=(n-1)!\qquad \Gamma(\tfrac12)=\sqrt\pi`, "Aparece en la densidad gamma y en la media de Weibull.", MC, "mc-2g", "función gamma factorial"],
     ["cont", "Weibull", String.raw`R(t)=P(T>t)=e^{-(\lambda t)^a}\qquad E(T)=\frac1\lambda\Gamma\!\left(1+\frac1a\right)`, "Vida de equipos cuya tasa de falla cambia con el tiempo.", MC, "mc-3", "weibull envejecimiento"],
     ["cont", "Normal", String.raw`f(x)=\frac{1}{\sigma\sqrt{2\pi}}e^{-\frac12\left(\frac{x-\mu}{\sigma}\right)^2}\qquad X\sim N(\mu,\sigma^2)`, "Campana simétrica; regla 68–95–99,7.", MC, "mc-4", "normal gauss campana"],
     ["cont", "Estandarizar", String.raw`Z=\frac{X-\mu}{\sigma}\sim N(0,1)\qquad P(X\le x)=\Phi\!\left(\frac{x-\mu}{\sigma}\right)`, "Llevar cualquier normal a la tabla Z.", MC, "mc-5", "tabla z estandarización"],
@@ -96,22 +97,23 @@
     ["desc", "Coeficiente de variación", String.raw`CV=\frac{s}{\bar x}\times100\,\%`, "Comparar dispersión de medidas en escalas distintas.", ED, "ed-6", "variación relativa"],
     ["desc", "Rango", String.raw`R=x_{\max}-x_{\min}`, "Distancia entre los extremos; depende solo de dos datos.", ED, "ed-d", "dispersion amplitud"],
 
-    ["muest", "Media muestral: centro y error estándar", String.raw`E(\bar X)=\mu\qquad \sigma_{\bar X}=\frac{\sigma}{\sqrt n}\qquad \mathrm{EE}(\bar X)=\frac{S}{\sqrt n}`, "El promedio oscila menos que un dato.", MI, "mi-2", "error estándar media muestral"],
-    ["muest", "Estandarizar la media", String.raw`Z=\frac{\bar X-\mu}{\sigma/\sqrt n}`, "Población normal, o n grande por el TCL.", MI, "mi-2", "z media muestral"],
-    ["muest", "Teorema central del límite", String.raw`\bar X\approx N\!\left(\mu,\frac{\sigma^2}{n}\right)\qquad \sum X_i\approx N(n\mu,\ n\sigma^2)`, "n grande, cualquier población con varianza finita.", MI, "mi-3", "tcl suma total normal"],
+    ["muest", "Media muestral: centro y error estándar", String.raw`E(\bar X)=\mu\qquad \sigma_{\bar X}=\frac{\sigma}{\sqrt n}\qquad \widehat{\mathrm{EE}}(\bar X)=\frac{S}{\sqrt n}`, "Observaciones independientes. El promedio oscila menos que un dato.", MI, "mi-2", "error estándar media muestral"],
+    ["muest", "Estandarizar la media", String.raw`Z=\frac{\bar X-\mu}{\sigma/\sqrt n}`, "Exacta con población normal; aproximada con n grande (TCL).", MI, "mi-2", "z media muestral"],
+    ["muest", "Teorema central del límite", String.raw`\bar X\approx N\!\left(\mu,\frac{\sigma^2}{n}\right)\qquad \sum X_i\approx N(n\mu,\ n\sigma^2)`, "n grande, observaciones independientes de cualquier población con varianza finita.", MI, "mi-3", "tcl suma total normal"],
     ["muest", "Proporción muestral", String.raw`\hat p=\frac Xn\qquad E(\hat p)=p\qquad \sigma_{\hat p}=\sqrt{\frac{p(1-p)}n}`, "Media de ceros y unos; normal si np y n(1 − p) son grandes.", MI, "mi-3", "proporción muestral p gorro"],
     ["muest", "Distribución t", String.raw`T=\frac{\bar X-\mu}{S/\sqrt n}\sim t_{n-1}`, "Población normal y σ desconocida.", MI, "mi-4", "student t grados libertad"],
     ["muest", "Varianza muestral y χ²", String.raw`\frac{(n-1)S^2}{\sigma^2}\sim\chi^2_{n-1}`, "Población normal; la χ² no es simétrica.", MI, "mi-7", "chi cuadrado varianza"],
     ["muest", "Error cuadrático medio", String.raw`\mathrm{ECM}(\hat\theta)=\mathrm{Var}(\hat\theta)+[E(\hat\theta)-\theta]^2`, "Comparar estimadores: varianza más sesgo al cuadrado.", MI, "mi-1", "ecm sesgo estimador"],
 
-    ["ic", "Media con σ conocida (o n grande)", String.raw`\bar x\pm z_{\alpha/2}\frac{\sigma}{\sqrt n}`, "z₀,₀₂₅ = 1,96; z₀,₀₀₅ = 2,576.", MI, "mi-4", "intervalo z media"],
-    ["ic", "Media con σ desconocida", String.raw`\bar x\pm t_{\alpha/2,\,n-1}\frac{s}{\sqrt n}`, "Muestra pequeña de población normal.", MI, "mi-4", "intervalo t media"],
+    ["ic", "Media con σ conocida", String.raw`\bar x\pm z_{\alpha/2}\frac{\sigma}{\sqrt n}`, "Exacto con población normal; aproximado con n grande. z₀,₀₂₅ = 1,96; z₀,₀₀₅ = 2,576.", MI, "mi-4", "intervalo z media"],
+    ["ic", "Media con σ desconocida", String.raw`\bar x\pm t_{\alpha/2,\,n-1}\frac{s}{\sqrt n}`, "Población normal y σ desconocida.", MI, "mi-4", "intervalo t media"],
     ["ic", "Proporción", String.raw`\hat p\pm z_{\alpha/2}\sqrt{\frac{\hat p(1-\hat p)}n}`, "np̂ y n(1 − p̂) grandes.", MI, "mi-7", "intervalo proporción"],
     ["ic", "Varianza", String.raw`\frac{(n-1)s^2}{\chi^2_{\alpha/2,\,n-1}}<\sigma^2<\frac{(n-1)s^2}{\chi^2_{1-\alpha/2,\,n-1}}`, "Población normal; no simétrico alrededor de s².", MI, "mi-7", "intervalo varianza chi"],
     ["ic", "Tamaño de muestra", String.raw`n\ge\left(\frac{z_{\alpha/2}\,\sigma}{E}\right)^2\qquad n\ge\frac{z_{\alpha/2}^2\,p(1-p)}{E^2}`, "E = margen deseado; con p desconocida, p = 0,5.", MI, "mi-6", "tamaño muestra margen error"],
-    ["ic", "Dos medias, σ conocidas o n grandes", String.raw`(\bar x_1-\bar x_2)\pm z_{\alpha/2}\sqrt{\frac{\sigma_1^2}{n_1}+\frac{\sigma_2^2}{n_2}}`, "Si contiene el 0, no hay evidencia de diferencia.", MI, "mi-8", "diferencia medias z"],
-    ["ic", "Dos medias, varianzas iguales", String.raw`\begin{aligned}&(\bar x_1-\bar x_2)\pm t_{\alpha/2,\,n_1+n_2-2}\,s_p\sqrt{\frac1{n_1}+\frac1{n_2}}\\&s_p^2=\frac{(n_1-1)s_1^2+(n_2-1)s_2^2}{n_1+n_2-2}\end{aligned}`, "Varianza combinada (ponderada por grados de libertad).", MI, "mi-8", "pooled combinada"],
-    ["ic", "Dos medias, varianzas distintas (Welch)", String.raw`(\bar x_A-\bar x_B)\pm t_{\alpha/2,\nu}\sqrt{\frac{s_A^2}{n_A}+\frac{s_B^2}{n_B}}`, "ν por la fórmula de Welch–Satterthwaite.", MI, "mi-8", "welch varianzas distintas"],
+    ["ic", "Dos medias, σ conocidas", String.raw`(\bar x_1-\bar x_2)\pm z_{\alpha/2}\sqrt{\frac{\sigma_1^2}{n_1}+\frac{\sigma_2^2}{n_2}}`, "Muestras independientes. Si contiene el 0, no hay evidencia de diferencia.", MI, "mi-8", "diferencia medias z"],
+    ["ic", "Dos medias, n grandes y σ estimadas", String.raw`(\bar x_1-\bar x_2)\pm z_{\alpha/2}\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}}`, "Muestras grandes: s₁ y s₂ reemplazan a σ₁ y σ₂ (aproximado).", MI, "mi-8", "diferencia medias z aproximación"],
+    ["ic", "Dos medias, varianzas iguales", String.raw`\begin{aligned}&(\bar x_1-\bar x_2)\pm t_{\alpha/2,\,n_1+n_2-2}\,s_p\sqrt{\frac1{n_1}+\frac1{n_2}}\\&s_p^2=\frac{(n_1-1)s_1^2+(n_2-1)s_2^2}{n_1+n_2-2}\end{aligned}`, "Poblaciones normales con varianzas iguales; sₚ² las combina.", MI, "mi-8", "pooled combinada"],
+    ["ic", "Dos medias, varianzas distintas (Welch)", String.raw`(\bar x_A-\bar x_B)\pm t_{\alpha/2,\nu}\sqrt{\frac{s_A^2}{n_A}+\frac{s_B^2}{n_B}}`, "Poblaciones normales, varianzas distintas; ν por Welch–Satterthwaite.", MI, "mi-8", "welch varianzas distintas"],
     ["ic", "Datos pareados", String.raw`\bar d\pm t_{\alpha/2,\,n-1}\frac{s_d}{\sqrt n}`, "Mismas unidades medidas dos veces: trabajar con las diferencias.", MI, "mi-8", "pareados diferencias"],
 
     ["reg", "Modelo de regresión lineal", String.raw`Y_i=\beta_0+\beta_1x_i+\varepsilon_i,\qquad \varepsilon_i\sim N(0,\sigma^2)`, "Predicción de Y a partir de x.", RC, "rc-1", "modelo lineal"],
@@ -208,7 +210,7 @@
       if (i >= UNIDADES.length) { if (vista === "temas") pintar(); return; }
       const [u] = UNIDADES[i];
       const s = document.createElement("script");
-      s.src = `${u}.js`;
+      s.src = `${u}.js${version}`;
       s.onload = () => {
         const c = window.COURSE;
         if (c && c.modules) c.modules.forEach((m) => {

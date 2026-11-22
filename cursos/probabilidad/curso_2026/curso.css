@@ -673,3 +673,4 @@ body.reading-mode .ej-pasos{border-left:0;padding-left:0}
 .slide-foot>span{display:none}
 .index-otras{display:block;margin:0 35px 14px;font:600 17px var(--sans);color:var(--green)}
 .slide-foot{min-height:18px}
+body.presenting .chrome-firma{position:absolute;right:5.25%;bottom:9px;font-size:13px}

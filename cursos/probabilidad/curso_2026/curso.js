@@ -351,19 +351,29 @@
     const sideGraphic = lateral ? [...lateral.querySelectorAll("svg")].find(notMath) || null : null;
     const bodyGraphic = body ? [...body.querySelectorAll("svg")].find(notMath) || null : null;
     if (sideGraphic) { const extraSide = overflow(sideBlocks()); if (extraSide > 0) shrink(sideGraphic, extraSide); }
-    let extra = overflow(proseBlocks());
-    if (extra > 0 && bodyGraphic) { shrink(bodyGraphic, extra); extra = overflow(proseBlocks()); }
-    const reduce = (node, floor) => {
+    const reduce = (node, floor, blocks = proseBlocks) => {
       if (!node) return;
       let size = parseFloat(getComputedStyle(node).fontSize);
-      while (extra > 0 && size > floor) { size -= 2; node.style.fontSize = `${size}px`; extra = overflow(proseBlocks()); }
+      while (size > floor && overflow(blocks()) > 0) {
+        size = Math.max(floor, size - 2);
+        node.style.fontSize = `${size}px`;
+      }
     };
-    // En un ejemplo de dos columnas se reduce solo la columna de pasos; el enunciado conserva su tamaño.
     const columnaPasos = body ? body.querySelector(":scope > .ej-pasos") : null;
     if (columnaPasos) {
-      reduce(columnaPasos, 17);
-      reduce(body.querySelector(":scope > .ej-enunciado"), 20);
-    } else if (body && body.children.length) reduce(body, 22);
+      const enunciado = body.querySelector(":scope > .ej-enunciado");
+      const bloquesIzquierda = () => [...enunciado.children];
+      const excesoIzquierda = overflow(bloquesIzquierda());
+      if (bodyGraphic && enunciado.contains(bodyGraphic) && excesoIzquierda > 0) shrink(bodyGraphic, excesoIzquierda);
+      reduce(enunciado, 20, bloquesIzquierda);
+      // La columna izquierda puede contener una figura alta. Su altura no
+      // determina el cuerpo de letra necesario para los pasos de la derecha.
+      reduce(columnaPasos, 17, () => [...columnaPasos.children, ...columnaPasos.querySelectorAll("ol > li")]);
+    } else if (body && body.children.length) {
+      const extra = overflow(proseBlocks());
+      if (bodyGraphic && extra > 0) shrink(bodyGraphic, extra);
+      reduce(body, 22);
+    }
     reduce(reading, 24);
     reduce(formula, 26);
     section.classList.remove("fitting");
@@ -410,7 +420,7 @@
     });
     const buckets = [...[...indexed.keys()].sort((a, b) => a - b).map((idx) => indexed.get(idx)), ...sequential];
     return buckets.map((nodes, revealIndex) => {
-      const proseNodes = nodes.filter((n) => !n.matches("td, th"));
+      const proseNodes = nodes.filter((n) => !n.matches("td, th") && !n.closest("svg"));
       const sampleNodes = proseNodes.length ? proseNodes : nodes;
       const plainText = (node) => {
         const clone = node.cloneNode(true);

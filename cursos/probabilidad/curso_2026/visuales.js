@@ -3686,8 +3686,8 @@
     const controls = el("div", "widget-controls slider-control");
     const aCtl = makeSlider(controls, "Escala, a", "0.5", "3.0", "0.5", "2.0");
     const bCtl = makeSlider(controls, "Desplazamiento, b", "-4", "4", "1", "0");
-    const bPista = controlButton("Pista libre (3X − 2)", false);
-    controls.appendChild(bPista);
+    const bTransformacion = controlButton("Transformación 3X − 2", false);
+    controls.appendChild(bTransformacion);
     const plot = makeSvg("0 0 640 305", "Efecto de la transformación lineal Y = aX + b en media y dispersión");
     const result = el("p", "widget-result");
     widget.append(controls, plot, result); host.appendChild(widget);
@@ -3696,7 +3696,7 @@
     function redraw() {
       const a = Number(aCtl.input.value), b = Number(bCtl.input.value);
       aCtl.output.textContent = fmt(a, 1); bCtl.output.textContent = fmtSigned(b, 0);
-      bPista.classList.toggle("is-active", Math.abs(a - 3) < 0.01 && Math.abs(b + 2) < 0.01);
+      bTransformacion.classList.toggle("is-active", Math.abs(a - 3) < 0.01 && Math.abs(b + 2) < 0.01);
       const muY = 2 * a + b, sY = Math.abs(a), left = 46, right = 608, top = 34, bottom = 260, lo = -6, hi = 14, ymax = 0.85;
       const X = (v) => left + (v - lo) / (hi - lo) * (right - left), Y = (v) => bottom - Math.min(v, ymax) / ymax * (bottom - top);
       plot.replaceChildren();
@@ -3713,9 +3713,9 @@
       add(plot, "text", { x: Math.max(left + 70, Math.min(right - 70, X(muY))), y: 20, "text-anchor": "middle", "font-size": 16, "font-weight": 700, fill: K_PAL.verde }, `Y = ${fmt(a, 1)}X ${b >= 0 ? "+" : "−"} ${fmt(Math.abs(b), 0)}`);
       [-4, 0, 4, 8, 12].forEach((tk) => add(plot, "text", { x: X(tk).toFixed(1), y: bottom + 22, "text-anchor": "middle", class: "v-tick" }, fmtSigned(tk, 0)));
       add(plot, "text", { x: (left + right) / 2, y: 296, "text-anchor": "middle", class: "v-axis-label" }, "ejes fijos: b traslada la curva; a la estira");
-      result.textContent = `E(Y) = ${fmt(a, 1)}(2) ${b >= 0 ? "+" : "−"} ${fmt(Math.abs(b), 0)} = ${fmtSigned(muY, 1)} · Var(Y) = (${fmt(a, 1)})²(1) = ${fmt(a * a, 2)} · σ_Y = ${fmt(sY, 1)}`;
+      result.textContent = `Curvas ilustrativas: X normal con E(X) = 2 y Var(X) = 1 · E(Y) = ${fmt(a, 1)}(2) ${b >= 0 ? "+" : "−"} ${fmt(Math.abs(b), 0)} = ${fmtSigned(muY, 1)} · Var(Y) = (${fmt(a, 1)})²(1) = ${fmt(a * a, 2)} · σ_Y = ${fmt(sY, 1)}`;
     }
-    bPista.addEventListener("click", () => { aCtl.input.value = "3.0"; bCtl.input.value = "-2"; redraw(); });
+    bTransformacion.addEventListener("click", () => { aCtl.input.value = "3.0"; bCtl.input.value = "-2"; redraw(); });
     [aCtl, bCtl].forEach((c) => c.input.addEventListener("input", redraw));
     redraw();
   }

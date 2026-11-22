@@ -184,6 +184,30 @@
     return outer;
   }
 
+  /* Separa los incisos escritos en línea («… a) … b) …») en una lista, un renglón por inciso.
+     Solo cuenta marcas fuera de las fórmulas y en orden a, b, c… */
+  function partirIncisos(node) {
+    if (node.querySelector(".incisos")) return;
+    const html = node.innerHTML;
+    const dentroDeFormula = (i) => {
+      const antes = html.slice(0, i);
+      const abre = (antes.match(/\\\(|\\\[/g) || []).length, cierra = (antes.match(/\\\)|\\\]/g) || []).length;
+      return abre > cierra;
+    };
+    const re = /(^|[\s>:.;,?¿])([a-h])\)\s+/g;
+    const marcas = [];
+    let letra = 97, m;
+    while ((m = re.exec(html))) {
+      if (m[2].charCodeAt(0) === letra && !dentroDeFormula(m.index)) { marcas.push({ desde: m.index + m[1].length, hasta: m.index + m[0].length }); letra++; }
+    }
+    if (marcas.length < 2) return;
+    const cabeza = html.slice(0, marcas[0].desde).trim();
+    const items = marcas.map((mk, i) => html.slice(mk.hasta, i + 1 < marcas.length ? marcas[i + 1].desde : html.length)
+      .trim().replace(/\s*[;,]?\s*(?:\by\b|\bo\b)?\s*$/, "").replace(/[;,]$/, ""));
+    const cuerpo = cabeza.replace(/^<p>/, "").replace(/<\/p>$/, "");
+    node.innerHTML = (cuerpo ? `<p>${cuerpo}</p>` : "") + `<ol class="incisos">${items.map((x) => `<li>${x}</li>`).join("")}</ol>`;
+  }
+
   /* Una diapositiva principal o uno de sus complementos (los que viven abajo). */
   function buildFrame(entry, data, asReading, sub) {
     const outer = el(asReading ? "article" : "section", (asReading ? "reading-sheet" : "course-slide") + " content-slide" + (entry.isExample ? " example-slide" : ""));
@@ -201,6 +225,22 @@
     body.innerHTML = data.body || "";
     // En los ejemplos (complementos), cada paso aparece al pulsar →; en Lectura se ve todo.
     if (!asReading) body.querySelectorAll("ol.pasos > li").forEach((li) => li.classList.add("fragment"));
+    const enunciado = body.querySelector(":scope > .enunciado");
+    const pasosLista = body.querySelector(":scope > ol.pasos");
+    let columnaEnunciado = null;
+    if (entry.isExample && enunciado) {
+      partirIncisos(enunciado);
+      if (pasosLista) {
+        // Enunciado fijo a la izquierda; la solución se escribe a la derecha.
+        columnaEnunciado = el("div", "ej-enunciado");
+        const columnaPasos = el("div", "ej-pasos");
+        columnaEnunciado.appendChild(enunciado);
+        [...body.childNodes].forEach((n) => columnaPasos.appendChild(n));
+        body.append(columnaEnunciado, columnaPasos);
+        body.classList.add("ej-grid");
+        outer.classList.add("has-ej-grid");
+      }
+    }
     prose.appendChild(body);
     addFormula(prose, data.formula);
     if (data.lectura) {
@@ -216,7 +256,12 @@
     }
     renderInlineMath(prose);
     content.appendChild(prose);
-    if (data.figure) {
+    if (data.figure && columnaEnunciado) {
+      const host = el("div", "figure-host ej-figura");
+      host.innerHTML = data.figure;
+      renderInlineMath(host);
+      columnaEnunciado.appendChild(host);
+    } else if (data.figure) {
       const host = el("div", "visual-host figure-host");
       host.innerHTML = data.figure;
       renderInlineMath(host);
@@ -227,11 +272,11 @@
       const host = el("div", `visual-host visual-${data.visual}`);
       host.setAttribute("aria-label", `Visual interactivo: ${data.visual}`);
       content.appendChild(host);
-      outer.classList.add("has-visual");
+      outer.classList.add(data.visualAncho ? "has-full-visual" : "has-visual");
       visuales.mount(data.visual, host);
     }
     const footer = el("footer", "slide-foot");
-    footer.append(el("span", "slide-foot-author", DOCENTE), el("span", "slide-foot-index", entry.isRefs ? "" : `${entry.index}`));
+
     frame.append(header, content, footer);
     outer.appendChild(frame);
     return outer;
@@ -258,7 +303,7 @@
     const graphics = [...section.querySelectorAll(".slide-body svg, .widget-svg, .figure-host svg")].filter(notMath);
     section.classList.add("fitting");
     graphics.forEach((g) => { g.style.height = ""; g.style.maxHeight = ""; });
-    [body, formula, reading].forEach((node) => { if (node) node.style.fontSize = ""; });
+    [body, formula, reading, section.querySelector(".ej-pasos"), section.querySelector(".ej-enunciado")].forEach((node) => { if (node) node.style.fontSize = ""; });
     if (formula) {
       const bases = formula.querySelectorAll(".katex-html .base");
       if (bases.length) {
@@ -268,9 +313,18 @@
         if (width > room) formula.style.fontSize = `${Math.floor(parseFloat(getComputedStyle(formula).fontSize) * room / width)}px`;
       }
     }
+    // Ecuaciones de los pasos y del enunciado: si una no cabe a lo ancho de su renglón, se reduce esa sola.
+    section.querySelectorAll(".slide-body .katex-display").forEach((kd) => { kd.style.fontSize = ""; });
+    section.querySelectorAll(".slide-body .katex-display").forEach((kd) => {
+      const room = kd.parentElement ? kd.parentElement.getBoundingClientRect().width : 0;
+      let izq = Infinity, der = -Infinity;
+      kd.querySelectorAll(".katex-html > .base, .katex-html > .tag").forEach((bs) => { const r = bs.getBoundingClientRect(); if (r.width) { izq = Math.min(izq, r.left); der = Math.max(der, r.right); } });
+      const ancho = der > izq ? der - izq : 0;
+      if (room && ancho > room) kd.style.fontSize = `${Math.max(0.62, room / ancho * 0.98).toFixed(3)}em`;
+    });
     // Cada columna se ajusta por separado: la gráfica solo se reduce si es su columna la que no cabe.
     const lateral = section.querySelector(".visual-host");
-    const proseBlocks = () => [...prose.children, ...(body ? body.children : [])];
+    const proseBlocks = () => [...prose.children, ...(body ? body.children : []), ...(body ? body.querySelectorAll(".ej-enunciado > *, .ej-pasos > *, .ej-pasos > ol > li") : [])];
     const sideBlocks = () => (lateral ? [...lateral.querySelectorAll(":scope > *, .widget > *")] : []);
     const overflow = (nodes) => {
       const limit = foot.getBoundingClientRect().top - 16 * scale;
@@ -278,6 +332,18 @@
       nodes.forEach((node) => { const r = node.getBoundingClientRect(); if (r.height > 0 && r.bottom > bottom) bottom = r.bottom; });
       return (bottom - limit) / scale;
     };
+    if (section.classList.contains("has-full-visual")) {
+      const topSvg = lateral ? [...lateral.querySelectorAll(".widget > svg.widget-svg")].find(notMath) || null : null;
+      if (topSvg) {
+        const extraTop = overflow([topSvg, ...sideBlocks()]);
+        if (extraTop > 0) {
+          const h = Math.max(190, topSvg.getBoundingClientRect().height / scale - extraTop);
+          topSvg.style.height = `${h}px`; topSvg.style.maxHeight = `${h}px`;
+        }
+      }
+      section.classList.remove("fitting");
+      return;
+    }
     const shrink = (g, extra) => {
       const height = Math.max(170, g.getBoundingClientRect().height / scale - extra);
       g.style.height = `${height}px`; g.style.maxHeight = `${height}px`;
@@ -292,7 +358,12 @@
       let size = parseFloat(getComputedStyle(node).fontSize);
       while (extra > 0 && size > floor) { size -= 2; node.style.fontSize = `${size}px`; extra = overflow(proseBlocks()); }
     };
-    if (body && body.children.length) reduce(body, 24);
+    // En un ejemplo de dos columnas se reduce solo la columna de pasos; el enunciado conserva su tamaño.
+    const columnaPasos = body ? body.querySelector(":scope > .ej-pasos") : null;
+    if (columnaPasos) {
+      reduce(columnaPasos, 17);
+      reduce(body.querySelector(":scope > .ej-enunciado"), 20);
+    } else if (body && body.children.length) reduce(body, 22);
     reduce(reading, 24);
     reduce(formula, 26);
     section.classList.remove("fitting");
@@ -319,7 +390,62 @@
     } else if (R()) R().slide(clamped, v || 0, -1);
   }
 
-  /* ---------- Avance: las flechas laterales no entran a los complementos; ↓ sí. ---------- */
+  /* ---------- Paso a paso y avance ---------- */
+  function slideStepGroups(slide) {
+    if (!slide) return [];
+    const raw = [...slide.querySelectorAll(".fragment:not(.disabled)")];
+    if (!raw.length) return [];
+    const indexed = new Map();
+    const sequential = [];
+    raw.forEach((node) => {
+      if (node.hasAttribute("data-fragment-index")) {
+        const idx = parseInt(node.getAttribute("data-fragment-index"), 10);
+        if (!Number.isNaN(idx) && idx >= 0) {
+          if (!indexed.has(idx)) indexed.set(idx, []);
+          indexed.get(idx).push(node);
+          return;
+        }
+      }
+      sequential.push([node]);
+    });
+    const buckets = [...[...indexed.keys()].sort((a, b) => a - b).map((idx) => indexed.get(idx)), ...sequential];
+    return buckets.map((nodes, revealIndex) => {
+      const proseNodes = nodes.filter((n) => !n.matches("td, th"));
+      const sampleNodes = proseNodes.length ? proseNodes : nodes;
+      const plainText = (node) => {
+        const clone = node.cloneNode(true);
+        clone.querySelectorAll(".katex-mathml, style").forEach((m) => m.remove());
+        return (clone.textContent || "").replace(/\s+/g, " ").trim();
+      };
+      const cleanText = sampleNodes.map(plainText).filter(Boolean).join(" · ");
+      const label = cleanText.length > 74 ? cleanText.slice(0, 71).trimEnd() + "…" : (cleanText || `Paso ${revealIndex + 1}`);
+      const html = proseNodes.length
+        ? proseNodes.map((n) => n.innerHTML).join("<br>")
+        : `<p><strong>Tabla:</strong> ${sampleNodes.slice(0, 4).map((n) => n.textContent.trim()).filter(Boolean).join(", ")}${sampleNodes.length > 4 ? "…" : ""}</p>`;
+      return { revealIndex, nodes, label, html };
+    });
+  }
+  function stepState(slide) {
+    const groups = slideStepGroups(slide);
+    let current = 0;
+    groups.forEach((g, idx) => { if (g.nodes.some((n) => n.classList.contains("visible"))) current = idx + 1; });
+    return { total: groups.length, current, groups };
+  }
+  function jumpStep(stepNum) {
+    if (readingMode || !R()) return;
+    const st = stepState(R().getCurrentSlide());
+    if (!st.total) return;
+    const clamped = Math.max(0, Math.min(st.total, stepNum));
+    const changed = typeof R().navigateFragment === "function" ? R().navigateFragment(clamped - 1) : (R().slide(position().h, position().v, clamped - 1), true);
+    if (!changed) updateChrome();
+  }
+  function toggleAllSteps() {
+    if (readingMode || !R()) return;
+    const st = stepState(R().getCurrentSlide());
+    if (st.total) jumpStep(st.current < st.total ? st.total : 0);
+  }
+  function resetSteps() { jumpStep(0); }
+
   function advance() {
     const slide = R().getCurrentSlide();
     if (slide && slide.querySelector(".fragment:not(.visible)")) { R().nextFragment(); return; }
@@ -388,37 +514,75 @@
   /* ---------- Guía docente: el texto completo vive en otra ventana, sincronizada con la proyectada. ---------- */
   const VISUAL_NOTES = {
     placas: "Conteos de la tabla: 80 ambas características, 9 solo rayadura alta, 6 solo impacto alto y 5 ninguna.",
+    venn_ops: "Muestra en el espacio muestral S las operaciones básicas: unión, intersección, complemento, diferencia, ley de De Morgan y eventos excluyentes.",
+    venn_prob: "Barra proporcional del espacio muestral S: al mover P(A), P(B) y P(A ∩ B) se observa cómo P(A | B) cambia el denominador a B y cuándo ocurre independencia.",
+    bayes_tres: "Árbol de tres causas A₁, A₂, A₃ con grosores proporcionales a la probabilidad. Permite ver cómo cambia cada probabilidad posterior P(Aᵢ | D) al variar tasas base o defectos.",
+    adivina_quien: "Juego en dos modos. Clásico (certeza 100 %): cada pregunta parte el espacio muestral y P(secreto | B) = 1/|B|. Bayesiano (testigo imperfecto con fiabilidad q): ninguna carta se descarta del todo; cada pista multiplica las probabilidades por q o 1 − q y renormaliza.",
     densidad: "La probabilidad es área bajo la densidad: altura 0,1 multiplicada por ancho b.",
-    medias: "La línea roja marca E(X̄) = 3,5. La dispersión teórica es el error estándar σ / √n; el histograma muestra M = 1.000 muestras simuladas.",
+    medias: "Muestra el teorema central del límite para cuatro poblaciones origen (dado uniforme, exponencial asimétrica, bimodal en U y Bernoulli), comparando el histograma de 1.000 medias con la campana N(μ, σ²/n).",
     intervalos: "Cada segmento es una muestra independiente. El 95 % es cobertura del procedimiento bajo el modelo; el conteo de 40 cambia con la semilla. Los intervalos que no contienen μ van en línea discontinua.",
     confiabilidad: "Las expresiones suponen funcionamiento independiente de los dos componentes.",
-    binomial: "Las barras son P(X = x) para X ~ B(n, p). La línea discontinua marca E(X) = np. Para 0 < p < 1 fijo, aumentar n reduce la asimetría estandarizada; con p = 0,5 la distribución ya es simétrica. El conteo puede dispersarse más mientras X/n se concentra.",
-    normal: "El área sombreada es P(X ≤ x) = Φ((x − μ)/σ). Mover μ desplaza la campana; subir σ la ensancha y la baja, porque el área total sigue siendo 1.",
+    binomial: "Las barras son P(X = x) para X ~ B(n, p). La línea discontinua marca E(X) = np. El botón opcional superpone la campana normal N(np, np(1 − p)) para ver cómo emerge la simetría al crecer n.",
+    normal: "Explorador de la normal general con ejes sincronizados en X y en Z = (X − μ)/σ: permite calcular colas, intervalos y cuantiles inversos en ejemplos del curso.",
     histograma: "Los mismos 20 resultados ilustrativos, agrupados en clases de distinto ancho. Las clases estrechas pueden mostrar huecos sensibles a esta muestra pequeña; las anchas ocultan detalles. Comparar representaciones sin atribuir cada hueco a la población.",
     atipico: "Deslizar el dato 20 muestra cómo la media persigue al extremo mientras la mediana y la media recortada permanecen estables.",
     pvalor: "Mover x̄ desplaza t = (x̄ − 28)/(S/√n) y cambia el área roja bajo la t con 19 g. l.",
     dosmedias: "El IC de Welch estima μA − μB bajo independencia. Al desplazar B cambia la diferencia estimada y puede entrar cero en el intervalo. Contener cero no demuestra igualdad; la anchura muestra la precisión disponible.",
-    regresion: "Cada segmento rojo es un residuo yᵢ − ŷᵢ. Cualquier cambio respecto a b₁ y b₀ de mínimos cuadrados hace crecer Q = Σ(yᵢ − ŷᵢ)².",
+    regresion: "Cada segmento rojo es un residuo yᵢ − ŷᵢ y puede mostrarse su área cuadrada eᵢ². Cualquier cambio respecto a b₁ y b₀ de mínimos cuadrados hace crecer la suma de cuadrados Q = Σeᵢ².",
     weibull: "Con a < 1 la tasa de falla decrece; con a = 1 es constante (exponencial); con a > 1 crece. Esas formas pueden representar distintos patrones de vida útil, pero no identifican por sí solas la causa física. λ es inversa de escala: la escala temporal es 1/λ.",
     union: "Paso a paso: sumar P(A) + P(B) cuenta dos veces el traslape A ∩ B; restarlo corrige la suma. Luego se ilustran las leyes de De Morgan.",
     conteo: "Comparación entre n!, permutaciones (importa el orden) y combinaciones (se divide entre k! para agrupar los reordenamientos equivalentes).",
     arbol_bayes: "El árbol compara dos líneas de producción con 30 % y 70 % de los envases. Las ramas se ponderan por proporciones de envases, no por tiempo de operación. El segundo caso es un filtro de correo: prevalencia de spam 1 %, sensibilidad 99 % y especificidad 99 %. El 50 % de las alertas corresponde a spam bajo esos supuestos.",
     tiros_binomial: "Cada tiro libre es un ensayo Bernoulli con acierto p. Bajo independencia y p constante, n = 3 produce 8 secuencias, agrupadas por cantidad de aciertos X. Las barras conservan las probabilidades exactas aunque alguna resulte muy pequeña.",
     momentos: "Las pesas verdes son proporcionales a las probabilidades y el apoyo está en E(X). Las barras de contribuciones muestran p(x)(x − μ)²; su escala vertical se ajusta en cada distribución y no sirve para comparar alturas entre configuraciones.",
-    retorno: "La excedencia significa superar el umbral. T = 1/p es el tiempo medio bajo el modelo anual estacionario e independiente, no una periodicidad ni una probabilidad de daño."
+    retorno: "La excedencia significa superar el umbral. T = 1/p es el tiempo medio bajo el modelo anual estacionario e independiente, no una periodicidad ni una probabilidad de daño.",
+    promedio_largo: "Ley de los grandes números al lanzar un dado: el promedio acumulado converge al valor esperado teórico E(X) = 3,5.",
+    poisson: "Distribución de Poisson P(λ): al aumentar la tasa promedio λ, la distribución se desplaza a la derecha y se vuelve más simétrica alrededor de E(X) = λ.",
+    sesgo_varianza: "Simulación de 2.000 muestras normales de tamaño n: muestra cuánta varianza se subestima en promedio al dividir entre n frente a n − 1.",
+    primer_binomial: "Inspirado en el canal Primer: simulación animada de rondas de tiros libres con probabilidad p que construyen el histograma sobre la distribución teórica B(n, p), más el árbol de 8 rutas para n = 3.",
+    hiper_vs_binom: "Urna con N elementos y r éxitos sin reemplazo frente a binomial B(n, r/N): comparten media n(r/N), pero la hipergeométrica tiene varianza menor por el factor de corrección finita (N − n)/(N − 1).",
+    poisson_limite: "Muestra la convergencia de la binomial B(n, λ/n) hacia Poisson P(λ) a medida que aumenta n manteniendo fijo np = λ.",
+    exponencial_memoria: "Ilustra la propiedad de falta de memoria: al condicionar en T > s, renormalizar la cola derecha produce exactamente la misma curva exponencial desplazada desde t = 0.",
+    normal_significado: "Con ejes fijos se distinguen dos hechos clave: μ traslada la curva, σ la ensancha manteniendo área 1, y al colapsar el ancho a 0 el área tiende a cero (P(X = a) = 0) aunque f(μ) > 0.",
+    tabla_z: "Tabla normal estándar acumulada Φ(z) interactiva conectada con la gráfica: pulsar una celda o mover el deslizador ubica fila y columna; en modo inverso resalta la celda más cercana al área buscada.",
+    normal_aprox_binom: "Compara barras binomiales con el área normal continua y resalta en ocre la franja de corrección de continuidad ±0,5.",
+    caja_interactiva: "Permite desplazar el mayor valor de los 20 cilindros para ver cómo Q₁, Q₂ y Q₃ permanecen estables y los bigotes se detienen en el último dato dentro de la valla Q₃ + 1,5·RIC antes de marcar el atípico.",
+    t_vs_z: "Compara las colas de la distribución t de Student con ν = n − 1 grados de libertad frente a la normal estándar Z y el ensanchamiento porcentual del intervalo del 95 %.",
+    bernoulli_ensayo: "Simulador de un ensayo Bernoulli X ~ B(1, p) con historial de resultados, comparación empírica y parábola de varianza p(1 − p) máxima en p = 0,5.",
+    geometrica_espera: "Muestra el conteo de intentos hasta el primer éxito (r = 1, geométrica) o el éxito número r (binomial negativa) y marca la media teórica E(X) = r/p.",
+    selector_discreto: "Árbol de decisión interactivo en tres preguntas para distinguir Binomial, Geométrica/Binomial negativa, Hipergeométrica y Poisson según el mecanismo de observación.",
+    uniforme_area: "Rectángulo de densidad uniforme U(a, b) donde el área en [c, d] equivale literalmente a base por altura (d − c)/(b − a).",
+    gamma_espera: "Densidad Gamma(α, β = 1/λ) como suma de α esperas exponenciales independientes: con α = 1 coincide con la exponencial.",
+    suma_normales: "Compara la diferencia M = R − C (margen estructural) frente a la suma S = R + C: las medias se restan o suman según el signo, mientras la varianza total siempre suma σ_R² + σ_C².",
+    derivadas_normal: "Explorador de las distribuciones χ², t de Student y F de Fisher según los grados de libertad ν, mostrando soporte, simetría y aproximación a la normal.",
+    desviaciones_cuadrado: "Recorrido en tres pasos sobre el conjunto B = {22, 26, 30, 34, 38}: cancelación de desviaciones lineales, áreas cuadradas (xᵢ − x̄)² y varianza s² frente a s.",
+    forma_asimetria: "Compara distribuciones simétrica, asimétrica positiva, asimétrica negativa y de colas pesadas indicando posición relativa de moda, mediana y media.",
+    tamano_muestra: "Curva L(n) = 2·t·s₀/√n frente al umbral de amplitud 2E: ilustra por qué reducir a la mitad el margen de error exige multiplicar n por 4.",
+    ic_chi2_asimetria: "Densidad asimétrica χ²_{n−1} con las dos colas críticas de 2,5 % conectadas al intervalo de confianza de σ², explicando por qué el mayor cuantil divide al límite inferior.",
+    arbol_conteo: "Construcción etapa por etapa del principio multiplicativo mostrando cómo se multiplican las ramas en cada decisión.",
+    pmf_cdf_escalera: "Conecta simultáneamente los saltos de la función de probabilidad p(x) con los escalones acumulados F(x) = P(X ≤ x).",
+    lineal_ax_b: "Compara X frente a Y = aX + b en ejes fijos: b desplaza sin dispersar; a estira multiplicando la desviación estándar por |a| y la varianza por a².",
+    correlacion_nube: "Diagrama de dispersión controlado por r más un contraejemplo parabólico con r = 0 pero relación exacta no lineal."
   };
   function guideData() {
     const { h, v } = position();
     const entry = entries[h] || entries[0], next = entries[h + 1];
-    if (!entry.slide) return { counter: "Portada", section: "", title: course.title, notes: "", visual: "", codigo: "", extras: [], source: "", next: next ? next.slide.title : "", v: 0, h };
-    const extras = [], data = entry.slide;
+    let nextLabel = next && next.slide ? next.slide.title : "Fin del tema";
+    if (next && next.slide) {
+      const nextEl = !readingMode && R() && typeof R().getSlide === "function" ? R().getSlide(h + 1) : null;
+      const nextSteps = nextEl ? slideStepGroups(nextEl).length : 0;
+      if (nextSteps) nextLabel += ` (${nextSteps} pasos)`;
+      else if (next.slide.visual) nextLabel += " (interactivo)";
+    }
+    if (!entry.slide) return { counter: "Portada", section: "", title: course.title, notes: "", visual: "", codigo: "", source: "", next: nextLabel, v: 0, h };
+    const data = entry.slide;
     return {
       counter: `${h} / ${entries.length - 1}`,
       section: sectionName(entry.module.title), title: data.title,
       notes: data.notes || "Sin notas adicionales para esta diapositiva.",
       visual: entry.slide.visual ? (VISUAL_NOTES[entry.slide.visual] || "") : "",
       codigo: formatCodigo(data.codigo),
-      extras, source: data.source || entry.slide.source || "", next: next && next.slide ? next.slide.title : "Fin del tema", v, h
+      source: data.source || entry.slide.source || "", next: nextLabel, v, h
     };
   }
 
@@ -430,17 +594,24 @@
       <div class="guide-head"><span id="g-counter" class="guide-counter"></span><span class="guide-clock"><span id="g-clock"></span><button type="button" id="g-timer" title="Cronómetro de la clase. Clic para reiniciar">00:00</button></span></div>
       <p id="g-section" class="guide-section"></p>
       <h2 id="g-title" class="guide-title"></h2>
+      <div class="guide-block" id="g-steps-block">
+        <div class="guide-steps-head"><h3>Paso a paso en vivo</h3><span id="g-step-badge" class="guide-step-badge"></span></div>
+        <div class="guide-step-actions"><button type="button" id="g-step-all">Mostrar todo (T)</button><button type="button" id="g-step-reset">Reiniciar (R)</button></div>
+        <div id="g-step-next" class="guide-step-preview"></div>
+        <div id="g-step-list" class="guide-step-list"></div>
+      </div>
       <div class="guide-block"><h3>Qué explicar</h3><p id="g-notes" class="guide-notes"></p></div>
       <div class="guide-block" id="g-visual-block"><h3>Sobre el visual</h3><p id="g-visual"></p></div>
       <div class="guide-block" id="g-code-block"><h3>Python / Excel</h3><p id="g-code" class="guide-code"></p></div>
-      <div class="guide-block" id="g-extras-block"><h3>Abajo (ejemplo o deducción)</h3><div id="g-extras" class="guide-extras"></div></div>
       <div class="guide-block"><h3>Sigue</h3><p id="g-next"></p></div>
       <div class="guide-block"><h3>Fuente</h3><p id="g-source" class="guide-source"></p></div>
       <div class="guide-controls"><button type="button" id="g-prev">Anterior</button><button type="button" id="g-next-btn">Siguiente</button><label>Ir a <input id="g-jump" type="number" min="1" inputmode="numeric" aria-label="Número de diapositiva"></label></div>
-      <p class="guide-keys">Flechas laterales: avanzar y retroceder, paso a paso cuando hay pasos. Número y Enter: saltar. Los controles y deslizadores se sincronizan con la ventana proyectada.</p>`;
+      <p class="guide-keys">Flechas: avanzar paso a paso. T: mostrar todos los pasos; R: reiniciar pasos; número y Enter: saltar. Controles sincronizados con el proyector.</p>`;
     document.querySelector(".course-app").appendChild(guide);
     $("g-prev").addEventListener("click", retreat);
     $("g-next-btn").addEventListener("click", advance);
+    $("g-step-all").addEventListener("click", () => jumpStep(stepState(R().getCurrentSlide()).total));
+    $("g-step-reset").addEventListener("click", resetSteps);
     $("g-jump").max = String(entries.length - 1);
     $("g-jump").addEventListener("keydown", (event) => { if (event.key === "Enter") { const n = Number(event.target.value); event.target.value = ""; event.target.blur(); if (n >= 1) goTo(n); } });
     $("g-timer").addEventListener("click", () => { startedAt = Date.now(); tick(); });
@@ -463,13 +634,34 @@
     renderInlineMath($("g-visual"));
     $("g-visual-block").hidden = !d.visual;
     $("g-code-block").hidden = !d.codigo;
-    $("g-extras-block").hidden = !d.extras.length;
-    const list = $("g-extras"); list.replaceChildren();
-    d.extras.forEach((extra, i) => {
-      const b = el("button", "guide-extra" + (d.v === i + 1 ? " is-current" : ""), extra.title);
-      b.type = "button"; b.addEventListener("click", () => goTo(d.h, i + 1)); list.appendChild(b);
-    });
-    if (d.v > 0) { const back = el("button", "guide-extra", "Volver a la diapositiva"); back.type = "button"; back.addEventListener("click", () => goTo(d.h, 0)); list.appendChild(back); }
+
+    const slideNode = !readingMode && R() && typeof R().getCurrentSlide === "function" ? R().getCurrentSlide() : null;
+    const st = stepState(slideNode);
+    $("g-steps-block").hidden = !st.total;
+    if (st.total) {
+      $("g-step-badge").textContent = `Paso ${st.current} de ${st.total}`;
+      const preview = $("g-step-next");
+      if (st.current < st.total) {
+        const nextGrp = st.groups[st.current];
+        preview.innerHTML = `<span class="guide-step-preview-kicker">Siguiente paso al pulsar → (Paso ${st.current + 1})</span>${nextGrp.html}`;
+        renderInlineMath(preview);
+      } else {
+        preview.innerHTML = `<span class="guide-step-preview-kicker">Pasos completos</span><p>Todos los pasos están visibles; la siguiente pulsación avanza de diapositiva.</p>`;
+      }
+      const list = $("g-step-list");
+      list.replaceChildren();
+      const zeroBtn = el("button", "guide-step-item" + (st.current === 0 ? " is-current" : ""), "0 · Solo enunciado");
+      zeroBtn.type = "button";
+      zeroBtn.addEventListener("click", () => jumpStep(0));
+      list.appendChild(zeroBtn);
+      st.groups.forEach((grp, idx) => {
+        const stepNum = idx + 1;
+        const b = el("button", "guide-step-item" + (st.current === stepNum ? " is-current" : ""), `${stepNum} · ${grp.label}`);
+        b.type = "button";
+        b.addEventListener("click", () => jumpStep(stepNum));
+        list.appendChild(b);
+      });
+    }
     if (!startedAt && d.h > 0) startedAt = Date.now();
   }
   function openGuide() {
@@ -540,10 +732,13 @@
     };
   }
 
+  let syncClassroomInk = null;
   function updateChrome() {
     const { h, v } = position();
     const entry = entries[h] || entries[0];
     $("slide-counter").textContent = h === 0 ? "" : `${h} / ${entries.length - 1}`;
+    const firma = $("chrome-firma");
+    if (firma) firma.textContent = FIRMAS[h % 2];
     $("progress-fill").style.width = `${entries.length > 1 ? (100 * h / (entries.length - 1)) : 100}%`;
     $("prev-button").disabled = h <= 0 && v === 0;
     const current = !readingMode && R() && typeof R().getCurrentSlide === "function" ? R().getCurrentSlide() : null;
@@ -551,6 +746,17 @@
     $("next-button").disabled = h >= entries.length - 1 && !pending;
     $("next-button").textContent = pending ? "Siguiente paso" : "Siguiente";
     $("next-button").setAttribute("aria-label", pending ? "Mostrar el siguiente paso" : "Diapositiva siguiente");
+    const stepTools = $("step-tools");
+    if (stepTools) {
+      const st = stepState(current);
+      stepTools.hidden = readingMode || !st.total;
+      if (st.total) {
+        $("step-counter").textContent = `Paso ${st.current} / ${st.total}`;
+        const allBtn = $("steps-all-button");
+        allBtn.textContent = st.current < st.total ? "Todo" : "Ocultar";
+        $("steps-reset-button").disabled = st.current === 0;
+      }
+    }
     document.querySelectorAll(".index-link").forEach((button) => {
       const active = Number(button.dataset.index) === h;
       button.classList.toggle("is-current", active);
@@ -561,11 +767,17 @@
       sectionBar.querySelectorAll(".dot").forEach((dot) => { const i = Number(dot.dataset.index); dot.classList.toggle("is-current", i === h); dot.classList.toggle("is-done", i < h); });
     }
     document.body.classList.toggle("on-complement", v > 0);
+    if (syncClassroomInk) syncClassroomInk();
     renderGuide();
   }
 
   function buildIndex() {
     const list = $("index-list");
+    if (!/\/(?:clases|index)\.html$/.test(window.location.pathname)) {
+      const otras = el("a", "index-otras", "Todas las clases del curso");
+      otras.href = "clases.html";
+      list.parentNode.insertBefore(otras, list);
+    }
     const cover = el("button", "index-link index-cover", "Portada");
     cover.type = "button"; cover.dataset.index = "0";
     cover.addEventListener("click", () => { $("index-dialog").close(); goTo(0); });
@@ -587,14 +799,42 @@
     });
   }
 
+  function buildHelpDialog() {
+    const dlg = document.createElement("dialog");
+    dlg.id = "help-dialog";
+    dlg.className = "course-dialog";
+    dlg.setAttribute("aria-labelledby", "help-title");
+    dlg.innerHTML = `<div class="dialog-head"><div><p class="dialog-kicker">Atajos</p><h2 id="help-title">Atajos de teclado para clase</h2></div><button type="button" class="dialog-close" data-close="help-dialog" aria-label="Cerrar ayuda">×</button></div>` +
+      `<div class="help-grid">` +
+      `<kbd>→ / Espacio</kbd><span>Siguiente paso o siguiente diapositiva</span>` +
+      `<kbd>←</kbd><span>Paso anterior o diapositiva anterior</span>` +
+      `<kbd>T</kbd><span>Mostrar u ocultar todos los pasos de la diapositiva</span>` +
+      `<kbd>R</kbd><span>Reiniciar pasos al enunciado inicial</span>` +
+      `<kbd>N / G</kbd><span>Abrir ventana Guía docente sincronizada</span>` +
+      `<kbd>F</kbd><span>Pantalla completa sin barras (modo presentar)</span>` +
+      `<kbd>Número + Enter</kbd><span>Saltar directo a ese número de diapositiva</span>` +
+      `<kbd>Esc</kbd><span>Cerrar un diálogo o salir de pantalla completa</span>` +
+      `</div>`;
+    document.body.appendChild(dlg);
+    return dlg;
+  }
+
+  /* Firma discreta en la barra inferior: alterna entre el docente y la universidad según la diapositiva. */
+  const FIRMAS = [DOCENTE, "Universidad Nacional de Colombia · Sede Manizales"];
+  function setupFirma() {
+    const bottom = document.querySelector(".chrome-bottom");
+    if (!bottom || guideMode) return;
+    const firma = el("span", "chrome-firma", DOCENTE);
+    firma.id = "chrome-firma";
+    bottom.insertBefore(firma, bottom.firstChild);
+  }
+
   function setupChrome() {
     $("course-short-title").textContent = course.shortTitle || course.title;
     const actions = document.querySelector(".chrome-actions");
     if (!/\/(?:clases|index)\.html$/.test(window.location.pathname)) {
-      const all = el("a", "", "Temas"); all.href = "clases.html"; all.title = "Lista de todos los temas del curso";
-      actions.insertBefore(all, actions.firstChild);
       const glos = el("a", "", "Fórmulas"); glos.href = "formulario.html"; glos.title = "Glosario de fórmulas y buscador de temas";
-      actions.insertBefore(glos, all.nextSibling);
+      actions.insertBefore(glos, actions.firstChild);
     }
     const modeUrl = new URL(window.location.href);
     modeUrl.hash = ""; modeUrl.searchParams.delete("guia");
@@ -624,15 +864,34 @@
       document.body.classList.toggle("presenting", on);
       if (!guideMode) document.body.classList.toggle("compact", on);
     });
+
+    const controls = document.querySelector(".slide-controls");
+    const stepTools = el("span", "step-tools"); stepTools.id = "step-tools"; stepTools.hidden = true;
+    const stepCounter = el("span", "step-counter"); stepCounter.id = "step-counter"; stepCounter.setAttribute("aria-live", "polite");
+    const stepAll = el("button", "", "Todo"); stepAll.type = "button"; stepAll.id = "steps-all-button"; stepAll.title = "Mostrar todos los pasos (tecla T)";
+    const stepReset = el("button", "", "Reiniciar"); stepReset.type = "button"; stepReset.id = "steps-reset-button"; stepReset.title = "Volver al enunciado sin pasos (tecla R)";
+    stepAll.addEventListener("click", toggleAllSteps);
+    stepReset.addEventListener("click", resetSteps);
+    stepTools.append(stepCounter, stepAll, stepReset);
+    controls.insertBefore(stepTools, controls.firstChild);
+
+    const helpDialog = buildHelpDialog();
+    setupFirma();
+
     document.querySelectorAll("[data-close]").forEach((button) => button.addEventListener("click", () => $(button.dataset.close).close()));
     // Teclado propio, antes que el de Reveal.
     document.addEventListener("keydown", (event) => {
-      const dialog = [$("index-dialog"), $("notes-dialog")].find((item) => item && item.open);
+      const dialog = [$("index-dialog"), $("notes-dialog"), helpDialog].find((item) => item && item.open);
       if (dialog) { event.stopImmediatePropagation(); if (event.key === "Escape") { event.preventDefault(); dialog.close(); } return; }
       if ((event.target.closest && event.target.closest("input,select,textarea")) || event.ctrlKey || event.metaKey || event.altKey) return;
       if (!readingMode && handleJumpKey(event)) { event.preventDefault(); event.stopImmediatePropagation(); return; }
       if (!publico && (event.key === "n" || event.key === "N" || event.key === "g" || event.key === "G")) { event.stopImmediatePropagation(); openGuide(); return; }
-      if (event.key === "Escape" && !document.fullscreenElement && !guideMode) document.body.classList.remove("presenting", "compact");
+      if (!readingMode && (event.key === "t" || event.key === "T")) { event.preventDefault(); event.stopImmediatePropagation(); toggleAllSteps(); return; }
+      if (!readingMode && (event.key === "r" || event.key === "R")) { event.preventDefault(); event.stopImmediatePropagation(); resetSteps(); return; }
+      if (!readingMode && (event.key === "?" || (event.key === "/" && event.shiftKey))) { event.preventDefault(); event.stopImmediatePropagation(); helpDialog.showModal(); return; }
+      if (event.key === "Escape") {
+        if (!document.fullscreenElement && !guideMode) document.body.classList.remove("presenting", "compact");
+      }
     }, true);
     $("prev-button").textContent = "Anterior";
     $("prev-button").addEventListener("click", () => readingMode ? goTo(currentIndex() - 1) : retreat());
@@ -668,6 +927,7 @@
     [/Devore/i, "Devore, J. L. <em>Probabilidad y estadística para ingeniería y ciencias</em>. Cengage."],
     [/Mendenhall/i, "Mendenhall, W., Beaver, R. J. y Beaver, B. M. <em>Introducción a la probabilidad y estadística</em>. Cengage."],
     [/UCI|Yeh/i, "Yeh, I-C. <em>Concrete Compressive Strength</em>. UCI Machine Learning Repository."],
+    [/Primer/i, "Primer (Justin Helps). <em>Binomial distributions</em>, visualización interactiva de probabilidad."],
     [/apuntes del docente/i, "Osorio Oviedo, J. C. Apuntes del curso de Probabilidad y Estadística, Universidad Nacional de Colombia, sede Manizales."]
   ];
   function referencias() {

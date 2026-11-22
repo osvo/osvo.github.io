@@ -4,36 +4,18 @@
    Principio didáctico: enunciado completo antes de los números; explicar por qué n − 1 en la varianza muestral. */
 (function () {
   "use strict";
-  const F = window.Fig, K = F.K, L = F.L, co = F.co, k = F.k;
+  const F = window.Fig, K = F.K, L = F.L, co = F.co, k = F.k, E = F.ejemplo;
   const D = F.CILINDROS, R = F.resumen(D), n = R.n;
   const m2 = D.reduce((a, b) => a + Math.pow(b - R.mean, 2), 0) / n;
   const m3 = D.reduce((a, b) => a + Math.pow(b - R.mean, 3), 0) / n;
   const m4 = D.reduce((a, b) => a + Math.pow(b - R.mean, 4), 0) / n;
-  const ejes = { xmin: 20, xmax: 37, ticks: [20, 24, 28, 32, 36] };
-  const verdeRojo = (v) => (v < 24.2 ? K.rojo : K.verde);
+const ejes = { xmin: 20, xmax: 37, ticks: [20, 24, 28, 32, 36] };
+  /* Resistencia a compresión (MPa) de los 425 ensayos a 28 días del conjunto UCI de concreto (Yeh, 1998), ordenados. */
+  const C28 = [8.5, 8.5, 9.7, 9.7, 10.5, 10.5, 12.2, 12.2, 12.2, 12.5, 12.5, 13.2, 13.2, 13.3, 13.3, 13.5, 13.5, 15.1, 15.1, 15.3, 15.4, 15.4, 15.5, 15.5, 15.6, 15.6, 16.5, 16.5, 17.3, 17.3, 17.5, 17.5, 17.6, 17.6, 18, 18, 18, 18, 18, 18.2, 18.3, 18.3, 18.4, 18.7, 19, 19, 19.7, 19.7, 19.8, 20, 20, 20.6, 20.9, 21.1, 21.5, 21.6, 21.8, 21.9, 22, 22.3, 22.4, 22.4, 22.5, 22.6, 22.8, 22.9, 23.5, 23.5, 23.7, 23.7, 23.7, 23.7, 23.8, 23.8, 23.8, 23.8, 23.8, 23.9, 24, 24.2, 24.3, 24.3, 24.3, 24.5, 24.5, 24.5, 24.6, 24.8, 24.9, 24.9, 25.1, 25.1, 25.2, 25.2, 25.2, 25.2, 25.6, 25.6, 25.6, 25.7, 25.7, 25.7, 26, 26.1, 26.1, 26.2, 26.2, 26.2, 26.4, 26.8, 26.9, 26.9, 26.9, 26.9, 26.9, 27, 27.2, 27.2, 27.3, 27.5, 27.7, 27.7, 27.8, 27.8, 27.9, 27.9, 27.9, 28, 28.2, 28.5, 28.6, 28.6, 28.9, 29, 29, 29.1, 29.1, 29.2, 29.2, 29.4, 29.7, 29.7, 29.7, 29.9, 29.9, 29.9, 30.1, 30.1, 30.1, 30.2, 30.2, 30.4, 30.6, 30.6, 30.8, 30.9, 31, 31.1, 31.2, 31.2, 31.3, 31.4, 31.4, 31.4, 31.4, 31.4, 31.6, 31.6, 31.7, 31.8, 31.9, 31.9, 31.9, 32, 32, 32, 32.1, 32.2, 32.2, 32.4, 32.4, 32.6, 32.7, 32.7, 32.7, 32.8, 32.8, 32.8, 32.9, 33, 33, 33, 33, 33, 33.1, 33.1, 33.1, 33.3, 33.3, 33.3, 33.4, 33.4, 33.4, 33.4, 33.6, 33.7, 33.7, 33.7, 33.7, 33.7, 33.7, 33.8, 33.8, 33.8, 33.8, 33.9, 33.9, 34.3, 34.7, 35.2, 35.2, 35.3, 35.9, 35.9, 36.3, 36.3, 36.4, 36.4, 36.4, 36.8, 36.8, 36.9, 37, 37.2, 37.2, 37.3, 37.3, 37.3, 37.4, 37.4, 37.4, 37.4, 37.4, 37.4, 37.4, 37.4, 37.4, 37.8, 37.8, 37.9, 37.9, 38.2, 38.2, 38.2, 38.5, 38.5, 38.5, 38.6, 38.7, 38.8, 39.1, 39.1, 39.1, 39.2, 39.3, 39.3, 39.3, 39.4, 39.4, 39.4, 39.4, 39.4, 39.5, 39.5, 39.6, 39.6, 39.7, 39.8, 39.9, 40.1, 40.1, 40.1, 40.2, 40.7, 40.9, 40.9, 40.9, 40.9, 40.9, 40.9, 41.1, 41.1, 41.2, 41.4, 41.4, 41.4, 41.5, 41.5, 41.7, 41.9, 42.1, 42.1, 42.6, 42.6, 43.4, 43.6, 43.6, 43.7, 43.7, 43.8, 43.9, 43.9, 44, 44.1, 44.1, 44.3, 44.3, 44.3, 44.4, 44.4, 44.5, 44.5, 44.6, 44.6, 44.6, 44.9, 44.9, 45.3, 45.3, 45.7, 45.9, 45.9, 46.2, 46.2, 46.2, 46.2, 46.4, 46.7, 46.7, 47.3, 47.4, 47.8, 48.3, 49.2, 49.8, 49.8, 49.9, 50.2, 50.6, 50.7, 51, 51, 51.3, 52.2, 52.2, 52.3, 52.4, 52.4, 52.4, 52.4, 52.5, 52.8, 52.8, 53.4, 53.5, 53.5, 53.6, 55.5, 55.5, 55.5, 55.6, 55.6, 55.6, 55.9, 56.4, 56.6, 56.6, 56.7, 56.8, 57, 57.2, 57.2, 57.2, 57.9, 58.5, 59, 59.5, 59.8, 60.3, 60.3, 60.3, 60.3, 61.1, 61.2, 61.2, 61.8, 61.9, 62.1, 62.9, 63.1, 64, 65.9, 65.9, 66, 66.9, 67.3, 67.6, 67.7, 67.9, 68.3, 68.5, 69.8, 71.3, 71.3, 71.3, 71.3, 72, 72.1, 74.5, 74.7, 75, 76.2, 78.8, 80, 81.8];
+  const R28 = F.resumen(C28);
+const verdeRojo = (v) => (v < 24.2 ? K.rojo : K.verde);
 
-  function figDesviacionesNMinus1() {
-    const sub = [24, 27, 29, 32], xb = 28, mu = 26;
-    const X = (v) => 70 + (v - 22) / 12 * 500;
-    let s = `<svg viewBox="0 0 640 340" role="img" aria-label="Comparación entre distancias al promedio muestral y a la media poblacional">`;
-    s += `<line x1="60" y1="145" x2="580" y2="145" stroke="${K.medio}" stroke-width="2"/>`;
-    s += `<line x1="60" y1="255" x2="580" y2="255" stroke="${K.medio}" stroke-width="2"/>`;
-    s += `<line x1="${X(xb)}" y1="95" x2="${X(xb)}" y2="175" stroke="${K.azul}" stroke-width="4"/>`;
-    s += `<text x="${X(xb)}" y="82" text-anchor="middle" font-size="21" font-weight="700" fill="${K.azul}">x̄ = 28 (centro de la muestra)</text>`;
-    s += `<line x1="${X(mu)}" y1="205" x2="${X(mu)}" y2="285" stroke="${K.rojo}" stroke-width="4" stroke-dasharray="8 5"/>`;
-    s += `<text x="${X(mu)}" y="314" text-anchor="middle" font-size="21" font-weight="700" fill="${K.rojo}">μ = 26 (media real del lote)</text>`;
-    sub.forEach((v) => {
-      s += `<circle cx="${X(v)}" cy="145" r="8" fill="${K.verde}"/>`;
-      s += `<line x1="${X(v)}" y1="130" x2="${X(xb)}" y2="130" stroke="${K.azul}" stroke-width="2.5"/>`;
-      s += `<circle cx="${X(v)}" cy="255" r="8" fill="${K.verde}"/>`;
-      s += `<line x1="${X(v)}" y1="240" x2="${X(mu)}" y2="240" stroke="${K.rojo}" stroke-width="2.5"/>`;
-    });
-    s += `<text x="64" y="42" font-size="19" font-weight="700" fill="${K.azul}">Suma de cuadrados respecto a x̄ = 34 (suma mínima)</text>`;
-    s += `<text x="64" y="198" font-size="19" font-weight="700" fill="${K.rojo}">Suma de cuadrados respecto a μ = 50</text>`;
-    return s + `</svg><p class="fig-note">Al usar \\(\\bar{x}\\) en lugar de \\(\\mu\\), los datos quedan artificialmente más cerca de su centro; dividir entre \\(n - 1\\) compensa esa subestimación.</p>`;
-  }
-
-  window.COURSE = {
+window.COURSE = {
     id: "estadistica_descriptiva",
     title: "Estadística descriptiva",
     shortTitle: "Estadística descriptiva",
@@ -41,14 +23,30 @@
     modules: [
       {
         id: "datos_graficos",
-        title: "Población, muestra e histograma",
+        title: "Resumen de datos, población e histograma",
         summary: "Población vs. muestra aleatoria, enunciado del caso de 20 probetas y efecto del ancho de clase.",
         slides: [
+          {
+            id: "ed-0",
+            title: L`Objetivo de la estadística descriptiva`,
+            lead: L`Resumir un conjunto de datos con medidas de centro, dispersión, forma y posición.`,
+            body: L`<p>Una tabla con 425 resistencias de concreto se resume con cinco aspectos:</p><ul><li><strong>Centro:</strong> ¿alrededor de qué valor están los datos?</li><li><strong>Dispersión:</strong> ¿cuánto se alejan unos de otros?</li><li><strong>Forma:</strong> ¿son simétricos o tienen una cola?</li><li><strong>Atípicos:</strong> ¿hay valores muy alejados del resto?</li><li><strong>Posición:</strong> ¿qué fracción queda por debajo de un valor?</li></ul><p>Estas medidas, calculadas con datos observados, sirven luego para estimar probabilidades.</p>`,
+            figure: F.histograma(C28, { xmin: 5, xmax: 85, width: 10, xlabel: "resistencia a 28 días, MPa", alt: "Histograma de 425 resistencias de concreto a 28 días", note: "425 ensayos a 28 días de mezclas distintas (UCI, Yeh 1998)." }),
+            source: "Datos de concreto UCI (Yeh, 1998)."
+          },
+          {
+            id: "ed-0b",
+            title: L`Resumen numérico de 425 ensayos de concreto`,
+            lead: L`Media, mediana, desviación estándar, cuartiles y percentil 10, con su diagrama de caja.`,
+            body: L`<table class="tabla-num"><tr><th>Medida</th><th>Valor (MPa)</th><th>Qué dice</th></tr><tr><td>Media \(\bar x\)</td><td>${co(R28.mean, 1)}</td><td>centro, usa todos los datos</td></tr><tr><td>Mediana \(Q_2\)</td><td>${co(R28.median, 1)}</td><td>la mitad queda por debajo</td></tr><tr><td>Desviación \(s\)</td><td>${co(R28.s, 1)}</td><td>alejamiento típico de la media</td></tr><tr><td>\(Q_1\) y \(Q_3\)</td><td>${co(R28.q1, 1)} y ${co(R28.q3, 1)}</td><td>la mitad central de los datos</td></tr><tr><td>Percentil 10</td><td>${co(R28.q(0.10), 1)}</td><td>el 10&nbsp;% queda por debajo</td></tr><tr><td>Mínimo y máximo</td><td>${co(R28.min, 1)} y ${co(R28.max, 1)}</td><td>extremos observados</td></tr></table><p>La media supera a la mediana: hay una cola de valores altos.</p>`,
+            figure: F.caja(C28, { xmin: 0, xmax: 90, ticks: [0, 20, 40, 60, 80], xlabel: "resistencia a 28 días, MPa" }),
+            source: "Datos de concreto UCI (Yeh, 1998)."
+          },
           {
             id: "ed-1",
             title: L`Población y muestra`,
             lead: L`La población es todo el conjunto de interés; la muestra, la parte que se observa.`,
-            body: L`<p><strong>Población:</strong> unidades o resultados sobre los que se desea aprender. <strong>Muestra:</strong> unidades efectivamente observadas.</p><p>Una muestra aleatoria se obtiene con un mecanismo de selección conocido. En una muestra simple sin reemplazo, todas las muestras del mismo tamaño son equiprobables; las extracciones no son independientes.</p><div class="enunciado">Se registran 20 resistencias a 28 días bajo condiciones de ensayo comparables. Son datos simulados para aprender a describir una muestra; no documentan la aceptación de un lote.</div><p class="datos-ejercicio"><strong>Datos simulados (MPa):</strong> 22,9; 24,1; 24,8; 25,6; 26,0; 26,4; 26,9; 27,2; 27,5; 27,9; 28,2; 28,4; 28,9; 29,3; 29,8; 30,4; 30,9; 31,6; 32,5; 34,3.</p>`,
+            body: L`<p><strong>Población:</strong> unidades o resultados sobre los que se desea aprender. <strong>Muestra:</strong> unidades efectivamente observadas.</p><p>Una muestra aleatoria se obtiene con un mecanismo de selección conocido. En una muestra simple sin reemplazo, todas las muestras del mismo tamaño son equiprobables; las extracciones no son independientes.</p><div class="enunciado">Se registran 20 resistencias a 28 días bajo condiciones de ensayo comparables.</div><p class="datos-ejercicio"><strong>Datos simulados (MPa):</strong> 22,9; 24,1; 24,8; 25,6; 26,0; 26,4; 26,9; 27,2; 27,5; 27,9; 28,2; 28,4; 28,9; 29,3; 29,8; 30,4; 30,9; 31,6; 32,5; 34,3.</p>`,
             figure: F.puntos(D, Object.assign({}, ejes, { colorFn: () => K.verde, alt: "Veinte resistencias simuladas a 28 días", note: "Cada punto representa una medición en MPa; los datos no corresponden a una obra real." })),
             source: "Montgomery y Runger; caso ilustrativo de concreto."
           },
@@ -65,17 +63,32 @@
       },
       {
         id: "centro_dispersion",
-        title: "Medidas de centro y de dispersión",
+        title: "Medidas de tendencia central y de dispersión",
         summary: "Media muestral, mediana Q₂, sensibilidad a atípicos y explicación intuitiva del denominador n − 1.",
         slides: [
+          {
+            id: "ed-c",
+            title: L`Medidas de tendencia central`,
+            lead: L`Media, mediana y moda: valores que representan el centro de los datos.`,
+            body: L`<p><strong>Media:</strong> suma de los datos dividida entre \(n\). Usa todos los valores; un dato extremo la mueve.</p><p><strong>Mediana:</strong> el dato del medio cuando se ordenan. Con \(n\) impar es el dato de posición \(\frac{n+1}{2}\); con \(n\) par, el promedio de los dos centrales. No la mueven los extremos.</p><p><strong>Moda:</strong> el valor que más se repite. Sirve también para datos por categorías.</p><p>En los 425 ensayos: \(\bar x=${co(R28.mean, 1)}\) y \(Q_2=${co(R28.median, 1)}\) MPa; la cola de valores altos jala la media hacia arriba.</p>`,
+            formula: L`\azul{\bar x}=\frac{\sum_{i=1}^{n}x_i}{n}\qquad\qquad \rojo{Q_2}=x_{\left(\frac{n+1}{2}\right)}\ \ (n\text{ impar})`,
+            source: "Walpole et al.; datos de concreto UCI (Yeh, 1998)."
+          },
           {
             id: "ed-3",
             title: L`Media y mediana`,
             lead: L`La media se mueve con los datos extremos; la mediana no.`,
-            body: L`<p>La media \(\bar{x}=\sum x_i/n\) incorpora la magnitud de todos los valores. La mediana \(Q_2\) depende de sus posiciones una vez ordenados.</p><div class="enunciado">Los 20 valores simulados son los que se muestran debajo. Cambiar únicamente 34,3 por 54,3 MPa permite estudiar sensibilidad; no autoriza eliminar un dato real porque sea extremo.</div><p class="datos-ejercicio"><strong>Datos simulados (MPa):</strong> 22,9; 24,1; 24,8; 25,6; 26,0; 26,4; 26,9; 27,2; 27,5; 27,9; 28,2; 28,4; 28,9; 29,3; 29,8; 30,4; 30,9; 31,6; 32,5; 34,3.</p>`,
+            body: L`<p>La media \(\bar{x}=\sum x_i/n\) incorpora la magnitud de todos los valores. La mediana \(Q_2\) depende de sus posiciones una vez ordenados.</p><div class="enunciado">Los 20 valores simulados son los que se muestran debajo. Al cambiar 34,3 por 54,3 MPa, la media sube y la mediana no se mueve.</div><p class="datos-ejercicio"><strong>Datos simulados (MPa):</strong> 22,9; 24,1; 24,8; 25,6; 26,0; 26,4; 26,9; 27,2; 27,5; 27,9; 28,2; 28,4; 28,9; 29,3; 29,8; 30,4; 30,9; 31,6; 32,5; 34,3.</p>`,
             visual: "atipico",
             codigo: { python: "np.mean(x), np.median(x)", excel: "=PROMEDIO(rango), =MEDIANA(rango)" },
             source: "Devore; Hayter."
+          },
+          {
+            id: "ed-d",
+            title: L`Medidas de dispersión`,
+            lead: L`Rango, varianza, desviación estándar, coeficiente de variación y rango intercuartílico.`,
+            body: L`<table class="tabla-num"><tr><th>Medida</th><th>Cálculo</th><th>Qué mide</th><th>425 ensayos</th></tr><tr><td>Rango</td><td>\(x_{\max}-x_{\min}\)</td><td>distancia entre extremos</td><td>${co(R28.max - R28.min, 1)} MPa</td></tr><tr><td>Varianza</td><td>\(s^2=\frac{\sum(x_i-\bar x)^2}{n-1}\)</td><td>desviación cuadrática promedio</td><td>${co(R28.s2, 1)} MPa²</td></tr><tr><td>Desviación estándar</td><td>\(s=\sqrt{s^2}\)</td><td>alejamiento típico, en unidades de los datos</td><td>${co(R28.s, 1)} MPa</td></tr><tr><td>Coeficiente de variación</td><td>\(\mathrm{CV}=\frac{s}{\bar x}\)</td><td>dispersión relativa a la media</td><td>${co(100 * R28.s / R28.mean, 0)}&nbsp;%</td></tr><tr><td>Rango intercuartílico</td><td>\(\mathrm{RIC}=Q_3-Q_1\)</td><td>ancho de la mitad central</td><td>${co(R28.q3 - R28.q1, 1)} MPa</td></tr></table><p>El rango depende solo de dos datos; el RIC no lo afectan los extremos.</p>`,
+            source: "Walpole et al.; datos de concreto UCI (Yeh, 1998)."
           },
           {
             id: "ed-9",
@@ -91,6 +104,7 @@
             lead: L`Las desviaciones respecto a la media siempre suman cero; elevarlas al cuadrado evita que se cancelen.`,
             body: L`<p>Con el conjunto B: desviaciones \(x_i-\bar x\) = −8, −4, 0, 4, 8. Su suma es \(\sum(x_i-\bar x)=0\), y lo mismo pasa con cualquier conjunto, porque \(\sum x_i=n\bar x\).</p><p>Al cuadrado: 64, 16, 0, 16, 64. Todas cuentan como positivas y las desviaciones grandes pesan más.</p><p>La varianza queda en unidades al cuadrado; la desviación estándar \(s=\sqrt{s^2}\) devuelve las unidades de los datos.</p>`,
             formula: L`\sum_{i=1}^{n}(x_i-\bar x)=\sum x_i-n\bar x=0\qquad\qquad s^2=\frac{\sum(x_i-\bar x)^2}{n-1}`,
+            visual: "desviaciones_cuadrado",
             source: "Apuntes del docente; Hayter."
           },
           {
@@ -108,15 +122,31 @@
       },
       {
         id: "posicion_forma",
-        title: "Cuartiles y medidas de forma",
+        title: "Percentiles, cuartiles y forma",
         summary: "Cuartiles, rango intercuartílico RIC, diagrama de caja, coeficiente de variación, asimetría y curtosis.",
         slides: [
+          {
+            id: "ed-p",
+            title: L`Percentiles y cuartiles`,
+            lead: L`El percentil \(p\) es el valor que deja el \(p\,\%\) de los datos ordenados por debajo.`,
+            body: L`<p><strong>Posición:</strong> con los datos ordenados, el percentil \(p\) está en la posición \(L=\frac{p}{100}(n+1)\). Si \(L\) no es entero, se interpola entre los dos datos vecinos.</p><p><strong>Cuartiles:</strong> \(Q_1=P_{25}\), \(Q_2=P_{50}\) (la mediana) y \(Q_3=P_{75}\). Dividen los datos en cuatro partes con el mismo número de datos.</p><p><strong>Ejemplo, percentil 10 de los 425 ensayos:</strong> \(L=0{,}10(426)=42{,}6\). Los datos 42.º y 43.º son 18,3 y 18,4 MPa: \[P_{10}=18{,}3+0{,}6\,(18{,}4-18{,}3)=\verde{18{,}36}\text{ MPa}\] El 10&nbsp;% de los ensayos quedó por debajo de 18,4 MPa.</p>`,
+            formula: L`L=\frac{\ocre{p}}{100}\,(\morado{n}+1)\qquad\qquad P_{\ocre{p}}=x_{(k)}+d\,\big(x_{(k+1)}-x_{(k)}\big),\quad L=k+d`,
+            source: "Walpole et al.; Montgomery y Runger; datos de concreto UCI (Yeh, 1998)."
+          },
+          {
+            id: "ed-b",
+            title: L`Construcción del diagrama de caja`,
+            lead: L`Cinco números, rango intercuartílico, vallas, bigotes y valores atípicos.`,
+            body: L`<ul><li><strong>Ordenar</strong> y hallar \(\min\), \(Q_1\), \(Q_2\), \(Q_3\), \(\max\).</li><li><strong>Caja:</strong> de \(Q_1\) a \(Q_3\), con una línea en la mediana.</li><li><strong>RIC</strong> \(=Q_3-Q_1\) y <strong>vallas</strong>: \(Q_1-1{,}5\,\mathrm{RIC}\) y \(Q_3+1{,}5\,\mathrm{RIC}\).</li><li><strong>Bigotes:</strong> hasta el dato más extremo que quede dentro de las vallas.</li><li><strong>Atípicos:</strong> los datos fuera de las vallas, marcados uno por uno.</li></ul><p>425 ensayos: \(\mathrm{RIC}=${co(R28.q3, 1)}-${co(R28.q1, 1)}=${co(R28.q3 - R28.q1, 1)}\); vallas \(${co(R28.q1 - 1.5 * (R28.q3 - R28.q1), 1)}\) y \(${co(R28.q3 + 1.5 * (R28.q3 - R28.q1), 1)}\) MPa; 9 ensayos quedan por encima.</p>`,
+            figure: F.caja(C28, { xmin: 0, xmax: 90, ticks: [0, 20, 40, 60, 80], xlabel: "resistencia a 28 días, MPa" }),
+            source: "Montgomery y Runger; datos de concreto UCI (Yeh, 1998)."
+          },
           {
             id: "ed-5",
             title: L`Cuartiles y diagrama de caja`,
             lead: L`Los cuartiles dividen los datos ordenados en cuatro partes con el mismo número de datos.`,
             body: L`<p>\(Q_1\), \(Q_2\) y \(Q_3\) estiman las posiciones del 25 %, 50 % y 75 %. En muestras pequeñas hay varias convenciones de interpolación.</p><p>Aquí se usa la posición \(p(n+1)\). La caja va de \(Q_1\) a \(Q_3\), y \(\mathrm{RIC}=Q_3-Q_1\).</p><p>Los bigotes llegan al dato más extremo que aún esté dentro de las vallas \(Q_1-1{,}5\mathrm{RIC}\) y \(Q_3+1{,}5\mathrm{RIC}\); no terminan necesariamente en las vallas.</p>`,
-            figure: F.caja(D, { xmin: 20, xmax: 37, ticks: [20, 24, 28, 32, 36], note: `En los 20 cilindros: \\(Q_1 = ${co(R.q1, 2)}\\), \\(Q_2 = ${co(R.median, 2)}\\), \\(Q_3 = ${co(R.q3, 2)}\\text{ MPa}\\), y \\(\\mathrm{RIC} = ${co(R.q3 - R.q1, 2)}\\text{ MPa}\\).` }),
+            visual: "caja_interactiva",
             codigo: {python: "np.quantile(x, [0.25,0.5,0.75], method='weibull')", excel: "=CUARTIL.EXC(rango; 1)"},
             source: "Tukey; Montgomery y Runger; Hayter."
           },
@@ -125,6 +155,7 @@
             title: L`Coeficiente de variación, asimetría y curtosis`,
             lead: L`Dispersión relativa a la media y forma de la distribución.`,
             body: L`<table class="modelos"><tr><td>Variación relativa</td><td>\(\mathrm{CV}=s/\bar{x}\). Útil en escalas de razón, con cero significativo y media positiva lejos de cero.</td></tr><tr><td>Asimetría</td><td>\(g_1=m_3/m_2^{3/2}\). Una distribución simétrica tiene tercer momento central cero si existe; el recíproco no está garantizado.</td></tr><tr><td>Curtosis</td><td>\(g_2=m_4/m_2^2\). Resume peso de observaciones extremas; la normal tiene 3. El exceso es \(g_2-3\).</td></tr></table><p>\(m_k=n^{-1}\sum(x_i-\bar{x})^k\). Estas medidas complementan el gráfico; con pocos datos pueden ser inestables.</p>`,
+            visual: "forma_asimetria",
             codigo: {python: "scipy.stats.skew(x, bias=True); scipy.stats.kurtosis(x, fisher=False, bias=True)", excel: "Usar momentos m2, m3 y m4 definidos arriba"},
             source: "Programas del curso; definiciones por momentos."
           }
@@ -145,16 +176,36 @@
             codigo: { python: "np.mean(x), np.median(x), np.var(x, ddof=1), np.std(x, ddof=1)", excel: "=PROMEDIO(r), =MEDIANA(r), =MODA.UNO(r), =VAR.S(r), =DESVEST.M(r), =CUARTIL.EXC(r;1)" },
             source: L`Ejemplo didáctico; datos hipotéticos.`,
             abajo: [
-              {
-                title: L`Taller, paso 1: ordenar y ubicar el centro`,
-                body: L`<div class="enunciado"><strong>Datos sin ordenar (MPa):</strong> 28, 31, 25, 30, 27, 33, 26, 29, 32, 29. Halle media, mediana, moda y rango.</div><ol class="pasos"><li><strong>Ordenar de menor a mayor:</strong> 25, 26, 27, 28, 29, 29, 30, 31, 32, 33.</li><li><strong>Media:</strong> \(\bar x=\dfrac{\sum x_i}{n}=\dfrac{290}{10}=29\) MPa.</li><li><strong>Mediana:</strong> con \(n=10\) (par), promediar los datos 5.º y 6.º: \(\tilde x=\dfrac{29+29}{2}=29\) MPa.</li><li><strong>Moda:</strong> 29 MPa, el único valor que se repite.</li><li><strong>Rango:</strong> \(33-25=8\) MPa.</li></ol>`,
-                source: L`Ejemplo didáctico; datos hipotéticos.`
-              },
-              {
-                title: L`Taller, paso 2: cuartiles`,
-                body: L`<div class="enunciado"><strong>Datos ordenados (MPa):</strong> 25, 26, 27, 28, 29, 29, 30, 31, 32, 33. Halle \(Q_1, Q_2, Q_3\) con la posición \(p(n+1)\) e interpolación, el RIC y las vallas.</div><ol class="pasos"><li><strong>\(Q_1\):</strong> posición \(0{,}25(11)=2{,}75\), entre el 2.º (26) y el 3.º (27): \(Q_1=26+0{,}75(27-26)=26{,}75\).</li><li><strong>\(Q_2\):</strong> posición \(0{,}5(11)=5{,}5\): \(Q_2=29\), la mediana.</li><li><strong>\(Q_3\):</strong> posición \(0{,}75(11)=8{,}25\), entre el 8.º (31) y el 9.º (32): \(Q_3=31+0{,}25(1)=31{,}25\).</li><li><strong>RIC:</strong> \(31{,}25-26{,}75=4{,}5\) MPa. Vallas: \(26{,}75-1{,}5(4{,}5)=20\) y \(31{,}25+1{,}5(4{,}5)=38\). Ningún dato queda fuera: no hay atípicos.</li></ol>`,
-                source: L`Ejemplo didáctico; datos hipotéticos.`
-              },
+              E({
+                t: L`Taller, paso 1: media, mediana, moda y rango`,
+                e: L`Resistencia a compresión de 10 cilindros de concreto, en el orden en que llegaron del laboratorio (MPa): 28, 31, 25, 30, 27, 33, 26, 29, 32, 29.`,
+                d: [[L`\morado{n}=\morado{10}`, "cilindros"]],
+                i: [L`Halle la media.`, L`Halle la mediana.`, L`Halle la moda.`, L`Halle el rango.`],
+                p: [
+                  L`<strong>Ordenar</strong> de menor a mayor (para la mediana y el rango): 25, 26, 27, 28, <span style="white-space:nowrap">\(\azul{29}\), \(\azul{29}\),</span> 30, 31, 32, 33.`,
+                  L`<strong>a)</strong> \[\begin{aligned} \bar x&=\frac{\sum x_i}{n}\\ &=\frac{290}{\morado{10}}=\verde{29}\text{ MPa} \end{aligned}\]`,
+                  L`<strong>b)</strong> Con \(\morado{n}\) par, la mediana es el promedio de los datos de posición \(\frac{n}{2}\) y \(\frac{n}{2}+1\) (5.º y 6.º): \[\tilde x=\frac{x_{(5)}+x_{(6)}}{2}=\frac{\azul{29}+\azul{29}}{2}=\verde{29}\text{ MPa}\]`,
+                  L`<strong>c)</strong> Moda: \(\verde{29}\) MPa, el único valor que se repite.`,
+                  L`<strong>d)</strong> \(\text{Rango}=x_{\max}-x_{\min}=33-25=\verde{8}\) MPa.`
+                ],
+                n: L`Pregunta previa: «¿hay que ordenar para calcular la media?». No; para la mediana sí. Con n impar la mediana es el dato central; con n par, el promedio de los dos centrales.`,
+                s: L`Ejemplo didáctico; datos hipotéticos.`
+              }),
+              E({
+                t: L`Taller, paso 2: cuartiles`,
+                e: L`Datos ordenados (MPa): 25, 26, 27, 28, 29, 29, 30, 31, 32, 33. Los cuartiles se ubican con la posición \(p(n+1)\) e interpolación lineal.`,
+                d: [[L`\morado{n}=\morado{10}`, "datos"], [L`\ocre{p}=0{,}25;\ 0{,}50;\ 0{,}75`, "fracción de cada cuartil"]],
+                i: [L`Halle \(Q_1\), \(Q_2\) y \(Q_3\).`, L`Halle el rango intercuartílico y las vallas para atípicos.`],
+                p: [
+                  L`<strong>Regla:</strong> si la posición \(\ocre{p}(\morado{n}+1)=k+d\) (entero \(k\), fracción \(d\)): \[Q=x_{(k)}+d\,\big(x_{(k+1)}-x_{(k)}\big)\]`,
+                  L`<strong>a) \(Q_1\):</strong> posición \(\ocre{0{,}25}(\morado{10}+1)=2{,}75\), entre el 2.º (26) y el 3.º (27): \[Q_1=26+0{,}75\,(27-26)=\verde{26{,}75}\]`,
+                  L`<strong>\(Q_2\):</strong> posición \(\ocre{0{,}5}(11)=5{,}5\): \(Q_2=29+0{,}5\,(29-29)=\verde{29}\), la mediana.`,
+                  L`<strong>\(Q_3\):</strong> posición \(\ocre{0{,}75}(11)=8{,}25\), entre el 8.º (31) y el 9.º (32): \[Q_3=31+0{,}25\,(32-31)=\verde{31{,}25}\]`,
+                  L`<strong>b)</strong> \[\begin{aligned} \mathrm{RIC}&=Q_3-Q_1=31{,}25-26{,}75=\verde{4{,}5}\text{ MPa}\\ Q_1-1{,}5\,\mathrm{RIC}&=26{,}75-6{,}75=20\\ Q_3+1{,}5\,\mathrm{RIC}&=31{,}25+6{,}75=38 \end{aligned}\] Ningún dato queda fuera de \([20,\ 38]\): no hay atípicos.`
+                ],
+                n: L`Otra convención frecuente a mano: mediana de cada mitad. Mitad inferior 25–29 da Q₁ = 27; mitad superior 29–33 da Q₃ = 31. Lo importante es declarar la convención; Excel CUARTIL.EXC coincide con p(n + 1).`,
+                s: L`Ejemplo didáctico; datos hipotéticos.`
+              }),
               {
                 title: L`Taller, paso 3: varianza con la tabla de desviaciones`,
                 body: L`<div style="display:flex;gap:1.4em;align-items:flex-start"><table class="tabla-num" style="width:auto;font-size:.9em"><tr><th>\(i\)</th><th>\(x_i\)</th><th>\(x_i-\bar x\)</th><th>\((x_i-\bar x)^2\)</th></tr><tr><td>1</td><td>28</td><td class="fragment" data-fragment-index="1">−1</td><td class="fragment" data-fragment-index="2">1</td></tr><tr><td>2</td><td>31</td><td class="fragment" data-fragment-index="1">2</td><td class="fragment" data-fragment-index="2">4</td></tr><tr><td>3</td><td>25</td><td class="fragment" data-fragment-index="1">−4</td><td class="fragment" data-fragment-index="2">16</td></tr><tr><td>4</td><td>30</td><td class="fragment" data-fragment-index="1">1</td><td class="fragment" data-fragment-index="2">1</td></tr><tr><td>5</td><td>27</td><td class="fragment" data-fragment-index="1">−2</td><td class="fragment" data-fragment-index="2">4</td></tr><tr><td>6</td><td>33</td><td class="fragment" data-fragment-index="1">4</td><td class="fragment" data-fragment-index="2">16</td></tr><tr><td>7</td><td>26</td><td class="fragment" data-fragment-index="1">−3</td><td class="fragment" data-fragment-index="2">9</td></tr><tr><td>8</td><td>29</td><td class="fragment" data-fragment-index="1">0</td><td class="fragment" data-fragment-index="2">0</td></tr><tr><td>9</td><td>32</td><td class="fragment" data-fragment-index="1">3</td><td class="fragment" data-fragment-index="2">9</td></tr><tr><td>10</td><td>29</td><td class="fragment" data-fragment-index="1">0</td><td class="fragment" data-fragment-index="2">0</td></tr><tr style="border-top:2px solid var(--rule);font-weight:700"><td>\(\Sigma\)</td><td>290</td><td class="fragment" data-fragment-index="3">0</td><td class="fragment" data-fragment-index="3">60</td></tr></table><div style="flex:1"><p class="fragment" data-fragment-index="1" style="margin:.25em 0"><strong>1.</strong> Restar la media \(\bar x=29\) a cada dato (en el orden original; no hace falta ordenar).</p><p class="fragment" data-fragment-index="2" style="margin:.25em 0"><strong>2.</strong> Elevar al cuadrado cada diferencia: así los signos no se cancelan.</p><p class="fragment" data-fragment-index="3" style="margin:.25em 0"><strong>3.</strong> Sumar. Comprobación: las diferencias suman 0.</p><p class="fragment" data-fragment-index="4" style="margin:.25em 0"><strong>4.</strong> Varianza muestral: \(s^2=\dfrac{\sum(x_i-\bar x)^2}{n-1}=\dfrac{60}{9}=6{,}67\ \text{MPa}^2\).</p><p class="fragment" data-fragment-index="5" style="margin:.25em 0"><strong>5.</strong> Desviación estándar: \(s=\sqrt{6{,}67}=2{,}58\) MPa, en las unidades de los datos.</p><p class="fragment" data-fragment-index="6" style="margin:.25em 0">Si los 10 cilindros fueran toda la población, se dividiría entre \(n\): \(\sigma^2=60/10=6\).</p></div></div>`,
@@ -165,11 +216,20 @@
                 body: L`<div style="display:flex;gap:1.4em;align-items:flex-start"><table class="tabla-num" style="width:auto;font-size:.9em"><tr><th>\(i\)</th><th>\(x_i\)</th><th>\(x_i^2\)</th></tr><tr><td>1</td><td>28</td><td class="fragment" data-fragment-index="1">784</td></tr><tr><td>2</td><td>31</td><td class="fragment" data-fragment-index="1">961</td></tr><tr><td>3</td><td>25</td><td class="fragment" data-fragment-index="1">625</td></tr><tr><td>4</td><td>30</td><td class="fragment" data-fragment-index="1">900</td></tr><tr><td>5</td><td>27</td><td class="fragment" data-fragment-index="1">729</td></tr><tr><td>6</td><td>33</td><td class="fragment" data-fragment-index="1">1089</td></tr><tr><td>7</td><td>26</td><td class="fragment" data-fragment-index="1">676</td></tr><tr><td>8</td><td>29</td><td class="fragment" data-fragment-index="1">841</td></tr><tr><td>9</td><td>32</td><td class="fragment" data-fragment-index="1">1024</td></tr><tr><td>10</td><td>29</td><td class="fragment" data-fragment-index="1">841</td></tr><tr style="border-top:2px solid var(--rule);font-weight:700"><td>\(\Sigma\)</td><td>290</td><td class="fragment" data-fragment-index="2">8470</td></tr></table><div style="flex:1"><p class="fragment" data-fragment-index="1" style="margin:.25em 0"><strong>1.</strong> Elevar al cuadrado cada dato, sin restar la media.</p><p class="fragment" data-fragment-index="2" style="margin:.25em 0"><strong>2.</strong> Sumar: \(\sum x_i=290\) y \(\sum x_i^2=8470\).</p><p class="fragment" data-fragment-index="3" style="margin:.25em 0"><strong>3.</strong> \(s^2=\dfrac{\sum x_i^2-n\bar x^2}{n-1}=\dfrac{8470-10(29)^2}{9}=\dfrac{8470-8410}{9}=\dfrac{60}{9}\).</p><p class="fragment" data-fragment-index="4" style="margin:.25em 0"><strong>4.</strong> Otra forma, sin calcular antes la media: \(s^2=\dfrac{\sum x_i^2-(\sum x_i)^2/n}{n-1}=\dfrac{8470-290^2/10}{9}=6{,}67\).</p><p class="fragment" data-fragment-index="5" style="margin:.25em 0"><strong>5.</strong> Mismo resultado que con la tabla de desviaciones. Si la media se redondea, no redondear antes de restar: se restan dos números grandes.</p></div></div>`,
                 source: L`Ejemplo didáctico; datos hipotéticos.`
               },
-              {
-                title: L`Taller, paso 5: comprobación con calculadora y Excel`,
-                body: L`<div class="enunciado"><strong>Resultados de los pasos anteriores.</strong> \(\bar x=29\), \(\tilde x=29\), moda 29, rango 8, \(Q_1=26{,}75\), \(Q_3=31{,}25\), \(s^2=6{,}67\) MPa², \(s=2{,}58\) MPa. Complete el resumen y verifique con calculadora o Excel.</div><ol class="pasos"><li><strong>Coeficiente de variación:</strong> \(CV=\dfrac{s}{\bar x}=\dfrac{2{,}58}{29}=8{,}9\,\%\): dispersión relativa baja.</li><li><strong>Lectura:</strong> media y mediana coinciden y no hay atípicos: datos aproximadamente simétricos alrededor de 29 MPa.</li><li><strong>Calculadora científica (modo estadístico):</strong> ingresar los 10 datos; \(\bar x=29\), \(\sigma_x=2{,}449\) (divide entre \(n\)) y \(s_x=2{,}582\) (divide entre \(n-1\)).</li><li><strong>Excel:</strong> =PROMEDIO, =MEDIANA, =MODA.UNO, =VAR.S (6,667), =DESVEST.M (2,582), =CUARTIL.EXC(r;1) (26,75) y =CUARTIL.EXC(r;3) (31,25).</li></ol>`,
-                source: L`Ejemplo didáctico; datos hipotéticos.`
-              },
+              E({
+                t: L`Taller, paso 5: comprobación con calculadora y Excel`,
+                e: L`Resultados de los pasos anteriores para los 10 cilindros.`,
+                d: [[L`\azul{\bar x}=\azul{29}`, "media (MPa)"], [L`\tilde x=29,\ \text{moda}=29`, "mediana y moda (MPa)"], [L`Q_1=26{,}75,\ Q_3=31{,}25`, "cuartiles (MPa)"], [L`\ocre{s}=\ocre{2{,}58}`, "desviación estándar (MPa)"]],
+                i: [L`Halle el coeficiente de variación.`, L`Describa la forma de los datos.`, L`Compruebe los resultados con calculadora y con Excel.`],
+                p: [
+                  L`<strong>a)</strong> \[\begin{aligned} \mathrm{CV}&=\frac{s}{\bar x}\\ &=\frac{\ocre{2{,}58}}{\azul{29}}=\verde{8{,}9\,\%} \end{aligned}\] Dispersión relativa baja.`,
+                  L`<strong>b)</strong> Media y mediana coinciden y no hay atípicos: datos aproximadamente simétricos alrededor de 29 MPa.`,
+                  L`<strong>c) Calculadora</strong> (modo estadístico): \(\bar x=29\), \(\sigma_x=2{,}449\) (divide entre \(n\)) y \(s_x=2{,}582\) (divide entre \(n-1\)).`,
+                  L`<strong>Excel:</strong> =PROMEDIO, =MEDIANA, =MODA.UNO, =VAR.S (6,667), =DESVEST.M (2,582), =CUARTIL.EXC(r;1) (26,75) y =CUARTIL.EXC(r;3) (31,25).`
+                ],
+                n: L`En las calculadoras Casio de la serie fx (por ejemplo fx-350MS): MODE → SD, ingresar cada dato con M+, y SHIFT 2 para x̄, σx y sx. Advertir cuál de las dos desviaciones pide el problema.`,
+                s: L`Ejemplo didáctico; datos hipotéticos.`
+              }),
               {
                 title: L`Taller, paso 6: datos repetidos en una tabla de frecuencias`,
                 body: L`<div class="enunciado">Se contaron las grietas visibles en 20 vigas: 3 vigas sin grietas, 6 con una, 5 con dos, 4 con tres y 2 con cuatro. Halle mediana, moda, media, varianza y desviación estándar.</div><div style="display:flex;gap:1.2em;align-items:flex-start"><table class="tabla-num" style="width:auto;font-size:.88em"><tr><th>\(x\)</th><th>\(f\)</th><th>\(F\)</th><th>\(f\,x\)</th><th>\(f\,(x-\bar x)^2\)</th><th>\(f\,x^2\)</th></tr><tr><td>0</td><td>3</td><td class="fragment" data-fragment-index="1">3</td><td class="fragment" data-fragment-index="2">0</td><td class="fragment" data-fragment-index="4">9,72</td><td class="fragment" data-fragment-index="6">0</td></tr><tr><td>1</td><td>6</td><td class="fragment" data-fragment-index="1">9</td><td class="fragment" data-fragment-index="2">6</td><td class="fragment" data-fragment-index="4">3,84</td><td class="fragment" data-fragment-index="6">6</td></tr><tr><td>2</td><td>5</td><td class="fragment" data-fragment-index="1">14</td><td class="fragment" data-fragment-index="2">10</td><td class="fragment" data-fragment-index="4">0,2</td><td class="fragment" data-fragment-index="6">20</td></tr><tr><td>3</td><td>4</td><td class="fragment" data-fragment-index="1">18</td><td class="fragment" data-fragment-index="2">12</td><td class="fragment" data-fragment-index="4">5,76</td><td class="fragment" data-fragment-index="6">36</td></tr><tr><td>4</td><td>2</td><td class="fragment" data-fragment-index="1">20</td><td class="fragment" data-fragment-index="2">8</td><td class="fragment" data-fragment-index="4">9,68</td><td class="fragment" data-fragment-index="6">32</td></tr><tr style="border-top:2px solid var(--rule);font-weight:700"><td>\(\Sigma\)</td><td>20</td><td></td><td class="fragment" data-fragment-index="2">36</td><td class="fragment" data-fragment-index="4">29,2</td><td class="fragment" data-fragment-index="6">94</td></tr></table><div style="flex:1"><p class="fragment" data-fragment-index="1" style="margin:.25em 0"><strong>1. Acumulada F:</strong> los datos 10.º y 11.º caen en \(x=2\): mediana 2. Moda: 1 (mayor frecuencia).</p><p class="fragment" data-fragment-index="3" style="margin:.25em 0"><strong>2. Media:</strong> \(\bar x=\dfrac{\sum f\,x}{n}=\dfrac{36}{20}=1{,}8\) grietas por viga.</p><p class="fragment" data-fragment-index="5" style="margin:.25em 0"><strong>3. Varianza con la tabla:</strong> \(s^2=\dfrac{\sum f\,(x-\bar x)^2}{n-1}=\dfrac{29{,}2}{19}=1{,}537\); \(s=1{,}24\).</p><p class="fragment" data-fragment-index="7" style="margin:.25em 0"><strong>4. Con la fórmula:</strong> \(s^2=\dfrac{94-20(1{,}8)^2}{19}=\dfrac{29{,}2}{19}\). Cada valor cuenta tantas veces como su frecuencia.</p></div></div>`,

@@ -510,3 +510,166 @@ body.reading-mode .cover-list{margin-top:40px}
 ::selection{background:#d8e6cf;color:var(--ink)}
 .reveal .cover-slide .cover-frame{height:900px}
 .cover-list{max-width:none}
+
+/* === Visuales de ancho completo, Adivina Quién y Tabla Z interactiva (21 de noviembre) === */
+.slide-body:empty{display:none}
+.has-full-visual .slide-heading{margin:0 0 10px}
+.has-full-visual .slide-title{font-size:44px;line-height:1.06;max-width:none}
+.has-full-visual .slide-lead{font-size:23px;line-height:1.25;margin:0 0 8px}
+.has-full-visual .slide-content{display:flex;flex-direction:column;gap:8px;max-height:660px}
+body.compact .has-full-visual .slide-content{max-height:730px}
+.has-full-visual .slide-prose{max-width:none}
+.has-full-visual .slide-body{font-size:22px;max-width:none}
+.has-full-visual .visual-host{border-left:0;padding-left:0;width:100%}
+.has-full-visual .widget-controls{margin:0 0 10px;gap:8px}
+.has-full-visual .widget-button{font-size:16px;padding:7px 11px}
+.has-full-visual .widget-result{font-size:21px;margin:8px 0 0}
+
+/* Adivina Quién: tablero plano 6×2 con barras posteriores animadas */
+.aq-wrap{display:flex;flex-direction:column;gap:8px}
+.aq-top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding-bottom:8px;border-bottom:1px solid var(--rule)}
+.aq-qbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.aq-log{font:600 17px/1.3 var(--sans);color:var(--ink)}
+.aq-board{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+.aq-card{display:flex;flex-direction:column;gap:4px;padding:7px 9px;border:1px solid #d3d8cf;background:#fff;transition:opacity .22s ease,border-color .2s ease}
+.aq-card.is-out{opacity:.16}
+.aq-card.is-secret{border-color:var(--k-verde);border-width:2px}
+.aq-card svg{display:block;width:100%;height:78px}
+.aq-meta{display:flex;justify-content:space-between;align-items:baseline;gap:4px}
+.aq-name{font:700 17px/1.15 var(--serif);color:var(--ink)}
+.aq-prob{font:700 15px/1.1 var(--sans);font-variant-numeric:tabular-nums;color:var(--k-azul)}
+.aq-bar-track{height:6px;background:#ecefe9;width:100%;overflow:hidden}
+.aq-bar-fill{height:100%;background:var(--k-azul);transition:width .28s ease}
+.aq-traits{font:400 13px/1.2 var(--sans);color:var(--muted)}
+
+/* Tabla Z interactiva: curva + lectura a la izquierda, matriz tabulada a la derecha */
+.tz-wrap{display:flex;flex-direction:column;gap:8px}
+.tz-grid{display:grid;grid-template-columns:465px minmax(0,1fr);gap:24px;align-items:start}
+.tz-left{display:flex;flex-direction:column;gap:8px}
+.tz-left .widget-svg{height:230px;max-height:230px}
+body.compact .tz-left .widget-svg{height:260px;max-height:260px}
+.tz-readout{padding-top:8px;border-top:1px solid var(--rule);font:400 18px/1.38 var(--sans);color:var(--ink);font-variant-numeric:tabular-nums}
+.tz-readout strong{font-weight:700}
+.tz-right{overflow:hidden}
+.tz-table{width:100%;border-collapse:collapse;font:400 15px/1.15 var(--sans);font-variant-numeric:tabular-nums}
+.tz-table th,.tz-table td{border-bottom:1px solid #e2e6de;padding:2px 3px;text-align:center}
+.tz-table th{font:700 15px/1.2 var(--sans);color:var(--muted);border-bottom:2px solid var(--rule);padding:4px 3px}
+.tz-table th.tz-corner,.tz-table th.tz-rhead{text-align:left;padding-right:8px;color:var(--k-azul)}
+.tz-table th.is-row{background:#edf4fc;color:var(--k-azul)}
+.tz-table th.is-col{background:#fdf5ea;color:var(--k-ocre)}
+.tz-table td.is-row{background:#f3f7fd}
+.tz-table td.is-col{background:#fef9f2}
+.tz-cell{display:block;width:100%;border:0;background:transparent;padding:3px 2px;font:inherit;color:var(--ink);cursor:pointer}
+.has-full-visual .tz-table button.tz-cell,.tz-table button.tz-cell{display:block;width:100%;border:0;background:transparent;padding:2px;font:inherit;font-size:15px;line-height:1.18;color:var(--ink);font-variant-numeric:tabular-nums}
+.tz-table button.tz-cell:hover{color:var(--green);text-decoration:underline;background:transparent}
+.tz-table td.is-hit,.has-full-visual .tz-table td.is-hit button.tz-cell,.tz-table td.is-hit button.tz-cell{background:var(--k-verde);color:#fff;font-weight:700}
+body.reading-mode .tz-grid{grid-template-columns:1fr}
+body.reading-mode .aq-board{grid-template-columns:repeat(4,minmax(0,1fr))}
+
+/* === Revisión del 22 de noviembre: herramientas de paso a paso en vivo, pizarra, anotación y mejoras visuales === */
+.chrome-bottom{justify-content:space-between}
+.chrome-tools,.step-tools{display:flex;align-items:center;gap:4px}
+.step-tools[hidden]{display:none}
+.step-counter{font:700 14px/1 var(--sans);font-variant-numeric:tabular-nums;color:var(--green);padding:0 8px 0 4px;white-space:nowrap}
+.slide-controls .step-tools button{color:var(--muted);font-size:15px;padding:6px 9px}
+.slide-controls .step-tools button:hover:not(:disabled){color:var(--green)}
+.chrome-tools button{font-size:15px;font-weight:600;color:var(--muted);padding:7px 10px;border:0;border-bottom:2px solid transparent}
+.chrome-tools button.is-active{color:var(--green);border-bottom-color:var(--green)}
+body.presenting .chrome-bottom .chrome-tools,body.reading-mode .chrome-tools,body.guide-mode .chrome-tools{display:none}
+
+/* Énfasis limpio del paso activo durante la clase (sin recuadros ni saltos) */
+.slide-body ol.pasos>li{border-left:3px solid transparent;padding-left:12px;margin-left:-15px;transition:border-color .18s ease}
+.slide-body ol.pasos>li.current-fragment{border-left-color:var(--green)}
+.slide-body table.tabla-num td.fragment.current-fragment{background:#edf4ea;color:var(--k-verde);font-weight:700}
+body.reading-mode .slide-body ol.pasos>li{border-left:0;padding-left:.12em;margin-left:0}
+@media print{.slide-body ol.pasos>li{border-left:0;padding-left:.12em;margin-left:0}}
+
+/* Cockpit paso a paso en la ventana Guía (?guia=1) */
+.guide-steps-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 8px}
+.guide-step-badge{font:700 16px/1.2 var(--sans);font-variant-numeric:tabular-nums;color:var(--green)}
+.guide-step-actions{display:flex;gap:6px}
+.guide-step-actions button{font:700 14px/1 var(--sans);border:1px solid var(--rule);background:#fff;color:var(--ink);padding:5px 10px}
+.guide-step-actions button:hover{border-color:var(--green);color:var(--green)}
+.guide-step-preview{border-top:1px solid var(--rule);padding:8px 0 6px;margin:6px 0 12px;background:#fff;font-size:17px;line-height:1.4;color:var(--ink)}
+.guide-step-preview-kicker{display:block;font:700 12px/1.2 var(--sans);letter-spacing:.09em;text-transform:uppercase;color:var(--k-ocre);margin:0 0 4px}
+.guide-step-preview p{margin:0;max-width:none}
+.guide-step-list{display:flex;flex-direction:column;gap:2px;border-top:1px solid var(--rule)}
+.guide-step-item{display:block;width:100%;text-align:left;background:transparent;border:0;border-bottom:1px solid #e2e6de;border-left:3px solid transparent;padding:7px 10px;font:400 15px/1.3 var(--sans);color:var(--muted)}
+.guide-step-item:hover{background:#f0f3eb;color:var(--ink)}
+.guide-step-item.is-current{border-left-color:var(--green);background:#eef4e9;color:var(--ink);font-weight:700}
+
+/* Pizarra temporal y anotación en vivo (teclas P y B) */
+#whiteboard-bg{position:fixed;left:0;top:0;width:100vw;height:100dvh;z-index:44;display:none;background-color:#fff;background-image:radial-gradient(#cfd5cc 1px,transparent 1px);background-size:28px 28px}
+body.board-active #whiteboard-bg{display:block}
+#ink-canvas{position:fixed;left:0;top:0;width:100vw;height:100dvh;display:block;z-index:45;pointer-events:none;touch-action:none}
+body.ink-active #ink-canvas,body.board-active #ink-canvas{pointer-events:auto;cursor:crosshair}
+#ink-bar{position:fixed;top:14px;right:24px;z-index:50;display:none;align-items:center;gap:6px;background:#fff;border:1px solid var(--rule);padding:6px 10px;box-shadow:0 8px 24px rgba(15,27,17,.14);font:600 14px/1 var(--sans)}
+body.ink-active #ink-bar,body.board-active #ink-bar{display:flex}
+.ink-tool{border:1px solid var(--rule);background:#fff;color:var(--ink);padding:6px 10px;font:600 14px/1 var(--sans);display:inline-flex;align-items:center;gap:6px}
+.ink-tool:hover,.ink-tool.is-active{border-color:var(--green);background:#eaf0e5;color:var(--green)}
+.ink-swatch{width:11px;height:11px;border-radius:50%;display:inline-block;flex:none}
+.ink-sep{width:1px;height:20px;background:var(--rule);margin:0 2px}
+
+/* Diálogo de atajos de teclado */
+.help-grid{padding:16px 35px 8px;display:grid;grid-template-columns:auto 1fr;gap:10px 24px;align-items:baseline;font:400 18px/1.4 var(--sans)}
+.help-grid kbd{font:700 15px/1.1 Consolas,"Cascadia Mono",monospace;border:1px solid var(--rule);border-bottom-width:2px;background:#fafbf8;padding:3px 8px;color:var(--ink);white-space:nowrap}
+
+/* Adivina Quién: tarjetas clicables y franja matemática de Bayes */
+.aq-card svg{height:66px}
+.has-full-visual button.aq-card,button.aq-card{display:flex;flex-direction:column;align-items:stretch;gap:3px;padding:6px 8px;border:1px solid #d3d8cf;background:#fff;text-align:left;font-weight:400;transition:opacity .22s ease,border-color .2s ease}
+.has-full-visual button.aq-card:hover,button.aq-card:hover{border-color:var(--green);background:#fff;color:var(--ink)}
+.has-full-visual button.aq-card.is-inspected,button.aq-card.is-inspected{border-color:var(--k-azul);box-shadow:inset 0 0 0 1px var(--k-azul)}
+.has-full-visual button.aq-card.is-secret,button.aq-card.is-secret{border-color:var(--k-verde);border-width:2px}
+.aq-math{padding-top:6px;border-top:1px solid var(--rule);font:400 16px/1.3 var(--sans);color:var(--ink);font-variant-numeric:tabular-nums}
+.aq-math strong{color:var(--k-azul)}
+@media print{#ink-canvas,#ink-bar,#whiteboard-bg,.chrome-tools,.step-tools{display:none!important}}
+
+/* === Ejemplos en dos columnas (22 de noviembre de 2026) ===
+   Izquierda: enunciado, datos con su color y un renglón por inciso. Derecha: los pasos, que aparecen con →. */
+.example-slide .slide-heading{margin:22px 0 22px}
+.example-slide .slide-prose,.example-slide .slide-body{max-width:none}
+.slide-body.ej-grid{display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);gap:0 52px;align-items:start;font-size:27px;line-height:1.36}
+.ej-enunciado{min-width:0}
+.ej-pasos{min-width:0;border-left:1px solid var(--rule);padding-left:44px;min-height:100%}
+.ej-enunciado .enunciado{margin:0}
+.enunciado p{margin:0 0 .55em}
+.enunciado dl.datos{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:.18em .7em;margin:.2em 0 .7em;padding:.5em 0 .55em;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.enunciado dl.datos dt{margin:0;white-space:nowrap}
+.enunciado dl.datos dd{margin:0;color:var(--muted);align-self:center;font-size:.9em;line-height:1.25}
+.enunciado ol.incisos{list-style:none;counter-reset:inciso;margin:.2em 0 0;padding:0}
+.enunciado ol.incisos>li{counter-increment:inciso;position:relative;padding-left:1.7em;margin:0 0 .4em;line-height:1.32}
+.enunciado ol.incisos>li::before{content:counter(inciso,lower-alpha) ")";position:absolute;left:0;font-weight:700;color:var(--green)}
+.ej-figura{margin-top:.6em}
+.ej-figura svg{width:100%;height:auto;max-height:300px}
+.ej-pasos ol.pasos{margin:0;padding-left:1.4em}
+.ej-pasos ol.pasos>li,.slide-body ol.pasos>li{border-left:0;margin-left:0;padding-left:.15em;margin-bottom:.55em}
+.ej-pasos ol.pasos>li .katex-display{margin:.2em 0 .1em}
+.slide-body .katex-display>.katex{max-width:none}
+body.reading-mode .slide-body.ej-grid{grid-template-columns:1fr;gap:18px}
+body.reading-mode .ej-pasos{border-left:0;padding-left:0}
+
+
+/* === Interactivos sin cajas (22 de noviembre de 2026, criterios de impeccable y unslop) ===
+   Los botones de los interactivos son texto: verde y subrayado cuando están activos, como la barra superior.
+   Sin desplazamientos al pasar el cursor; las etiquetas van en minúscula y sin espaciado ancho. */
+.widget-button,.has-full-visual .widget-button{border:0;border-bottom:2px solid transparent;background:none;padding:6px 1px 5px;margin:0 14px 0 0;color:var(--ink);font:600 18px/1.15 var(--sans);border-radius:0}
+.widget-button:hover:not(:disabled){background:none;color:var(--green);border-bottom-color:var(--rule);transform:none}
+.widget-button.is-active,.widget-button[aria-pressed="true"]{background:none;color:var(--green);border-bottom-color:var(--green)}
+.widget-button:active:not(:disabled){transform:none;color:var(--k-verde)}
+.widget-button:disabled{color:var(--rule);cursor:default}
+.v-kicker{letter-spacing:0;font-weight:600}
+.slide-topline,.slide-kicker,.cover-kicker,.cover-bottom,.dialog-kicker,.guide-block h3,.cover-course-kicker,.cover-question-label,.guide-step-preview-kicker{text-transform:none;letter-spacing:.01em}
+.ink-tool,.ink-tool:hover,.ink-tool.is-active{background:none}
+.ink-tool{border:0;border-bottom:2px solid transparent}.ink-tool.is-active{border-bottom-color:var(--green)}
+.widget-result{font:400 22px/1.35 var(--sans);color:var(--ink)}
+.widget-result strong{color:var(--k-verde);font-weight:700}
+.has-full-visual .widget-result{font-size:19px}
+.guide-step-preview{border-left:0;padding-left:0;border-top:1px solid var(--rule);padding-top:8px}
+
+/* === Firma en la barra inferior y pie de diapositiva vacío (22 de noviembre de 2026) === */
+.chrome-firma{font:400 14px/1.2 var(--sans);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.chrome-tools{display:none}
+.slide-foot{border-top:0}
+.slide-foot>span{display:none}
+.index-otras{display:block;margin:0 35px 14px;font:600 17px var(--sans);color:var(--green)}
+.slide-foot{min-height:18px}

@@ -4,7 +4,7 @@
    Confiabilidad: componentes con vida exponencial (apuntes del docente) y sistema de cuatro componentes de Walpole et al. */
 (function () {
   "use strict";
-  const F = window.Fig, K = F.K, L = F.L, co = F.co, k = F.k;
+  const F = window.Fig, K = F.K, L = F.L, co = F.co, k = F.k, E = F.ejemplo;
 
   const pasos = (lista) => `<ol class="pasos">${lista.map((x) => `<li>${x}</li>`).join("")}</ol>`;
   const ej = (o) => ({ title: o.t, lead: o.lead, body: `<div class="enunciado">${o.e}</div>` + pasos(o.p), figure: o.fig, notes: o.n, source: o.s });
@@ -57,6 +57,23 @@
     return s + `</svg>`;
   }
 
+  function figConcretoUCI() {
+    return `<svg viewBox="0 0 640 340" role="img" aria-label="Partición entrenamiento prueba y comparación de error RMSE en datos UCI de concreto">` +
+      `<text x="28" y="34" font-size="17" font-weight="700" fill="${K.verde}">PARTICIÓN SIN FUGA POR DOSIFICACIÓN (1030 ENSAYOS UCI)</text>` +
+      `<rect x="28" y="52" width="468" height="42" fill="${K.azul}" fill-opacity=".22" stroke="${K.azul}" stroke-width="2"/>` +
+      `<rect x="496" y="52" width="116" height="42" fill="${K.ocre}" fill-opacity=".24" stroke="${K.ocre}" stroke-width="2"/>` +
+      `<text x="262" y="79" text-anchor="middle" font-size="17" font-weight="700" fill="${K.azul}">Entrenamiento: 826 (348 dosificaciones)</text>` +
+      `<text x="554" y="79" text-anchor="middle" font-size="16" font-weight="700" fill="${K.ocre}">Prueba: 204</text>` +
+      `<text x="28" y="138" font-size="17" font-weight="700" fill="${K.tinta}">ERROR EN LOS 204 ENSAYOS DE PRUEBA (80 DOSIFICACIONES NUEVAS)</text>` +
+      `<text x="28" y="176" font-size="18" font-weight="700" fill="${K.medio}">Línea base (media = 36,65 MPa) · MAE = 13,06 MPa</text>` +
+      `<rect x="28" y="188" width="360" height="30" fill="${K.gris}" fill-opacity=".55" stroke="${K.medio}" stroke-width="1.5"/>` +
+      `<text x="398" y="209" font-size="17" font-weight="700" fill="${K.tinta}">RMSE = 16,16 MPa</text>` +
+      `<text x="28" y="254" font-size="18" font-weight="700" fill="${K.verde}">Regresión lineal (8 ingredientes y edad) · MAE = 7,19 MPa</text>` +
+      `<rect x="28" y="266" width="205" height="30" fill="${K.verde}" fill-opacity=".75"/>` +
+      `<text x="243" y="287" font-size="17" font-weight="700" fill="${K.verde}">RMSE = 9,20 MPa (−43 %)</text>` +
+      `</svg><p class="fig-note">Resultados reproducibles en <code>cuadernos/concreto.py</code>; 80 dosificaciones en prueba.</p>`;
+  }
+
   window.COURSE = {
     id: "regresion_y_confiabilidad",
     title: "Regresión lineal y confiabilidad",
@@ -75,16 +92,17 @@
             figure: dispersion(),
             source: MR,
             abajo: [
-              ej({
+              E({
                 t: "Ejemplo: correlación entre hidrocarburos y pureza",
-                e: L`Para las 20 observaciones de pureza del oxígeno se obtuvo \(S_{xx}=\azul{0{,}68088}\), \(S_{yy}=\ocre{173{,}38}\) y \(S_{xy}=\morado{10{,}17744}\). Calcule el coeficiente de correlación.`,
+                e: L`En una unidad de destilación se midieron 20 veces el nivel de hidrocarburos en el condensador y la pureza del oxígeno producido.`,
+                d: [[L`\azul{S_{xx}}=\azul{0{,}68088}`, "suma de cuadrados de \\(x\\)"], [L`\ocre{S_{yy}}=\ocre{173{,}38}`, "suma de cuadrados de \\(y\\)"], [L`\morado{S_{xy}}=\morado{10{,}17744}`, "suma de productos cruzados"]],
+                q: L`Calcule e interprete el coeficiente de correlación.`,
                 p: [
                   L`<strong>Variables:</strong> \(x\) = nivel de hidrocarburos (%), \(y\) = pureza del oxígeno (%).`,
-                  L`<strong>Fórmula y sustitución:</strong> \[r=\frac{S_{xy}}{\sqrt{S_{xx}\,S_{yy}}}=\frac{\morado{10{,}17744}}{\sqrt{\azul{0{,}68088}\cdot\ocre{173{,}38}}}=\frac{10{,}177}{10{,}865}=\verde{0{,}937}\]`,
+                  L`<strong>Correlación:</strong> \[\begin{aligned} r&=\frac{S_{xy}}{\sqrt{S_{xx}\,S_{yy}}}\\ &=\frac{\morado{10{,}17744}}{\sqrt{\azul{0{,}68088}\cdot\ocre{173{,}38}}}=\frac{10{,}177}{10{,}865}=\verde{0{,}937} \end{aligned}\]`,
                   L`<strong>Lectura:</strong> relación lineal positiva y fuerte: a más hidrocarburos, mayor pureza. La correlación no dice cuánto cambia la pureza por cada punto de hidrocarburos; eso lo da la pendiente.`
                 ],
-                n: "",
-                s: MR
+                n: "", s: MR
               })
             ]
           },
@@ -98,17 +116,19 @@
             codigo: { python: "scipy.stats.linregress(x, y)", excel: "=PENDIENTE(y;x), =INTERSECCION.EJE(y;x)" },
             source: MR,
             abajo: [
-              ej({
+              E({
                 t: "Ejemplo: recta de la pureza del oxígeno",
-                e: L`Con los 20 datos: \(\sum x_i=\azul{23{,}92}\), \(\sum y_i=\ocre{1843{,}21}\), \(\sum x_i^2=29{,}2892\) y \(\sum x_iy_i=2214{,}6566\). Halle la recta de mínimos cuadrados y prediga la pureza cuando los hidrocarburos son 1,00 %.`,
+                e: L`Con los mismos 20 datos de hidrocarburos \(x\) (%) y pureza \(y\) (%) se calcularon estas sumas.`,
+                d: [[L`\morado{n}=\morado{20}`, "observaciones"], [L`\azul{\textstyle\sum x_i}=\azul{23{,}92}`, ""], [L`\ocre{\textstyle\sum y_i}=\ocre{1843{,}21}`, ""], [L`\textstyle\sum x_i^2=29{,}2892`, ""], [L`\textstyle\sum x_iy_i=2214{,}6566`, ""]],
+                i: [L`Halle la recta de mínimos cuadrados.`, L`Prediga la pureza cuando los hidrocarburos son ${k("magenta", "1,00&nbsp;%")}.`],
                 p: [
-                  L`<strong>Medias:</strong> \(\bar x=\frac{\azul{23{,}92}}{20}=1{,}196\), \(\bar y=\frac{\ocre{1843{,}21}}{20}=92{,}1605\).`,
-                  L`<strong>Sumas de cuadrados:</strong> \[\begin{aligned} S_{xx}&=\sum x_i^2-\frac{(\sum x_i)^2}{n}=29{,}2892-\frac{\azul{23{,}92}^2}{20}=0{,}68088\\ S_{xy}&=\sum x_iy_i-\frac{\sum x_i\sum y_i}{n}=2214{,}6566-\frac{\azul{23{,}92}(\ocre{1843{,}21})}{20}=10{,}17744 \end{aligned}\]`,
-                  L`<strong>Coeficientes:</strong> \[b_1=\frac{10{,}17744}{0{,}68088}=\verde{14{,}947},\qquad b_0=92{,}1605-14{,}947(1{,}196)=\verde{74{,}283}\]`,
-                  L`<strong>Predicción:</strong> \(\hat y=74{,}283+14{,}947(1{,}00)=\verde{89{,}23}\,\%\). Cada punto porcentual adicional de hidrocarburos aumenta la pureza media en unos 14,9 puntos (dentro del rango observado, 0,87 a 1,55 %).`
+                  L`<strong>Medias:</strong> \(\bar x=\dfrac{\azul{23{,}92}}{\morado{20}}=1{,}196\), \(\bar y=\dfrac{\ocre{1843{,}21}}{\morado{20}}=92{,}1605\).`,
+                  L`<strong>Sumas de cuadrados:</strong> \[\begin{aligned} S_{xx}&=\sum x_i^2-\frac{(\sum x_i)^2}{n}=29{,}2892-\frac{\azul{23{,}92}^2}{\morado{20}}=0{,}68088\\ S_{xy}&=\sum x_iy_i-\frac{\sum x_i\sum y_i}{n}=2214{,}6566-\frac{\azul{23{,}92}(\ocre{1843{,}21})}{\morado{20}}=10{,}17744 \end{aligned}\]`,
+                  L`<strong>a)</strong> \[\begin{aligned} b_1&=\frac{S_{xy}}{S_{xx}}=\frac{10{,}17744}{0{,}68088}=\verde{14{,}947}\\ b_0&=\bar y-b_1\bar x=92{,}1605-14{,}947(1{,}196)=\verde{74{,}283} \end{aligned}\] \(\hat y=74{,}283+14{,}947\,x\).`,
+                  L`<strong>b)</strong> \[\begin{aligned} \hat y&=b_0+b_1x\\ &=74{,}283+14{,}947(\magenta{1{,}00})=\verde{89{,}23\,\%} \end{aligned}\]`,
+                  L`<strong>Lectura:</strong> cada punto porcentual adicional de hidrocarburos aumenta la pureza media en unos 14,9 puntos, dentro del rango observado (0,87 a 1,55&nbsp;%).`
                 ],
-                n: "",
-                s: MR
+                n: "", s: MR
               })
             ]
           },
@@ -121,18 +141,18 @@
             figure: residuos(),
             source: MR,
             abajo: [
-              ej({
-                t: "Ejemplo: qué tanto explica la recta de pureza",
-                e: L`Para los datos de pureza: \(\mathrm{SST}=S_{yy}=\ocre{173{,}38}\), \(b_1=\azul{14{,}947}\) y \(S_{xy}=\morado{10{,}17744}\). Halle \(R^2\) y la varianza estimada del error.`,
+              E({
+                t: "Ejemplo: coeficiente de determinación de la pureza del oxígeno",
+                e: L`Para los datos de pureza del oxígeno se conocen la variación total, la pendiente y la suma de productos cruzados.`,
+                d: [[L`\ocre{\mathrm{SST}}=S_{yy}=\ocre{173{,}38}`, "variación total de \\(y\\)"], [L`\azul{b_1}=\azul{14{,}947}`, "pendiente"], [L`\morado{S_{xy}}=\morado{10{,}17744}`, "suma de productos cruzados"], [L`n=20`, "observaciones"]],
+                i: [L`Halle el coeficiente de determinación \(R^2\).`, L`Halle la varianza estimada del error.`],
                 p: [
-                  L`<strong>Parte explicada:</strong> \(\mathrm{SSR}=b_1S_{xy}=\azul{14{,}947}(\morado{10{,}17744})=152{,}13\).`,
-                  L`<strong>Error:</strong> \(\mathrm{SSE}=\ocre{173{,}38}-152{,}13=21{,}25\).`,
-                  L`<strong>Coeficiente de determinación:</strong> \[R^2=\frac{152{,}13}{\ocre{173{,}38}}=\verde{0{,}877}\qquad\left(=r^2=0{,}937^2\right)\]`,
-                  L`<strong>Varianza del error:</strong> \(\hat\sigma^2=\dfrac{21{,}25}{20-2}=\verde{1{,}18}\), \(\hat\sigma=1{,}09\) puntos de pureza.`,
-                  L`<strong>Lectura:</strong> la recta explica el 87,7 % de la variación de la pureza; las predicciones tienen un error típico de alrededor de 1 punto.`
+                  L`<strong>Parte explicada y error:</strong> \[\begin{aligned} \mathrm{SSR}&=b_1S_{xy}=\azul{14{,}947}(\morado{10{,}17744})=152{,}13\\ \mathrm{SSE}&=\mathrm{SST}-\mathrm{SSR}=\ocre{173{,}38}-152{,}13=21{,}25 \end{aligned}\]`,
+                  L`<strong>a)</strong> \[\begin{aligned} R^2&=\frac{\mathrm{SSR}}{\mathrm{SST}}\\ &=\frac{152{,}13}{\ocre{173{,}38}}=\verde{0{,}877}\qquad(=r^2=0{,}937^2) \end{aligned}\]`,
+                  L`<strong>b)</strong> \[\begin{aligned} \hat\sigma^2&=\frac{\mathrm{SSE}}{n-2}\\ &=\frac{21{,}25}{20-2}=\verde{1{,}18},\qquad \hat\sigma=1{,}09 \end{aligned}\]`,
+                  L`<strong>Lectura:</strong> la recta explica el 87,7&nbsp;% de la variación de la pureza; las predicciones tienen un error típico de alrededor de 1 punto.`
                 ],
-                n: "",
-                s: MR
+                n: "", s: MR
               })
             ]
           },
@@ -141,6 +161,7 @@
             title: L`Regresión con datos reales en Python`,
             lead: L`El mismo procedimiento con los 1030 ensayos de concreto del repositorio UCI.`,
             body: L`<p>El cuaderno <code>cuadernos/concreto.ipynb</code> ajusta la resistencia a compresión en función de los ingredientes y la edad del concreto.</p><p><strong>Pasos:</strong> definir la pregunta; separar datos de entrenamiento (826) y de prueba (204); ajustar; medir el error en los datos de prueba, no en los mismos con que se ajustó.</p><p>Son datos observacionales de muchas mezclas: sirven para asociar y predecir, no para validar una dosificación.</p>`,
+            figure: figConcretoUCI(),
             codigo: { python: "numpy.polyfit(x, y, 1); scipy.stats.linregress(x, y)", excel: "Datos → Análisis de datos → Regresión" },
             source: "Yeh (1998), UCI Concrete Compressive Strength; cuaderno local concreto.ipynb."
           }
@@ -159,17 +180,19 @@
             visual: "weibull",
             source: "Hayter; apuntes del docente.",
             abajo: [
-              ej({
+              E({
                 t: "Ejemplo: confiabilidad de un componente exponencial",
-                e: L`El tiempo de falla \(T\) de un componente es exponencial con media \(\beta=\azul{5}\) años. Halle \(R(t)\), la confiabilidad a los \(\ocre{8}\) años y la tasa de falla.`,
+                e: L`El tiempo de falla de un componente es exponencial.`,
+                d: [[L`\azul{\beta}=\azul{5}`, "vida media (años)"], [L`\ocre{t}=\ocre{8}`, "tiempo de la misión (años)"]],
+                i: [L`Halle la función de confiabilidad \(R(t)\).`, L`Halle la confiabilidad a los 8 años.`, L`Halle la tasa de falla.`],
                 p: [
-                  L`<strong>Variable:</strong> \(T\) = tiempo hasta la falla en años, \(f(t)=\frac{1}{\azul{5}}e^{-t/\azul{5}}\).`,
-                  L`<strong>Confiabilidad:</strong> \[R(t)=\int_t^\infty\frac{1}{\azul{5}}e^{-u/\azul{5}}\,du=e^{-t/\azul{5}},\qquad R(\ocre{8})=e^{-\ocre{8}/\azul{5}}=\verde{0{,}202}\]`,
-                  L`<strong>Tasa de falla:</strong> \[h(t)=\frac{f(t)}{R(t)}=\frac{\frac15e^{-t/5}}{e^{-t/5}}=\verde{\frac15\ \text{por año}}\]`,
+                  L`<strong>Variable:</strong> \(T\) = años hasta la falla, \(f(t)=\frac{1}{\azul{\beta}}e^{-t/\azul{\beta}}=\frac{1}{\azul{5}}e^{-t/\azul{5}}\).`,
+                  L`<strong>a)</strong> \[\begin{aligned} R(t)&=P(T\gt t)=\int_t^\infty f(u)\,du\\ &=\int_t^\infty\frac{1}{\azul{5}}e^{-u/\azul{5}}\,du=\verde{e^{-t/5}} \end{aligned}\]`,
+                  L`<strong>b)</strong> \(R(\ocre{8})=e^{-\ocre{8}/\azul{5}}=e^{-1{,}6}=\verde{0{,}202}\).`,
+                  L`<strong>c)</strong> \[\begin{aligned} h(t)&=\frac{f(t)}{R(t)}\\ &=\frac{\frac15e^{-t/5}}{e^{-t/5}}=\verde{\frac15\ \text{por año}} \end{aligned}\]`,
                   L`<strong>Lectura:</strong> la tasa es constante: la exponencial no envejece. Para equipos con desgaste se usa Weibull con forma mayor que 1.`
                 ],
-                n: "",
-                s: "Ejemplo de los apuntes del docente (Walpole et al.)."
+                n: "", s: "Ejemplo de los apuntes del docente (Walpole et al.)."
               })
             ]
           },
@@ -191,18 +214,19 @@
             figure: sistemaWalpole(true),
             source: "Walpole et al.; Hayter.",
             abajo: [
-              ej({
+              E({
                 t: "Ejemplo: un sistema eléctrico de cuatro componentes",
-                e: L`Un sistema eléctrico funciona si funcionan los componentes A y B, y al menos uno de los componentes C o D. Las probabilidades de que funcionen son \(\azul{0{,}9}\) para A y B, y \(\ocre{0{,}8}\) para C y D, de forma independiente. ¿Cuál es la probabilidad de que el sistema funcione?`,
+                e: L`Un sistema eléctrico funciona si funcionan los componentes A y B, y al menos uno de los componentes C o D. Los componentes funcionan de forma independiente.`,
+                d: [[L`\azul{P(A)=P(B)}=\azul{0{,}9}`, "componentes en serie"], [L`\ocre{P(C)=P(D)}=\ocre{0{,}8}`, "componentes en paralelo"]],
+                q: L`¿Cuál es la probabilidad de que el sistema funcione?`,
                 p: [
                   L`<strong>Eventos:</strong> \(A, B, C, D\) = el componente funciona.`,
-                  L`<strong>Serie A–B:</strong> \(P(A\cap B)=\azul{0{,}9}\times\azul{0{,}9}=0{,}81\).`,
-                  L`<strong>Paralelo C–D:</strong> falla solo si fallan ambos: \[P(C\cup D)=1-(1-\ocre{0{,}8})(1-\ocre{0{,}8})=1-0{,}04=0{,}96\]`,
-                  L`<strong>Sistema:</strong> los dos bloques en serie: \[P(\text{sistema})=0{,}81\times0{,}96=\verde{0{,}7776}\]`
+                  L`<strong>Serie A–B:</strong> \[\begin{aligned} P(A\cap B)&=P(A)\,P(B)\\ &=\azul{0{,}9}\times\azul{0{,}9}=0{,}81 \end{aligned}\]`,
+                  L`<strong>Paralelo C–D:</strong> falla solo si fallan ambos: \[\begin{aligned} P(C\cup D)&=1-P(C')\,P(D')\\ &=1-(1-\ocre{0{,}8})(1-\ocre{0{,}8})=1-0{,}04=0{,}96 \end{aligned}\]`,
+                  L`<strong>Sistema</strong> (los dos bloques en serie): \[P(\text{sistema})=0{,}81\times 0{,}96=\verde{0{,}7776}\]`
                 ],
                 fig: sistemaWalpole(true),
-                n: "",
-                s: "Walpole et al., ejemplo de sistema eléctrico con cuatro componentes."
+                n: "", s: "Walpole et al., ejemplo de sistema eléctrico con cuatro componentes."
               })
             ]
           }

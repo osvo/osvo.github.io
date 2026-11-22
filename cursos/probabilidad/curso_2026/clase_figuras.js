@@ -127,6 +127,20 @@
     return s + (o.note ? `<p class="fig-note">${o.note}</p>` : "");
   }
 
+  function repartirEtiquetas(items, minX, maxX, gap) {
+    const it = items.map((o) => ({ ...o, cx: o.x })).sort((a, b) => a.x - b.x);
+    for (let vuelta = 0; vuelta < 60; vuelta++) {
+      let movio = false;
+      for (let i = 1; i < it.length; i++) {
+        const a = it[i - 1], b = it[i], falta = (a.w + b.w) / 2 + gap - (b.cx - a.cx);
+        if (falta > 0.5) { a.cx -= falta / 2; b.cx += falta / 2; movio = true; }
+      }
+      it.forEach((o) => { o.cx = Math.max(minX + o.w / 2, Math.min(maxX - o.w / 2, o.cx)); });
+      if (!movio) break;
+    }
+    return it;
+  }
+
   function caja(data, o) {
     const r = resumen(data), left = 40, right = 612, X = (v) => left + (v - o.xmin) / (o.xmax - o.xmin) * (right - left), y = 170, h = 90;
     const ric = r.q3 - r.q1, lower = r.q1 - 1.5 * ric, upper = r.q3 + 1.5 * ric;
@@ -140,7 +154,16 @@
     s += `<rect x="${X(r.q1).toFixed(1)}" y="${y}" width="${(X(r.q3) - X(r.q1)).toFixed(1)}" height="${h}" fill="${K.azul}" fill-opacity=".16" stroke="${K.azul}" stroke-width="3.5"/>`;
     s += `<path d="M${X(r.median).toFixed(1)} ${y}v${h}" stroke="${K.rojo}" stroke-width="5"/>`;
     s += t(lowWhisker, "bigote " + co(lowWhisker, 1), K.tinta, y + h + 38) + t(highWhisker, "bigote " + co(highWhisker, 1), K.tinta, y + h + 38);
-    s += t(r.q1, "Q₁ = " + co(r.q1, 2), K.azul, y - 44) + t(r.q3, "Q₃ = " + co(r.q3, 2), K.azul, y - 14) + t(r.median, "Q₂ = " + co(r.median, 2), K.rojo, y + h + 38);
+    // Cuartiles en una sola fila sobre la caja; si se tocan, se separan y una línea fina señala su valor.
+    const etiquetas = repartirEtiquetas([
+      { x: X(r.q1), text: "Q₁ = " + co(r.q1, 1), color: K.azul },
+      { x: X(r.median), text: "Q₂ = " + co(r.median, 1), color: K.rojo },
+      { x: X(r.q3), text: "Q₃ = " + co(r.q3, 1), color: K.azul }
+    ].map((e) => ({ ...e, w: e.text.length * 11.5 })), left, right, 14);
+    etiquetas.forEach((e) => {
+      if (Math.abs(e.cx - e.x) > 2) s += `<path d="M${e.cx.toFixed(1)} ${y - 30}L${e.x.toFixed(1)} ${y - 4}" stroke="${e.color}" stroke-width="1.5" fill="none"/>`;
+      s += `<text x="${e.cx.toFixed(1)}" y="${y - 38}" text-anchor="middle" font-size="21" font-weight="700" fill="${e.color}">${e.text}</text>`;
+    });
     s += `<path d="M${left} 330H${right}" stroke="${K.medio}" stroke-width="2"/>`;
     (o.ticks || []).forEach((v) => { s += `<text x="${X(v).toFixed(1)}" y="358" text-anchor="middle" font-size="21" fill="${K.tinta}">${co(v, 0)}</text>`; });
     s += `<text x="${(left + right) / 2}" y="${HH - 8}" text-anchor="middle" font-size="21" font-weight="700" fill="${K.tinta}">${o.xlabel || "resistencia, MPa"}</text></svg>`;
@@ -165,6 +188,23 @@
   /* Datos del hilo: 20 cilindros del mismo lote. Simulados para ilustrar; no son ensayos reales. */
   const CILINDROS = [22.9, 24.1, 24.8, 25.6, 26.0, 26.4, 26.9, 27.2, 27.5, 27.9, 28.2, 28.4, 28.9, 29.3, 29.8, 30.4, 30.9, 31.6, 32.5, 34.3];
 
-  window.Fig = Object.freeze({ K, co, k, H, L: String.raw, lgamma, Phi, normal, tpdf, chi2pdf, tcdf, chi2cdf, zCrit, tCrit, chi2Crit, comb, simpson, resumen, curvas, puntos, histograma, caja, intervalo, CILINDROS });
+  /* Ejemplo de clase con formato fijo:
+     o.e  contexto del enunciado (sin las preguntas),
+     o.d  datos: pares [símbolo y valor en KaTeX, significado], cada uno en su color,
+     o.q  pregunta única (si no hay incisos),
+     o.i  incisos, uno por renglón,
+     o.p  pasos de la solución (cada uno aparece con →): primero la fórmula general, luego la sustitución.
+     El motor pone el enunciado a la izquierda y los pasos a la derecha. */
+  function ejemplo(o) {
+    const datos = (o.d || []).length
+      ? `<dl class="datos">${o.d.map(([sim, que]) => `<dt>\\(${sim}\\)</dt><dd>${que}</dd>`).join("")}</dl>` : "";
+    const inc = (o.i || []).length ? `<ol class="incisos">${o.i.map((x) => `<li>${x}</li>`).join("")}</ol>` : "";
+    const preg = o.q ? `<p class="pregunta">${o.q}</p>` : "";
+    const enun = `<div class="enunciado"><p>${o.e}</p>${datos}${preg}${inc}</div>`;
+    const pasos = `<ol class="pasos">${(o.p || []).map((x) => `<li>${x}</li>`).join("")}</ol>`;
+    return { title: o.t, lead: o.lead, body: enun + pasos, figure: o.fig, notes: o.n, source: o.s };
+  }
+
+  window.Fig = Object.freeze({ K, co, k, H, L: String.raw, ejemplo, lgamma, Phi, normal, tpdf, chi2pdf, tcdf, chi2cdf, zCrit, tCrit, chi2Crit, comb, simpson, resumen, curvas, puntos, histograma, caja, intervalo, CILINDROS });
 }());
 

@@ -120,6 +120,7 @@
             lead: L`Variables discretas: \(p(x)\) da la probabilidad de cada valor y \(F(x)\) acumula hasta \(x\).`,
             body: L`<p>\(p(x)\ge0\) y \(\sum_x p(x)=1\).</p><p>\(F(x)=P(X\le x)=\sum_{t\le x}p(t)\): es escalonada, no decrece, va de 0 a 1.</p><p>Para valores enteros: \(P(a\le X\le b)=F(b)-F(a-1)\).</p>`,
             formula: L`F(\azul{x})=P(X\le\azul{x})=\sum_{t\le \azul{x}}p(t)`,
+            visual: "pmf_cdf_escalera",
             source: "Apuntes del docente; Walpole et al.",
             abajo: [
               ej({
@@ -173,7 +174,7 @@
                 s: AW
               }),
               ej({
-                t: "Ejemplo: la acumulada de la misma densidad",
+                t: "Ejemplo: función acumulada de la densidad anterior",
                 e: L`Para el error de temperatura con \(f(x)=\dfrac{x^2}{3}\) en \(-1&lt;x&lt;2\), halle \(F(x)\) y úsela para calcular de nuevo \(P(0&lt;X\le1)\).`,
                 p: [
                   L`<strong>Para \(x\le-1\):</strong> no hay área a la izquierda, \(F(x)=0\).`,
@@ -202,7 +203,7 @@
           {
             id: "va-9",
             title: "Valor esperado",
-            lead: L`Promedio de los valores de \(X\) ponderado por su probabilidad: el centro de equilibrio de la distribución.`,
+            lead: L`Promedio de los valores de \(X\) ponderado por su probabilidad.`,
             body: L`<p><strong>Por qué esa fórmula:</strong> si el experimento se repite \(N\) veces, el valor \(x\) aparece cerca de \(N\,p(x)\) veces. El promedio de los resultados es entonces</p><p>\[\frac{\sum_x x\cdot N\,p(x)}{N}=\sum_x x\,p(x).\]</p>`,
             formula: L`\azul{\mu}=E(X)=\sum_x x\,p(x)\qquad\qquad \azul{\mu}=E(X)=\int_{-\infty}^{\infty}x\,f(x)\,dx`,
             visual: "promedio_largo",
@@ -275,6 +276,7 @@
             body: L`<p><strong>Valor esperado</strong> (la suma y la constante salen de la suma o la integral): \[E(aX+b)=\sum_x(ax+b)p(x)=a\sum_x x\,p(x)+b\sum_x p(x)=a\,E(X)+b\]</p><p><strong>Varianza:</strong> \[\mathrm{Var}(aX+b)=E\!\left[(aX+b-a\mu-b)^2\right]=a^2E\!\left[(X-\mu)^2\right]=a^2\,\mathrm{Var}(X)\]</p>`,
             formula: L`E(\azul{a}X+\ocre{b})=\azul{a}\,E(X)+\ocre{b}\qquad\qquad \mathrm{Var}(\azul{a}X+\ocre{b})=\azul{a}^2\,\mathrm{Var}(X)`,
             lectura: L`La constante ${k("ocre", "b")} mueve toda la distribución sin dispersarla; el factor ${k("azul", "a")} la estira y entra al cuadrado en la varianza.`,
+            visual: "lineal_ax_b",
             source: "Apuntes del docente; Hayter.",
             abajo: [
               ej({
@@ -354,6 +356,7 @@
             lead: L`La covarianza depende de las unidades; la correlación la lleva a una escala de −1 a 1.`,
             body: L`<p>\(\rho=1\) o \(\rho=-1\): relación lineal exacta. \(\rho=0\): sin relación lineal (puede haber otra).</p><p>Independientes implica \(\rho=0\); lo contrario no siempre es cierto.</p>`,
             formula: L`\morado{\rho}=\frac{\mathrm{Cov}(X,Y)}{\azul{\sigma_X}\,\ocre{\sigma_Y}},\qquad -1\le\morado{\rho}\le1`,
+            visual: "correlacion_nube",
             source: "Hayter; Walpole et al.",
             abajo: [
               ej({

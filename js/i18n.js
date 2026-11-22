@@ -52,6 +52,7 @@
         title: 'Experiencia',
         teacher: 'Docente ocasional',
         university: 'Universidad Nacional de Colombia',
+        probability: 'Probabilidad &amp; Estadística',
         statistics: 'Estadística I',
         differentialEquations: 'Ecuaciones diferenciales',
         differentialCalculus: 'Cálculo diferencial',
@@ -74,6 +75,7 @@
       },
       projects: {
         title: 'Proyectos',
+        course: 'Diapositivas del curso de Probabilidad &amp; Estadística',
         siteCode: 'Código de este sitio web',
         algebra: 'Laboratorio interactivo de álgebra lineal',
         absvr: 'Adaptive Bayesian Support Vector Regression'
@@ -125,6 +127,7 @@
         title: 'Experience',
         teacher: 'Lecturer',
         university: 'National University of Colombia',
+        probability: 'Probability &amp; Statistics',
         statistics: 'Statistics I',
         differentialEquations: 'Differential Equations',
         differentialCalculus: 'Differential Calculus',
@@ -147,6 +150,7 @@
       },
       projects: {
         title: 'Projects',
+        course: 'Probability &amp; Statistics course slides',
         siteCode: 'Source code for this website',
         algebra: 'Interactive linear algebra laboratory',
         absvr: 'Adaptive Bayesian Support Vector Regression'
@@ -237,6 +241,7 @@
           <strong class="experience-role">${copy.experience.teacher}</strong>
           <div class="experience-institution">${copy.experience.university}</div>
           <ul class="experience-tasks">
+            <li class="experience-task"><span>${copy.experience.probability}</span><span class="experience-years"><span class="badge">2026</span></span></li>
             <li class="experience-task"><span>${copy.experience.statistics}</span><span class="experience-years"><span class="badge">2024</span></span></li>
             <li class="experience-task"><span>${copy.experience.differentialEquations}</span><span class="experience-years"><span class="badge">2024</span></span></li>
             <li class="experience-task"><span>${copy.experience.differentialCalculus}</span><span class="experience-years"><span class="badge">2022</span></span></li>
@@ -279,6 +284,7 @@
     setHtml('#projects .card', `
       <h2 id="h-proj"># ${copy.projects.title}</h2>
       <ul>
+        <li><a href="https://osvo.com.co/cursos/probabilidad/" target="_blank" rel="noopener">${copy.projects.course}</a></li>
         <li><a href="https://github.com/osvo/osvo.github.io/" target="_blank" rel="noopener">${copy.projects.siteCode}</a></li>
         <li><a href="https://osvo.github.io/algebra-lineal/" target="_blank" rel="noopener">${copy.projects.algebra}</a></li>
         <li><a href="https://github.com/osvo/ABSVR" target="_blank" rel="noopener">${copy.projects.absvr}</a></li>

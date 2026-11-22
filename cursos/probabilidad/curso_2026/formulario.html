@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Fórmulas · Probabilidad y Estadística</title>
   <link rel="stylesheet" href="../vendor/katex/katex.min.css">
-  <link rel="stylesheet" href="curso.css">
+  <link rel="stylesheet" href="curso.css?v=20261122r4">
   <style>
     :root{--paper:#fff}
     html{scroll-behavior:smooth;scroll-padding-top:24px}
@@ -20,10 +20,10 @@
     .buscador svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--muted)}
     #buscar{width:100%;font:400 17px var(--sans);padding:11px 12px 11px 40px;border:1px solid var(--rule);border-radius:8px;background:#fff;color:var(--ink)}
     #buscar:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(70,107,63,.18)}
-    #vistas{display:grid;grid-template-columns:1fr 1fr;margin:14px 0 6px;border:1px solid var(--rule);border-radius:8px;overflow:hidden}
-    #vistas button{font:600 15px var(--sans);padding:9px 6px;border:0;background:#fff;color:var(--muted);cursor:pointer}
-    #vistas button+button{border-left:1px solid var(--rule)}
-    #vistas button[aria-pressed="true"]{background:var(--green);color:#fff}
+    #vistas{display:flex;gap:20px;margin:16px 0 6px;border-bottom:1px solid var(--rule)}
+    #vistas button{font:600 16px var(--sans);padding:8px 0 7px;border:0;border-bottom:2px solid transparent;margin-bottom:-1px;background:none;color:var(--muted);cursor:pointer}
+    #vistas button:hover{color:var(--ink)}
+    #vistas button[aria-pressed="true"]{color:var(--green);border-bottom-color:var(--green)}
     #cuenta{font:400 14px var(--sans);color:var(--muted);margin:10px 0 22px}
     #indice{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
     #indice a{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid #e6e8e3;font:400 16px/1.25 var(--sans);color:var(--ink);text-decoration:none}
@@ -55,8 +55,8 @@
     @media print{aside,header.cab nav{display:none}.pagina{display:block}.fila{break-inside:avoid}}
   </style>
   <script src="../vendor/katex/katex.min.js" defer></script>
-  <script src="clase_figuras.js" defer></script>
-  <script src="formulario.js" defer></script>
+  <script src="clase_figuras.js?v=20261122r4" defer></script>
+  <script src="formulario.js?v=20261122r4" defer></script>
 </head>
 <body>
   <div class="pagina">

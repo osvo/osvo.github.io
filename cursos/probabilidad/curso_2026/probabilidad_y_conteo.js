@@ -176,7 +176,7 @@
             body: L`<p><strong>Axiomas:</strong> \(P(A)\ge0\); \(P(S)=1\); si \(A\cap B=\varnothing\), \(P(A\cup B)=P(A)+P(B)\).</p><p><strong>Consecuencias:</strong> \(P(\varnothing)=0\), \(0\le P(A)\le1\), \(P(A')=1-P(A)\).</p><p><strong>Resultados igualmente probables:</strong> \(P(A)=\dfrac{n(A)}{n(S)}\).</p>`,
             formula: L`P(\azul{A} \cup \ocre{B}) = P(\azul{A}) + P(\ocre{B}) - P(\rojo{A \cap B})`,
             lectura: L`Al sumar \(P(A)+P(B)\) la ${k("rojo", "intersección")} queda contada dos veces; se resta una vez.`,
-            visual: "venn_prob",
+            visual: "union",
             source: "Apuntes del docente; Hayter.",
             abajo: [
               ej({
@@ -224,6 +224,24 @@
                 s: AP
               })
             ]
+          },
+          {
+            id: "pc-3f",
+            title: "Probabilidad como frecuencia relativa",
+            lead: L`Estimación de \(P(A)\) con la fracción de veces que ocurrió \(A\) en datos observados.`,
+            body: L`<p><strong>Frecuencia relativa:</strong> si el evento \(A\) ocurrió \(\azul{k}\) veces en \(\ocre{n}\) observaciones, \(P(A)\approx\frac{\azul{k}}{\ocre{n}}\). La aproximación mejora cuando \(\ocre{n}\) crece.</p><p><strong>Supuesto:</strong> el proceso que produjo los datos no cambia (mismos materiales, clima y prácticas). Si cambia, la estimación deja de valer.</p><p><strong>Ejemplo:</strong> de \(\ocre{425}\) ensayos de concreto a 28 días, \(\azul{49}\) quedaron por debajo de 20 MPa. Para mezclas como esas, \(P(\text{resistencia}\lt 20\text{ MPa})\approx\frac{\azul{49}}{\ocre{425}}=\verde{0{,}115}\).</p>`,
+            formula: L`P(A)\approx\frac{\azul{k}}{\ocre{n}}=\frac{\azul{\text{veces que ocurrió }A}}{\ocre{\text{observaciones}}}`,
+            source: "Datos de concreto UCI (Yeh, 1998)."
+          },
+          {
+            id: "pc-3m",
+            title: "Método de Montecarlo",
+            lead: L`Estimación de una probabilidad simulando el experimento muchas veces en el computador.`,
+            body: L`<p><strong>Receta:</strong> describir qué es aleatorio y con qué probabilidades; generar un resultado al azar; anotar si ocurrió el evento \(A\); repetir \(N\) veces; dividir.</p><p><strong>Precisión:</strong> el error típico de la estimación es \(\sqrt{p(1-p)/N}\). Para reducirlo a la mitad hacen falta cuatro veces más simulaciones.</p><p>En ingeniería se usa para estimar probabilidades de falla con muchas variables a la vez (cargas, resistencias, caudales) cuando no hay una fórmula cerrada.</p>`,
+            formula: L`\hat P(A)=\frac{\verde{\text{simulaciones en que ocurre }A}}{\azul{N}}`,
+            visual: "montecarlo",
+            codigo: { python: "rng = np.random.default_rng(); d = rng.integers(1, 7, size=(10000, 2)); np.mean(d.sum(axis=1) >= 10)", excel: "=ALEATORIO.ENTRE(1;6) en dos columnas; =SI(A2+B2>=10;1;0); =PROMEDIO(C2:C10001)" },
+            source: "Montgomery y Runger, Probabilidad y estadística aplicadas a la ingeniería."
           }
         ]
       },
@@ -237,6 +255,7 @@
             lead: L`Si una tarea se hace en etapas sucesivas, se multiplican las opciones de cada etapa.`,
             body: L`<p><strong>Principio multiplicativo:</strong> \(n_1\) opciones en la primera etapa y \(n_2\) en la segunda dan \(n_1\,n_2\) formas.</p><p><strong>Con repetición y orden:</strong> \(r\) elecciones entre \(n\) opciones dan \(n^r\).</p><p><strong>Factorial:</strong> ordenar \(n\) objetos distintos: \(n\) opciones para el primer puesto, \(n-1\) para el segundo, …</p>`,
             formula: L`\verde{n!} = n \times (n - 1) \times (n - 2) \times \cdots \times 1 \qquad (0! = 1)`,
+            visual: "arbol_conteo",
             codigo: { python: "scipy.special.factorial(n, exact=True)", excel: "=FACT(n)" },
             source: "Apuntes del docente; Hayter.",
             abajo: [
@@ -524,7 +543,7 @@
             source: "Apuntes del docente; Hayter.",
             abajo: [
               ej({
-                t: "Ejemplo: ¿qué máquina produjo el artículo defectuoso?",
+                t: "Ejemplo: máquina que produjo un artículo defectuoso",
                 e: L`Con las máquinas \(M_1\), \(M_2\), \(M_3\) (60 %, 30 %, 10 % de la producción; 2 %, 3 %, 4 % defectuosos), se sabe que \(P(D)=0{,}025\). Si un artículo es defectuoso, ¿qué probabilidad hay de que lo haya producido \(M_2\)?`,
                 p: [
                   L`<strong>Se pregunta por la causa:</strong> Bayes.`,
@@ -535,7 +554,7 @@
                 s: AP
               }),
               ej({
-                t: "Ejemplo: tres máquinas, de nuevo",
+                t: "Ejemplo: tres máquinas, probabilidad de cada causa",
                 e: L`Las máquinas A, B y C producen el ${k("azul", "10 %")}, ${k("azul", "30 %")} y ${k("azul", "60 %")} de las piezas, con ${k("ocre", "1 %")}, ${k("ocre", "3 %")} y ${k("ocre", "5 %")} de defectuosas. a) ¿Qué probabilidad hay de que una pieza sea defectuosa? b) Si es defectuosa, ¿qué probabilidad hay de que la produjera A?`,
                 p: [
                   L`<strong>a) Efecto, probabilidad total:</strong> \[P(D)=\azul{0{,}10}(\ocre{0{,}01})+\azul{0{,}30}(\ocre{0{,}03})+\azul{0{,}60}(\ocre{0{,}05})=0{,}001+0{,}009+0{,}030=\verde{0{,}04}\]`,
@@ -546,6 +565,14 @@
                 s: AP
               })
             ]
+          },
+          {
+            id: "pc-9b",
+            title: "Adivina Quién: probabilidad condicional y Bayes",
+            lead: "Con testigo exacto el espacio muestral se reduce; con testigo imperfecto cada pista actualiza las probabilidades.",
+            visual: "adivina_quien",
+            visualAncho: true,
+            source: "Actividad inspirada en Guess Who y 3Blue1Brown (actualización bayesiana)."
           }
         ]
       }

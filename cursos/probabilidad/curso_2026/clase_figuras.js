@@ -202,9 +202,15 @@
     const preg = o.q ? `<p class="pregunta">${o.q}</p>` : "";
     const enun = `<div class="enunciado"><p>${o.e}</p>${datos}${preg}${inc}</div>`;
     const pasos = `<ol class="pasos">${(o.p || []).map((x) => `<li>${x}</li>`).join("")}</ol>`;
-    return { title: o.t, lead: o.lead, body: enun + pasos, figure: o.fig, notes: o.n, source: o.s };
+    return { title: o.t, lead: o.lead, body: enun + pasos, figure: o.fig, notes: o.n, source: o.s, partir: o.partir };
   }
 
-  window.Fig = Object.freeze({ K, co, k, H, L: String.raw, ejemplo, lgamma, Phi, normal, tpdf, chi2pdf, tcdf, chi2cdf, zCrit, tCrit, chi2Crit, comb, simpson, resumen, curvas, puntos, histograma, caja, intervalo, CILINDROS });
+  /* Otra forma de resolver el mismo ejemplo: va como último paso, después del resultado.
+     nombre: la idea en pocas palabras («complemento», «tabla», «calculadora»); texto: la ruta, corta. */
+  function ruta(nombre, texto) {
+    return `<div class="otra-ruta"><span class="ruta-tag">Otra ruta${nombre ? ` · ${nombre}` : ""}</span> ${texto}</div>`;
+  }
+
+  window.Fig = Object.freeze({ K, co, k, H, L: String.raw, ejemplo, ruta, lgamma, Phi, normal, tpdf, chi2pdf, tcdf, chi2cdf, zCrit, tCrit, chi2Crit, comb, simpson, resumen, curvas, puntos, histograma, caja, intervalo, CILINDROS });
 }());
 

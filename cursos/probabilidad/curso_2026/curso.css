@@ -681,3 +681,48 @@ table.tabla-datos tr th:first-child{text-align:left;border-bottom:0;border-right
 table.tabla-datos tr:first-child th:first-child{border-bottom:2px solid var(--rule)}
 table.tabla-datos td{text-align:right;padding:.16em .4em}
 .figure-host table.tabla-datos{font-size:26px;margin:auto}
+
+/* Otra ruta: forma alternativa de resolver el ejemplo, después del resultado (sin número de paso). */
+.slide-body ol.pasos>li.paso-ruta{list-style:none;margin-top:.5em;padding-top:.35em;border-top:1px dashed var(--rule);font-size:.9em;line-height:1.34}
+.slide-body ol.pasos>li.paso-ruta+li.paso-ruta{margin-top:.35em}
+.otra-ruta .ruta-tag{font:700 .78em/1.2 var(--sans);letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-right:.35em}
+.otra-ruta .katex-display{margin:.15em 0 .05em}
+
+/* Adivina Quién (sí o no por pregunta) */
+.aq-qbar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) auto;gap:8px 14px;align-items:center}
+.aq-q{display:grid;grid-template-columns:1fr auto auto;grid-template-rows:auto auto;gap:3px 6px;align-items:center;padding:4px 0}
+.aq-q-label{font:700 17px/1.2 var(--sans);color:var(--ink)}
+.aq-q .widget-button{min-width:3.2em;padding:4px 10px}
+.aq-q-count{grid-column:1/-1;font:400 14px/1.2 var(--sans);color:var(--muted);min-height:1.2em}
+.aq-board{grid-template-columns:repeat(6,minmax(0,1fr))}
+div.aq-card{display:flex;flex-direction:column;gap:3px;padding:6px 8px;border:1px solid #d3d8cf;background:#fff}
+.aq-prob{font-size:17px}
+.aq-hist ol{margin:4px 0 0;padding-left:1.4em;font:400 17px/1.35 var(--sans);color:var(--ink)}
+.aq-hist li{margin:0 0 2px}
+.aq-hist strong{color:var(--green)}
+.slide-body ol.lista-numerada{margin:.1em 0 .6em;padding-left:1.5em}
+.slide-body ol.lista-numerada>li{margin:0 0 .2em;line-height:1.35}
+.slide-body ol.lista-numerada>li::marker{color:var(--green);font-weight:700;font-family:var(--sans)}
+.slide-body ul.lista-simple{margin:.1em 0 .6em;padding-left:1.3em}
+.slide-body ul.lista-simple>li{margin:0 0 .2em;line-height:1.35}
+.slide-body ul.lista-simple>li::marker{color:var(--green)}
+/* Números que representan objetos blancos o negros en un ejercicio */
+.k-blanco{color:#fff;-webkit-text-stroke:.055em #4a4f4b;paint-order:stroke fill;font-weight:700}
+.k-negro{color:#111;font-weight:700}
+.k-amarillo{color:#B58900}
+/* Adivina Quién, distribución: preguntas e historial a la izquierda, tablero a la derecha */
+.aq-wrap{display:grid;grid-template-columns:minmax(0,380px) minmax(0,1fr);gap:18px 28px;align-items:start}
+.aq-izq{display:flex;flex-direction:column;gap:12px}
+.aq-qbar{display:flex;flex-direction:column;gap:6px;align-items:stretch}
+.aq-q{grid-template-columns:1fr auto auto;padding:6px 0;border-bottom:1px solid var(--rule)}
+.aq-q-label{font-size:19px}
+.aq-q .widget-button,.has-full-visual .aq-q .widget-button{border:1.5px solid var(--rule);border-radius:6px;margin:0;padding:5px 14px;font:700 18px/1.1 var(--sans);background:#fff}
+.aq-q .widget-button.is-active{border-color:var(--green);background:var(--green);color:#fff}
+.aq-q .widget-button:hover:not(.is-active){border-color:var(--green);color:var(--green)}
+.aq-qbar>.widget-button{align-self:flex-start;margin-top:4px}
+.aq-board{grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.aq-card svg,.has-full-visual .aq-card svg{height:96px}
+.aq-name{font-size:19px}
+.aq-prob{font-size:18px}
+.aq-hist ol{font-size:18px}
+.ej-enunciado table.tabla-num{font-size:1em}

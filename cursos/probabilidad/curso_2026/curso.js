@@ -24,17 +24,20 @@
   const sectionName = (title) => { const m = (title || "").match(/^\d\d[A-Z]? · (.*)$/); return m ? m[1] : title; };
 
   // Colores con significado: el mismo color marca un término en la fórmula (\azul{...}) y en la frase (<span class="k-azul">).
-  const COLOR_ROLES = { azul: "#1F5FA8", verde: "#2F6B2A", rojo: "#A61C31", ocre: "#A85400", morado: "#6B3FA0", magenta: "#B0307A" };
+  const COLOR_ROLES = { azul: "#1F5FA8", verde: "#2F6B2A", rojo: "#A61C31", ocre: "#A85400", morado: "#6B3FA0", magenta: "#B0307A", amarillo: "#B58900" };
   // Se sustituye el nombre del color antes de KaTeX (una macro con #1 chocaría con el # del color).
   // Además, la coma decimal entre dígitos va entre llaves para que KaTeX no la trate como separador (0{,}864 y no 0, 864).
-  const colorize = (source) => source.replace(/\\(azul|verde|rojo|ocre|morado|magenta)\{/g, (_, name) => `\\textcolor{${COLOR_ROLES[name]}}{`).replace(/(\d),(?=\d)/g, "$1{,}");
+  // \blanco{…} y \negro{…}: para ejercicios en que el número representa objetos de ese color.
+  const colorize = (source) => source.replace(/\\(azul|verde|rojo|ocre|morado|magenta|amarillo)\{/g, (_, name) => `\\textcolor{${COLOR_ROLES[name]}}{`)
+    .replace(/\\blanco\{/g, "\\htmlClass{k-blanco}{").replace(/\\negro\{/g, "\\htmlClass{k-negro}{").replace(/(\d),(?=\d)/g, "$1{,}");
+  const KATEX_TRUST = (ctx) => ctx.command === "\\htmlClass" && /^k-(blanco|negro)$/.test(ctx.class);
 
   function addFormula(container, source) {
     if (!source) return;
     const block = el("div", "slide-formula", source);
     block.setAttribute("aria-label", "Fórmula");
     if (window.katex && typeof window.katex.render === "function") {
-      try { window.katex.render(colorize(source), block, { displayMode: true, throwOnError: true }); }
+      try { window.katex.render(colorize(source), block, { displayMode: true, throwOnError: true, trust: KATEX_TRUST, strict: false }); }
       catch (_) { block.textContent = source; }
     }
     container.appendChild(block);
@@ -60,7 +63,7 @@
         const display = m[2] !== undefined, src = display ? m[2] : m[1];
         const span = document.createElement(display ? "div" : "span");
         span.className = display ? "display-math" : "inline-math";
-        try { span.innerHTML = window.katex.renderToString(display ? colorize(src) : colorize(src).replace(/\\frac(?=[{\s])/g, "\\dfrac"), { displayMode: display, throwOnError: false }); }
+        try { span.innerHTML = window.katex.renderToString(display ? colorize(src) : colorize(src).replace(/\\frac(?=[{\s])/g, "\\dfrac"), { displayMode: display, throwOnError: false, trust: KATEX_TRUST, strict: false }); }
         catch (_) { span.textContent = src; }
         frag.appendChild(span);
         last = re.lastIndex;
@@ -208,6 +211,53 @@
     node.innerHTML = (cuerpo ? `<p>${cuerpo}</p>` : "") + `<ol class="incisos">${items.map((x) => `<li>${x}</li>`).join("")}</ol>`;
   }
 
+  /* Listas escritas en un párrafo, «(1) … (2) …», pasan a una lista con un elemento por renglón. */
+  function partirNumerados(body) {
+    body.querySelectorAll(":scope > p, :scope > .enunciado > p, :scope > .enunciado").forEach((p) => {
+      if (p.classList && p.classList.contains("enunciado") && p.querySelector("p")) return;
+      const html = p.innerHTML;
+      const fuera = (i) => {
+        const antes = html.slice(0, i);
+        return (antes.match(/\\\(|\\\[/g) || []).length <= (antes.match(/\\\)|\\\]/g) || []).length;
+      };
+      const marcas = [];
+      const re = /\((\d)\)\s+/g;
+      let n = 1, m;
+      while ((m = re.exec(html))) if (+m[1] === n && fuera(m.index)) { marcas.push({ desde: m.index, hasta: m.index + m[0].length }); n++; }
+      if (marcas.length < 2) return;
+      const cabeza = html.slice(0, marcas[0].desde).trim();
+      const items = marcas.map((mk, i) => html.slice(mk.hasta, i + 1 < marcas.length ? marcas[i + 1].desde : html.length).trim().replace(/[;,]\s*$/, ""));
+      const ol = document.createElement("ol");
+      ol.className = "lista-numerada";
+      ol.innerHTML = items.map((x) => `<li>${x}</li>`).join("");
+      if (cabeza) { p.innerHTML = cabeza; p.after(ol); } else p.replaceWith(ol);
+    });
+  }
+
+  /* Ejemplo largo: con «partir: k» se divide en dos diapositivas. La segunda repite el enunciado
+     y continúa la numeración de los pasos, para no reducir la letra. */
+  function partirEjemplo(ex) {
+    const k = ex && ex.partir;
+    if (!k || typeof document === "undefined") return [ex];
+    const tmp = document.createElement("div");
+    tmp.innerHTML = ex.body || "";
+    const ol = tmp.querySelector("ol.pasos");
+    if (!ol || ol.children.length <= k) return [ex];
+    const lis = [...ol.children];
+    const armar = (desde, hasta) => {
+      const t = document.createElement("div");
+      t.innerHTML = ex.body;
+      const o = t.querySelector("ol.pasos");
+      [...o.children].forEach((li, i) => { if (i < desde || i >= hasta) li.remove(); });
+      if (desde) o.setAttribute("start", String(desde + 1));
+      return t.innerHTML;
+    };
+    return [
+      Object.assign({}, ex, { body: armar(0, k) }),
+      Object.assign({}, ex, { title: ex.title + " (continuación)", body: armar(k, lis.length), notes: ex.notes })
+    ];
+  }
+
   /* Una diapositiva principal o uno de sus complementos (los que viven abajo). */
   function buildFrame(entry, data, asReading, sub) {
     const outer = el(asReading ? "article" : "section", (asReading ? "reading-sheet" : "course-slide") + " content-slide" + (entry.isExample ? " example-slide" : ""));
@@ -225,6 +275,8 @@
     body.innerHTML = data.body || "";
     // En los ejemplos (complementos), cada paso aparece al pulsar →; en Lectura se ve todo.
     if (!asReading) body.querySelectorAll("ol.pasos > li").forEach((li) => li.classList.add("fragment"));
+    partirNumerados(body);
+    body.querySelectorAll("ol.pasos > li > .otra-ruta:first-child").forEach((d) => d.parentElement.classList.add("paso-ruta"));
     const enunciado = body.querySelector(":scope > .enunciado");
     const pasosLista = body.querySelector(":scope > ol.pasos");
     let columnaEnunciado = null;
@@ -526,8 +578,8 @@
     placas: "Conteos de la tabla: 80 ambas características, 9 solo rayadura alta, 6 solo impacto alto y 5 ninguna.",
     venn_ops: "Muestra en el espacio muestral S las operaciones básicas: unión, intersección, complemento, diferencia, ley de De Morgan y eventos excluyentes.",
     venn_prob: "Barra proporcional del espacio muestral S: al mover P(A), P(B) y P(A ∩ B) se observa cómo P(A | B) cambia el denominador a B y cuándo ocurre independencia.",
-    bayes_tres: "Árbol de tres causas A₁, A₂, A₃ con grosores proporcionales a la probabilidad. Permite ver cómo cambia cada probabilidad posterior P(Aᵢ | D) al variar tasas base o defectos.",
-    adivina_quien: "Juego en dos modos. Clásico (certeza 100 %): cada pregunta parte el espacio muestral y P(secreto | B) = 1/|B|. Bayesiano (testigo imperfecto con fiabilidad q): ninguna carta se descarta del todo; cada pista multiplica las probabilidades por q o 1 − q y renormaliza.",
+    bayes_tres: "Árbol de tres causas (máquinas A, B, C o M₁, M₂, M₃) con grosores proporcionales a la probabilidad. Permite ver cómo cambia cada probabilidad posterior P(Aᵢ | D) al variar tasas base o defectos.",
+    adivina_quien: "Adivina Quién: el docente o un estudiante piensa en un personaje; el grupo pregunta y se marca Sí o No. Cada respuesta descarta a quienes no coinciden y la probabilidad de cada candidato pasa a 1/(candidatos que quedan). El historial muestra cómo cambia con cada dato. Junto a cada pregunta aparece en cuántos de los que quedan la respuesta sería sí.",
     densidad: "La probabilidad es área bajo la densidad: altura 0,1 multiplicada por ancho b.",
     medias: "Muestra el teorema central del límite para cuatro poblaciones origen (dado uniforme, exponencial asimétrica, bimodal en U y Bernoulli), comparando el histograma de 1.000 medias con la campana N(μ, σ²/n).",
     intervalos: "Cada segmento es una muestra independiente. El 95 % es cobertura del procedimiento bajo el modelo; el conteo de 40 cambia con la semilla. Los intervalos que no contienen μ van en línea discontinua.",
@@ -958,7 +1010,7 @@
     course.modules.forEach((module, moduleIndex) => {
       (module.slides || []).forEach((slide) => {
         entries.push({ index: entries.length, module, slide, moduleIndex, id: slide.id });
-        (slide.abajo || []).forEach((ex, n) => entries.push({ index: entries.length, module, slide: ex, parent: slide, moduleIndex, isExample: true, id: `${slide.id}-abajo-${n + 1}` }));
+        (slide.abajo || []).forEach((ex, n) => partirEjemplo(ex).forEach((pe, k) => entries.push({ index: entries.length, module, slide: pe, parent: slide, moduleIndex, isExample: true, id: `${slide.id}-abajo-${n + 1}` + (k ? "-cont" : "") })));
       });
     });
     const refs = referencias();

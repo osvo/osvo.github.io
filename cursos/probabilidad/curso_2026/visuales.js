@@ -1744,25 +1744,31 @@
     const widget = el("div", "widget widget-bayes3");
     const presetRow = el("div", "widget-controls");
     let medMode = false;
-    const btnM3 = controlButton("3 máquinas (apuntes)", true);
-    const btnFab = controlButton("Fábrica M₁–M₃", false);
-    const btnMed = controlButton("Prueba médica 99 % (paradoja)", false);
+    const btnM3 = controlButton("Máquinas A, B y C", true);
+    const btnFab = controlButton("Máquinas M₁, M₂ y M₃", false);
+    const btnMed = controlButton("Prueba médica", false);
     presetRow.append(btnM3, btnFab, btnMed);
 
     const controls = el("div", "widget-controls slider-control");
-    const a1 = makeSlider(controls, "P(A₁)", "0.05", "0.9", "0.01", "0.10");
-    const a2 = makeSlider(controls, "P(A₂)", "0.05", "0.9", "0.01", "0.30");
-    const d1 = makeSlider(controls, "P(D | A₁)", "0", "0.2", "0.005", "0.01");
-    const d2 = makeSlider(controls, "P(D | A₂)", "0", "0.2", "0.005", "0.03");
-    const d3 = makeSlider(controls, "P(D | A₃)", "0", "0.2", "0.005", "0.05");
+    let nombres = ["A", "B", "C"];
+    const a1 = makeSlider(controls, "P(A)", "0.05", "0.9", "0.01", "0.10");
+    const a2 = makeSlider(controls, "P(B)", "0.05", "0.9", "0.01", "0.30");
+    const d1 = makeSlider(controls, "P(D | A)", "0", "0.2", "0.005", "0.01");
+    const d2 = makeSlider(controls, "P(D | B)", "0", "0.2", "0.005", "0.03");
+    const d3 = makeSlider(controls, "P(D | C)", "0", "0.2", "0.005", "0.05");
+    const rotular = () => {
+      [[a1, `P(${nombres[0]})`], [a2, `P(${nombres[1]})`], [d1, `P(D | ${nombres[0]})`], [d2, `P(D | ${nombres[1]})`], [d3, `P(D | ${nombres[2]})`]]
+        .forEach(([sl, t]) => { sl.label.firstChild.nodeValue = t; });
+    };
     const plot = makeSvg("0 0 640 275", "Árbol de probabilidad con ramas, probabilidad total y posteriores de Bayes");
     plot.style.height = "235px"; plot.style.maxHeight = "235px";
     const result = el("div", "widget-result");
     widget.append(presetRow, controls, plot, result); host.appendChild(widget);
     const f = (v, d) => fmt(v, d === undefined ? 3 : d);
 
-    function applyThree(v1, v2, r1, r2, r3, activeBtn) {
+    function applyThree(v1, v2, r1, r2, r3, activeBtn, nom) {
       medMode = false;
+      nombres = nom; rotular();
       [btnM3, btnFab, btnMed].forEach((b) => b.classList.toggle("is-active", b === activeBtn));
       controls.style.display = "flex";
       a1.input.value = String(v1); a2.input.value = String(v2);
@@ -1805,20 +1811,21 @@
       pr.forEach((p, i) => {
         add(plot, "line", { x1: 40, y1: 138, x2: 190, y2: ys[i], stroke: K_PAL.azul, "stroke-width": 2 + 10 * p });
         add(plot, "text", { x: 100, y: (138 + ys[i]) / 2 - 10, class: "v-tick", fill: K_PAL.azul }, f(p, 2));
-        add(plot, "text", { x: 200, y: ys[i] + 7, class: "v-tick", "font-weight": 700, fill: K_PAL.azul }, `A${"₁₂₃"[i]}`);
+        add(plot, "text", { x: 200, y: ys[i] + 7, class: "v-tick", "font-weight": 700, fill: K_PAL.azul }, nombres[i]);
         add(plot, "line", { x1: 235, y1: ys[i], x2: 360, y2: ys[i] - 18, stroke: K_PAL.ocre, "stroke-width": 2 + 40 * q[i] });
         add(plot, "text", { x: 280, y: ys[i] - 24, class: "v-tick", fill: K_PAL.ocre }, f(q[i]));
         add(plot, "text", { x: 370, y: ys[i] - 12, class: "v-tick", "font-weight": 700, fill: K_PAL.ocre }, "D");
         add(plot, "text", { x: 400, y: ys[i] - 12, class: "v-tick" }, `rama: ${f(ramas[i], 4)}`);
-        add(plot, "text", { x: 400, y: ys[i] + 14, class: "v-tick", fill: K_PAL.verde, "font-weight": 700 }, `P(A${"₁₂₃"[i]} | D) = ${pd ? f(ramas[i] / pd) : "—"}`);
+        add(plot, "text", { x: 400, y: ys[i] + 14, class: "v-tick", fill: K_PAL.verde, "font-weight": 700 }, `P(${nombres[i]} | D) = ${pd ? f(ramas[i] / pd) : "—"}`);
       });
       add(plot, "circle", { cx: 40, cy: 138, r: 6, fill: K_PAL.tinta });
+      add(plot, "text", { x: 610, y: 16, "text-anchor": "end", class: "v-tick", fill: K_PAL.ocre }, "D = sale defectuosa");
       const pPost = ramas.map((r) => (pd ? fmt(r / pd * 100, 1) + " %" : "—"));
-      result.innerHTML = `P(A₃) = ${f(p3, 2)} · P(D) = ${ramas.map((r) => f(r, 4)).join(" + ")} = <strong>${f(pd, 4)}</strong> · P(Aᵢ | D): <strong>${pPost.join(" / ")}</strong>`;
+      result.innerHTML = `P(${nombres[2]}) = ${f(p3, 2)} · P(D) = ${ramas.map((r) => f(r, 4)).join(" + ")} = <strong>${f(pd, 4)}</strong>`;
     }
 
-    btnM3.addEventListener("click", () => applyThree(0.10, 0.30, 0.01, 0.03, 0.05, btnM3));
-    btnFab.addEventListener("click", () => applyThree(0.60, 0.30, 0.02, 0.03, 0.04, btnFab));
+    btnM3.addEventListener("click", () => applyThree(0.10, 0.30, 0.01, 0.03, 0.05, btnM3, ["A", "B", "C"]));
+    btnFab.addEventListener("click", () => applyThree(0.60, 0.30, 0.02, 0.03, 0.04, btnFab, ["M₁", "M₂", "M₃"]));
     btnMed.addEventListener("click", () => { medMode = true; redraw(); });
     [a1, a2, d1, d2, d3].forEach((s) => s.input.addEventListener("input", () => {
       medMode = false;
@@ -1828,7 +1835,7 @@
     redraw();
   }
 
-  /* ---------- Adivina Quién: probabilidad condicional clásica y actualización bayesiana con testigo ---------- */
+  /* ---------- Adivina Quién: cada respuesta (sí o no) reduce el espacio muestral y cambia las probabilidades ---------- */
   function adivinaQuien(host) {
     const chars = [
       { name: "Ana", gafas: false, sombrero: false, barba: false, azul: true, hair: "largo" },
@@ -1850,51 +1857,39 @@
       { key: "barba", label: "¿Tiene barba?" },
       { key: "azul", label: "¿Camisa azul?" }
     ];
-    let mode = "clasico", seed = DEFAULT_SEED + 17, secretIdx = 7, revealed = false, inspectedIdx = null, demoStep = 0;
-    let alive = chars.map(() => true), probs = chars.map(() => 1 / chars.length), factors = chars.map(() => []), asked = new Set(), logMsg = "Formule una pregunta para reducir el espacio muestral.";
+    // respuestas en el orden en que se dieron: [{ key, si }]
+    let answers = [];
 
     const wrap = el("div", "widget aq-wrap");
-    const top = el("div", "aq-top");
-    const cLeft = el("div", "widget-controls");
-    const btnClas = controlButton("Clásico (certeza 100 %)", true);
-    const btnBay = controlButton("Bayesiano (testigo imperfecto)", false);
-    const qCtl = makeSlider(cLeft, "Fiabilidad testigo, q", "0.60", "0.95", "0.05", "0.80");
-    qCtl.label.style.display = "none";
-    const cRight = el("div", "widget-controls");
-    const btnDemo = controlButton("Demo guiada (Paso 1→4)", false);
-    const btnReset = controlButton("Reiniciar pistas", false);
-    const btnNew = controlButton("Nueva partida", false);
-    const btnRev = controlButton("Revelar secreto", false);
-    cLeft.insertBefore(btnBay, qCtl.label);
-    cLeft.insertBefore(btnClas, btnBay);
-    cRight.append(btnDemo, btnReset, btnNew, btnRev);
-    top.append(cLeft, cRight);
-
     const qbar = el("div", "aq-qbar");
-    const qBtns = traits.map((tr) => {
-      const b = controlButton(tr.label, false);
-      b.addEventListener("click", () => { demoStep = 0; ask(tr); });
-      qbar.appendChild(b);
-      return b;
+    const rows = traits.map((tr) => {
+      const row = el("div", "aq-q");
+      const lab = el("span", "aq-q-label", tr.label);
+      const si = controlButton("Sí", false), no = controlButton("No", false);
+      const cuenta = el("span", "aq-q-count");
+      si.addEventListener("click", () => responder(tr.key, true));
+      no.addEventListener("click", () => responder(tr.key, false));
+      row.append(lab, si, no, cuenta);
+      qbar.appendChild(row);
+      return { tr, si, no, cuenta };
     });
-    const logEl = el("div", "aq-log", logMsg);
+    const bReset = controlButton("Empezar de nuevo", false);
+    bReset.addEventListener("click", () => { answers = []; redraw(); });
+    qbar.appendChild(bReset);
     const board = el("div", "aq-board");
-    const mathEl = el("div", "aq-math");
-    const result = el("p", "widget-result");
-    wrap.append(top, qbar, logEl, board, mathEl, result);
+    const hist = el("div", "aq-hist");
+    const izq = el("div", "aq-izq");
+    izq.append(qbar, hist);
+    wrap.append(izq, board);
     host.appendChild(wrap);
 
     function portraitSvg(ch, isOut) {
       const shirt = ch.azul ? K_PAL.azul : K_PAL.ocre;
       let parts = `<rect x="0" y="0" width="110" height="88" fill="#fbfcf9"/>`;
       parts += `<path d="M18 88 C22 65, 88 65, 92 88 Z" fill="${shirt}"/>`;
-      if (ch.hair === "largo" && !ch.sombrero) {
-        parts += `<path d="M31 44 C29 14, 81 14, 79 44 L81 66 L29 66 Z" fill="#3a3d39"/>`;
-      }
+      if (ch.hair === "largo" && !ch.sombrero) parts += `<path d="M31 44 C29 14, 81 14, 79 44 L81 66 L29 66 Z" fill="#3a3d39"/>`;
       parts += `<circle cx="55" cy="44" r="20" fill="#ecd7c4" stroke="${K_PAL.tinta}" stroke-width="2"/>`;
-      if (ch.hair === "corto" && !ch.sombrero) {
-        parts += `<path d="M35 38 C35 19, 75 19, 75 38 C69 27, 41 27, 35 38 Z" fill="#3a3d39"/>`;
-      }
+      if (ch.hair === "corto" && !ch.sombrero) parts += `<path d="M35 38 C35 19, 75 19, 75 38 C69 27, 41 27, 35 38 Z" fill="#3a3d39"/>`;
       parts += `<circle cx="47" cy="42" r="2.6" fill="${K_PAL.tinta}"/><circle cx="63" cy="42" r="2.6" fill="${K_PAL.tinta}"/>`;
       parts += `<path d="M49 52 Q55 56 61 52" fill="none" stroke="${K_PAL.tinta}" stroke-width="1.8" stroke-linecap="round"/>`;
       if (ch.gafas) {
@@ -1914,143 +1909,47 @@
       return `<svg viewBox="0 0 110 88" aria-hidden="true">${parts}</svg>`;
     }
 
-    function resetBoard(newSecret) {
-      if (newSecret) {
-        seed += 1009;
-        const rng = seeded(seed);
-        secretIdx = Math.floor(rng() * chars.length);
-      }
-      demoStep = 0;
-      inspectedIdx = null;
-      revealed = false;
-      alive = chars.map(() => true);
-      probs = chars.map(() => 1 / chars.length);
-      factors = chars.map(() => []);
-      asked = new Set();
-      logMsg = mode === "clasico"
-        ? "Modo clásico: cada pista descarta por completo a quienes no coinciden."
-        : "Modo bayesiano: el testigo responde con acierto q; ninguna sospecha cae a cero.";
+    function responder(key, si) {
+      const prev = answers.find((a) => a.key === key);
+      if (prev && prev.si === si) answers = answers.filter((a) => a.key !== key); // segundo clic: se borra la respuesta
+      else if (prev) prev.si = si;
+      else answers.push({ key, si });
       redraw();
     }
 
-    function applyBayesEvidence(tr, answer, q) {
-      asked.add(tr.key);
-      let sum = 0;
-      const raw = chars.map((c, i) => {
-        const match = Boolean(c[tr.key]) === answer;
-        const f = match ? q : 1 - q;
-        factors[i].push(f);
-        const v = probs[i] * f;
-        sum += v;
-        return v;
-      });
-      probs = raw.map((v) => v / sum);
-    }
-
-    function ask(tr) {
-      const truth = Boolean(chars[secretIdx][tr.key]);
-      if (mode === "clasico") {
-        asked.add(tr.key);
-        chars.forEach((c, i) => { if (Boolean(c[tr.key]) !== truth) alive[i] = false; });
-        const count = alive.filter(Boolean).length;
-        probs = alive.map((a) => (a ? 1 / count : 0));
-        logMsg = `${tr.label} → ${truth ? "SÍ" : "NO"} · Sobreviven ${count} de 12 candidatos (probabilidad ${fmt(100 / count, 1)} % cada uno).`;
-      } else {
-        const q = Number(qCtl.input.value);
-        seed += 7919;
-        const rng = seeded(seed);
-        const answer = rng() < q ? truth : !truth;
-        applyBayesEvidence(tr, answer, q);
-        const notaTestigo = answer === truth ? "acertó" : "se equivocó";
-        logMsg = `Testigo (q = ${fmt(q, 2)}): ${tr.label} → ${answer ? "SÍ" : "NO"} · Factor Bayes = ${fmt(q / (1 - q), 1)}×` + (revealed ? ` (el testigo ${notaTestigo})` : ".");
-      }
-      redraw();
-    }
-
-    function runDemoStep() {
-      const nextStep = (demoStep % 4) + 1;
-      if (nextStep === 1) {
-        mode = "bayes"; qCtl.input.value = "0.80";
-        resetBoard(false);
-        secretIdx = 7; demoStep = 1;
-        logMsg = "Demo 1/4: previa uniforme P(Hᵢ) = 1/12 = 8,3 %. Ninguna pista aún.";
-      } else if (nextStep === 2) {
-        demoStep = 2; applyBayesEvidence(traits[0], true, 0.80);
-        logMsg = "Demo 2/4: testigo (q = 0,80) dice «¿Usa gafas? → SÍ». Quienes tienen gafas se multiplican por 4× respecto al resto.";
-      } else if (nextStep === 3) {
-        demoStep = 3; applyBayesEvidence(traits[2], true, 0.80);
-        logMsg = "Demo 3/4: se agrega «¿Tiene barba? → SÍ». Bruno y Hugo reúnen ambas evidencias (24,2 % cada uno).";
-      } else {
-        demoStep = 4; applyBayesEvidence(traits[0], true, 0.80);
-        logMsg = "Demo 4/4: segundo testigo independiente repite «¿Usa gafas? → SÍ». Se concentra la probabilidad sin descartar a nadie.";
-      }
-      inspectedIdx = null;
-      redraw();
-    }
+    const cumple = (c, lista) => lista.every((a) => Boolean(c[a.key]) === a.si);
+    const pct = (n) => (n ? `${fmt(100 / n, 1)} %` : "—");
 
     function redraw() {
-      btnClas.classList.toggle("is-active", mode === "clasico");
-      btnBay.classList.toggle("is-active", mode === "bayes");
-      btnDemo.classList.toggle("is-active", demoStep > 0);
-      btnDemo.textContent = demoStep > 0 ? `Demo guiada (${demoStep}/4 →)` : "Demo guiada (Paso 1→4)";
-      qCtl.label.style.display = mode === "bayes" ? "flex" : "none";
-      const q = Number(qCtl.input.value);
-      qCtl.output.textContent = fmt(q, 2);
-      btnRev.classList.toggle("is-active", revealed);
-      qBtns.forEach((b, i) => {
-        const key = traits[i].key;
-        b.disabled = mode === "clasico" && asked.has(key);
-        b.classList.toggle("is-active", asked.has(key));
+      const vivos = chars.map((c) => cumple(c, answers));
+      const n = vivos.filter(Boolean).length;
+      rows.forEach(({ tr, si, no, cuenta }) => {
+        const a = answers.find((x) => x.key === tr.key);
+        si.classList.toggle("is-active", Boolean(a && a.si));
+        no.classList.toggle("is-active", Boolean(a && !a.si));
+        const conRasgo = chars.filter((c, i) => vivos[i] && c[tr.key]).length;
+        cuenta.textContent = a ? "" : `sí en ${conRasgo} de ${n}`;
       });
-      logEl.textContent = logMsg;
       board.replaceChildren();
-      let maxP = -1, topIdx = 0;
-      probs.forEach((p, i) => { if (p > maxP) { maxP = p; topIdx = i; } });
-      const activeIdx = inspectedIdx !== null ? inspectedIdx : topIdx;
-      const topName = chars[topIdx].name;
-
       chars.forEach((ch, i) => {
-        const p = probs[i];
-        const isOut = mode === "clasico" && !alive[i];
-        const card = el("button", "widget-button aq-card" + (isOut ? " is-out" : "") + (i === activeIdx ? " is-inspected" : "") + (revealed && i === secretIdx ? " is-secret" : ""));
-        card.type = "button";
-        card.innerHTML = portraitSvg(ch, isOut);
+        const card = el("div", "aq-card" + (vivos[i] ? "" : " is-out"));
+        card.innerHTML = portraitSvg(ch, !vivos[i]);
         const meta = el("div", "aq-meta");
-        meta.append(el("span", "aq-name", ch.name), el("span", "aq-prob", `${fmt(p * 100, 1)} %`));
-        const track = el("div", "aq-bar-track");
-        const fill = el("div", "aq-bar-fill");
-        fill.style.width = `${Math.min(100, p * 100).toFixed(1)}%`;
-        fill.style.backgroundColor = revealed && i === secretIdx ? K_PAL.verde : (p >= maxP - 1e-6 && asked.size > 0 ? K_PAL.azul : "#6e88a6");
-        track.appendChild(fill);
-        const resumen = [ch.gafas ? "gafas" : "sin gafas", ch.sombrero ? "sombrero" : "no sombr.", ch.barba ? "barba" : "no barba", ch.azul ? "azul" : "ocre"].join(" · ");
-        card.append(meta, track, el("div", "aq-traits", resumen));
-        card.addEventListener("click", () => { inspectedIdx = i; redraw(); });
+        meta.append(el("span", "aq-name", ch.name), el("span", "aq-prob", vivos[i] ? pct(n) : "0 %"));
+        card.appendChild(meta);
         board.appendChild(card);
       });
-
-      const sel = chars[activeIdx];
-      if (mode === "clasico") {
-        const rem = alive.filter(Boolean).length;
-        mathEl.innerHTML = `Desglose para <strong>${sel.name}</strong> (clic en cualquier carta): ` +
-          (alive[activeIdx] ? `cumple las pistas (∈ B) → P(${sel.name} | B) = 1/${rem} = <strong>${fmt(100 / rem, 1)} %</strong>` : `descartado por una pista (∉ B) → <strong>0,0 %</strong>`);
-        result.textContent = `Espacio reducido |B| = ${rem} · P(secreto | pistas) = 1/${rem} = ${fmt(100 / rem, 1)} %` + (revealed ? ` · Secreto: ${chars[secretIdx].name}` : "");
-      } else {
-        const fs = factors[activeIdx];
-        const normSum = chars.reduce((acc, _, idx) => acc + (1 / chars.length) * factors[idx].reduce((p, x) => p * x, 1), 0);
-        const unnorm = (1 / chars.length) * fs.reduce((p, x) => p * x, 1);
-        const multTxt = fs.length ? ` × ${fs.map((v) => fmt(v, 2)).join(" × ")} = ${fmt(unnorm, 4)} → posterior = ${fmt(unnorm, 4)} / ${fmt(normSum, 4)}` : "";
-        mathEl.innerHTML = `Regla de Bayes para <strong>${sel.name}</strong> (clic en cualquier carta): previa 1/12 (8,3 %)${multTxt} = <strong>${fmt(probs[activeIdx] * 100, 1)} %</strong>`;
-        result.textContent = `Más probable: ${topName} (${fmt(maxP * 100, 1)} %)` + (revealed ? ` · Secreto real: ${chars[secretIdx].name} (${fmt(probs[secretIdx] * 100, 1)} %)` : " · Puede repetir una pregunta para simular otro testigo independiente.");
-      }
+      // Historial: cómo cambia la probabilidad con cada dato
+      const pasos = [`<li><strong>Sin datos:</strong> 12 candidatos, cada uno con \\(\\frac{1}{12}\\) = 8,3 %</li>`];
+      answers.forEach((a, k) => {
+        const m = chars.filter((c) => cumple(c, answers.slice(0, k + 1))).length;
+        const tr = traits.find((t) => t.key === a.key);
+        pasos.push(`<li><strong>${tr.label} ${a.si ? "Sí" : "No"}:</strong> ${m ? `quedan ${m}, cada uno con \\(\\frac{1}{${m}}\\) = ${pct(m)}` : "ningún personaje cumple todas las respuestas; revise alguna"}</li>`);
+      });
+      hist.innerHTML = `<ol>${pasos.join("")}</ol>`;
+      if (window.renderMathInElement) window.renderMathInElement(hist, { delimiters: [{ left: "\\(", right: "\\)", display: false }] });
+      else if (window.katex) hist.querySelectorAll("li").forEach((li) => { li.innerHTML = li.innerHTML.replace(/\\\((.*?)\\\)/g, (_, t) => window.katex.renderToString(t)); });
     }
-
-    btnClas.addEventListener("click", () => { mode = "clasico"; resetBoard(false); });
-    btnBay.addEventListener("click", () => { mode = "bayes"; resetBoard(false); });
-    btnDemo.addEventListener("click", runDemoStep);
-    qCtl.input.addEventListener("input", () => { qCtl.output.textContent = fmt(Number(qCtl.input.value), 2); });
-    btnReset.addEventListener("click", () => resetBoard(false));
-    btnNew.addEventListener("click", () => resetBoard(true));
-    btnRev.addEventListener("click", () => { revealed = !revealed; redraw(); });
     redraw();
   }
 
@@ -2211,7 +2110,7 @@
         result.textContent = `X ~ B(${n}; ${fmt(p, 2)}) · Rondas simuladas: ${totalRounds} · E(X) = ${fmt(n * p, 2)} · Var(X) = ${fmt(n * p * (1 - p), 3)}`;
       } else {
         // Árbol completo de 8 rutas para n = 3 (estilo Primer) con filtro interactivo por valor de X
-        add(plot, "text", { x: 20, y: 24, class: "v-kicker" }, "8 RUTAS EN 3 TIROS · VERDE = ACIERTO (p), ROJO = FALLO (1−p)");
+        add(plot, "text", { x: 20, y: 24, class: "v-kicker" }, "8 RUTAS EN 3 TIROS · VERDE = ACIERTO, ÉXITO (p) · ROJO = FALLO, FRACASO (1−p)");
         const yLeaves = [54, 88, 122, 156, 190, 224, 258, 292];
         const xCols = [42, 134, 226, 318];
         const seqTxt = ["AAA", "AAF", "AFA", "AFF", "FAA", "FAF", "FFA", "FFF"];
@@ -2985,13 +2884,13 @@
     function redraw() {
       const p = Number(pCtl.input.value); pCtl.output.textContent = fmt(p, 2);
       plot.replaceChildren();
-      add(plot, "text", { x: 24, y: 24, class: "v-kicker" }, `Ensayos recientes (${trials.length} TOTAL) · VERDE = 1 (ÉXITO), ROJO = 0 (FALLO)`);
+      add(plot, "text", { x: 24, y: 24, class: "v-kicker" }, `Ensayos recientes (${trials.length} TOTAL) · VERDE = 1 (ÉXITO), ROJO = 0 (FRACASO)`);
       const recent = trials.slice(-16);
       for (let i = 0; i < 16; i++) {
         const cx = 38 + i * 36, v = recent[i];
         const col = v === undefined ? K_PAL.gris : (v ? K_PAL.verde : K_PAL.rojo);
-        add(plot, "circle", { cx, cy: 52, r: 12, fill: v === 1 ? K_PAL.verde : "#fff", stroke: col, "stroke-width": 2.4 });
-        if (v !== undefined) add(plot, "text", { x: cx, y: 57, "text-anchor": "middle", "font-size": 14, "font-weight": 700, fill: v === 1 ? "#fff" : K_PAL.rojo }, String(v));
+        add(plot, "circle", { cx, cy: 52, r: 12, fill: v === undefined ? "#fff" : col, stroke: col, "stroke-width": 2.4 });
+        if (v !== undefined) add(plot, "text", { x: cx, y: 57, "text-anchor": "middle", "font-size": 14, "font-weight": 700, fill: "#fff" }, String(v));
       }
       // PMF izquierda
       const bl = 52, br = 280, bt = 104, bb = 260, yMax = 1.05;
@@ -3001,10 +2900,10 @@
       const emp = tot ? [1 - ones / tot, ones / tot] : [0, 0];
       [0, 1].forEach((k, i) => {
         const xc = bl + 65 + i * 100, theo = k ? p : 1 - p, hT = bb - Yp(theo), hE = bb - Yp(emp[i]);
-        if (tot) add(plot, "rect", { x: xc - 16, y: Yp(emp[i]).toFixed(1), width: 32, height: hE.toFixed(1), fill: k ? K_PAL.verde : K_PAL.gris, "fill-opacity": 0.65 });
-        add(plot, "rect", { x: xc - 22, y: Yp(theo).toFixed(1), width: 44, height: hT.toFixed(1), fill: tot ? "none" : (k ? K_PAL.azul : K_PAL.gris), "fill-opacity": tot ? 1 : 0.45, stroke: k ? K_PAL.azul : K_PAL.medio, "stroke-width": 2.4 });
-        add(plot, "text", { x: xc, y: bb + 20, "text-anchor": "middle", class: "v-tick" }, `X = ${k}`);
-        add(plot, "text", { x: xc, y: Yp(theo) - 7, "text-anchor": "middle", "font-size": 15, "font-weight": 700, fill: k ? K_PAL.azul : K_PAL.medio }, fmt(theo, 2));
+        if (tot) add(plot, "rect", { x: xc - 16, y: Yp(emp[i]).toFixed(1), width: 32, height: hE.toFixed(1), fill: k ? K_PAL.verde : K_PAL.rojo, "fill-opacity": 0.65 });
+        add(plot, "rect", { x: xc - 22, y: Yp(theo).toFixed(1), width: 44, height: hT.toFixed(1), fill: tot ? "none" : (k ? K_PAL.verde : K_PAL.rojo), "fill-opacity": tot ? 1 : 0.45, stroke: k ? K_PAL.verde : K_PAL.rojo, "stroke-width": 2.4 });
+        add(plot, "text", { x: xc, y: bb + 20, "text-anchor": "middle", class: "v-tick" }, k ? "X = 1 (éxito)" : "X = 0 (fracaso)");
+        add(plot, "text", { x: xc, y: Yp(theo) - 7, "text-anchor": "middle", "font-size": 15, "font-weight": 700, fill: k ? K_PAL.verde : K_PAL.rojo }, fmt(theo, 2));
       });
       add(plot, "text", { x: (bl + br) / 2, y: 298, "text-anchor": "middle", class: "v-axis-label" }, "función de probabilidad p(x)");
       // Parábola Var(X) = p(1-p) derecha
@@ -3016,8 +2915,8 @@
       add(plot, "path", { d: dVar, fill: "none", stroke: K_PAL.morado, "stroke-width": 3 });
       const vrCur = p * (1 - p);
       add(plot, "line", { x1: Xp(0.5).toFixed(1), y1: Yv(0.25).toFixed(1), x2: Xp(0.5).toFixed(1), y2: vb, stroke: K_PAL.gris, "stroke-dasharray": "4 4", "stroke-width": 1.5 });
-      add(plot, "circle", { cx: Xp(p).toFixed(1), cy: Yv(vrCur).toFixed(1), r: 6.5, fill: K_PAL.verde, stroke: "#fff", "stroke-width": 2 });
-      add(plot, "text", { x: Xp(p).toFixed(1), y: Yv(vrCur) - 12, "text-anchor": "middle", "font-size": 15, "font-weight": 700, fill: K_PAL.verde }, fmt(vrCur, 3));
+      add(plot, "circle", { cx: Xp(p).toFixed(1), cy: Yv(vrCur).toFixed(1), r: 6.5, fill: K_PAL.morado, stroke: "#fff", "stroke-width": 2 });
+      add(plot, "text", { x: Xp(p).toFixed(1), y: Yv(vrCur) - 12, "text-anchor": "middle", "font-size": 15, "font-weight": 700, fill: K_PAL.morado }, fmt(vrCur, 3));
       [0, 0.5, 1].forEach((tk) => add(plot, "text", { x: Xp(tk).toFixed(1), y: vb + 20, "text-anchor": "middle", class: "v-tick" }, fmt(tk, 1)));
       add(plot, "text", { x: (vl + vr) / 2, y: 298, "text-anchor": "middle", class: "v-axis-label" }, "Var(X) = p(1 − p), máxima en p = 0,5");
       result.textContent = `X ~ B(1; ${fmt(p, 2)}) · E(X) = ${fmt(p, 2)} · Var(X) = ${fmt(vrCur, 3)}` + (tot ? ` · Proporción muestral = ${fmt(ones / tot, 2)} (${ones}/${tot})` : "");
@@ -3231,7 +3130,7 @@
     const row2 = el("div", "widget-controls slider-control");
     const aCtl = makeSlider(row2, "Eventos, α", "1", "6", "1", "2");
     const lCtl = makeSlider(row2, "Tasa, λ", "0.5", "5.0", "0.5", "5.0");
-    const plot = makeSvg("0 0 640 310", "Densidad gamma como espera hasta α eventos");
+    const plot = makeSvg("0 0 640 326", "Densidad gamma como espera hasta α eventos");
     const result = el("p", "widget-result");
     widget.append(row1, row2, plot, result); host.appendChild(widget);
 
@@ -3266,7 +3165,7 @@
       add(plot, "text", { x: Math.min(right - 120, X(mu) + 6).toFixed(1), y: top + 14, class: "v-marker-label" }, `E(T) = ${fmt(mu, 2)}`);
       if (cut < xMax) add(plot, "text", { x: X(cut), y: bottom + 22, "text-anchor": "middle", "font-size": 15, "font-weight": 700, fill: K_PAL.ocre }, "1");
       add(plot, "text", { x: right - 4, y: bottom + 22, "text-anchor": "end", class: "v-tick" }, fmt(xMax, 1));
-      add(plot, "text", { x: (left + right) / 2, y: 298, "text-anchor": "middle", class: "v-axis-label" }, "t, tiempo de espera hasta el evento α-ésimo");
+      add(plot, "text", { x: (left + right) / 2, y: 316, "text-anchor": "middle", class: "v-axis-label" }, "t, tiempo de espera hasta el evento α-ésimo");
       const pGt1 = cut < xMax ? M.simpson(f, cut, xMax + 8 / lam, 500) : 0;
       result.textContent = `α = ${alpha}, β = 1/λ = ${fmt(beta, 2)} · E(T) = ${fmt(mu, 2)} · σ = ${fmt(Math.sqrt(alpha) * beta, 2)} · P(T > 1) = ${fmt(Math.max(0, Math.min(1, pGt1)), 3)}`;
     }
@@ -3509,7 +3408,7 @@
     });
     const row2 = el("div", "widget-controls slider-control");
     const eCtl = makeSlider(row2, "Margen máximo deseado, E (MPa)", "0.35", "1.50", "0.05", "0.75");
-    const plot = makeSvg("0 0 640 305", "Curva de amplitud del intervalo t frente al tamaño de muestra n");
+    const plot = makeSvg("0 0 640 322", "Curva de amplitud del intervalo t frente al tamaño de muestra n");
     const result = el("p", "widget-result");
     widget.append(row1, row2, plot, result); host.appendChild(widget);
 
@@ -3534,7 +3433,7 @@
       }
       baseline(plot, left, right, bottom, top);
       [nMin, Math.round(nMax / 2), nMax].forEach((tk) => add(plot, "text", { x: X(tk).toFixed(1), y: bottom + 22, "text-anchor": "middle", class: "v-tick" }, String(tk)));
-      add(plot, "text", { x: (left + right) / 2, y: 296, "text-anchor": "middle", class: "v-axis-label" }, "tamaño de muestra n (reducir E a la mitad exige 4× datos)");
+      add(plot, "text", { x: (left + right) / 2, y: 314, "text-anchor": "middle", class: "v-axis-label" }, "tamaño de muestra n (reducir E a la mitad exige 4× datos)");
       result.textContent = `Para E ≤ ${fmt(E, 2)} MPa al ${Math.round(conf * 100)} % con s₀ = 2,89: n = ${reqN} (L = ${fmt(len(reqN), 3)} MPa)`;
     }
     eCtl.input.addEventListener("input", redraw);
@@ -3642,7 +3541,7 @@
     const widget = el("div", "widget widget-escalera");
     const controls = el("div", "widget-controls slider-control");
     const xCtl = makeSlider(controls, "Punto de corte, x", "-0.5", "3.5", "0.5", "1.5");
-    const plot = makeSvg("0 0 640 315", "Función de probabilidad discreta y función de distribución acumulada escalonada");
+    const plot = makeSvg("0 0 640 335", "Función de probabilidad discreta y función de distribución acumulada escalonada");
     const result = el("p", "widget-result");
     widget.append(controls, plot, result); host.appendChild(widget);
 
@@ -3651,16 +3550,16 @@
       const left = 60, right = 600, X = (v) => left + (v + 0.8) / 4.6 * (right - left);
       plot.replaceChildren();
       // Arriba: p(x)
-      const b1 = 118, t1 = 22, Yp = (v) => b1 - v / 0.45 * (b1 - t1);
+      const b1 = 128, t1 = 40, Yp = (v) => b1 - v / 0.45 * (b1 - t1);
       baseline(plot, left, right, b1, t1);
-      add(plot, "text", { x: left + 8, y: t1 + 10, class: "v-kicker" }, "P(X = x) EN 3 LANZAMIENTOS DE MONEDA");
+      add(plot, "text", { x: left + 8, y: 16, class: "v-kicker" }, "P(X = x) EN 3 LANZAMIENTOS DE MONEDA");
       xs.forEach((v, i) => {
         const hit = v <= cut + 1e-9, h = b1 - Yp(ps[i]);
         add(plot, "rect", { x: X(v) - 18, y: Yp(ps[i]).toFixed(1), width: 36, height: h.toFixed(1), fill: hit ? K_PAL.verde : K_PAL.gris, "fill-opacity": hit ? 0.78 : 0.45 });
         add(plot, "text", { x: X(v), y: Yp(ps[i]) - 6, "text-anchor": "middle", "font-size": 14, "font-weight": 700, fill: hit ? K_PAL.verde : K_PAL.medio }, fmt(ps[i], 3));
       });
       // Abajo: escalera F(x)
-      const b2 = 268, t2 = 154, Yf = (v) => b2 - v * (b2 - t2);
+      const b2 = 280, t2 = 166, Yf = (v) => b2 - v * (b2 - t2);
       baseline(plot, left, right, b2, t2);
       add(plot, "line", { x1: left, y1: Yf(0), x2: X(0), y2: Yf(0), stroke: K_PAL.azul, "stroke-width": 3 });
       xs.forEach((v, i) => {
@@ -3673,7 +3572,7 @@
       });
       const fx = cut < 0 ? 0 : fs[Math.min(3, Math.floor(cut + 1e-9))];
       add(plot, "line", { x1: X(cut).toFixed(1), y1: t1, x2: X(cut).toFixed(1), y2: b2, stroke: K_PAL.rojo, "stroke-width": 2, "stroke-dasharray": "5 5" });
-      add(plot, "text", { x: (left + right) / 2, y: 302, "text-anchor": "middle", class: "v-axis-label" }, "cada salto en F(x) mide exactamente p(x)");
+      add(plot, "text", { x: (left + right) / 2, y: 326, "text-anchor": "middle", class: "v-axis-label" }, "cada salto en F(x) mide exactamente p(x)");
       result.textContent = `F(${fmtSigned(cut, 1)}) = P(X ≤ ${fmtSigned(cut, 1)}) = ${fmt(fx, 3)} · suma de barras verdes arriba = ${fmt(fx, 3)}`;
     }
     xCtl.input.addEventListener("input", redraw);
@@ -3688,7 +3587,7 @@
     const bCtl = makeSlider(controls, "Desplazamiento, b", "-4", "4", "1", "0");
     const bTransformacion = controlButton("Transformación 3X − 2", false);
     controls.appendChild(bTransformacion);
-    const plot = makeSvg("0 0 640 305", "Efecto de la transformación lineal Y = aX + b en media y dispersión");
+    const plot = makeSvg("0 0 640 322", "Efecto de la transformación lineal Y = aX + b en media y dispersión");
     const result = el("p", "widget-result");
     widget.append(controls, plot, result); host.appendChild(widget);
 
@@ -3712,7 +3611,7 @@
       add(plot, "text", { x: X(2), y: Y(gpdf(2, 2, 1)) - 10, "text-anchor": "middle", "font-size": 15, "font-weight": 700, fill: K_PAL.medio }, "X (μ=2, σ=1)");
       add(plot, "text", { x: Math.max(left + 70, Math.min(right - 70, X(muY))), y: 20, "text-anchor": "middle", "font-size": 16, "font-weight": 700, fill: K_PAL.verde }, `Y = ${fmt(a, 1)}X ${b >= 0 ? "+" : "−"} ${fmt(Math.abs(b), 0)}`);
       [-4, 0, 4, 8, 12].forEach((tk) => add(plot, "text", { x: X(tk).toFixed(1), y: bottom + 22, "text-anchor": "middle", class: "v-tick" }, fmtSigned(tk, 0)));
-      add(plot, "text", { x: (left + right) / 2, y: 296, "text-anchor": "middle", class: "v-axis-label" }, "ejes fijos: b traslada la curva; a la estira");
+      add(plot, "text", { x: (left + right) / 2, y: 314, "text-anchor": "middle", class: "v-axis-label" }, "ejes fijos: b traslada la curva; a la estira");
       result.textContent = `Curvas ilustrativas: X normal con E(X) = 2 y Var(X) = 1 · E(Y) = ${fmt(a, 1)}(2) ${b >= 0 ? "+" : "−"} ${fmt(Math.abs(b), 0)} = ${fmtSigned(muY, 1)} · Var(Y) = (${fmt(a, 1)})²(1) = ${fmt(a * a, 2)} · σ_Y = ${fmt(sY, 1)}`;
     }
     bTransformacion.addEventListener("click", () => { aCtl.input.value = "3.0"; bCtl.input.value = "-2"; redraw(); });

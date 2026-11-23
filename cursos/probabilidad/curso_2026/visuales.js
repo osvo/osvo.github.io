@@ -2162,14 +2162,15 @@
 
   /* ---------- Hipergeométrica sin reemplazo frente a Binomial ---------- */
   function hiperVsBinom(host) {
-    let seed = DEFAULT_SEED + 73, drawnObs = null;
+    let seed = DEFAULT_SEED + 73, drawnObs = null, comparar = false;
     const widget = el("div", "widget widget-hiper");
     const controls = el("div", "widget-controls slider-control");
     const nPopCtl = makeSlider(controls, "Lote N", "12", "60", "2", "20");
     const rCtl = makeSlider(controls, "Éxitos r", "2", "19", "1", "6");
     const nCtl = makeSlider(controls, "Muestra n", "2", "10", "1", "6");
     const drawBtn = controlButton("Extraer muestra", false);
-    controls.appendChild(drawBtn);
+    const cmpBtn = controlButton("Comparar con binomial", false);
+    controls.append(drawBtn, cmpBtn);
     const plot = makeSvg("0 0 640 320", "Comparación entre distribución hipergeométrica sin reemplazo y binomial");
     const result = el("p", "widget-result");
     widget.append(controls, plot, result);
@@ -2206,38 +2207,45 @@
       }
       plot.replaceChildren();
       // Urna superior compacta
-      add(plot, "text", { x: 24, y: 20, class: "v-kicker" }, `LOTE DE ${N} ELEMENTOS (${r} ÉXITOS EN AZUL)` + (drawnObs ? ` · MUESTRA: ${drawnObs.xObs} ÉXITOS` : ""));
+      add(plot, "text", { x: 24, y: 20, class: "v-kicker" }, `LOTE DE ${N}: ${r} ÉXITOS (VERDE) Y ${N - r} FRACASOS (ROJO)` + (drawnObs ? ` · MUESTRA: ${drawnObs.xObs} ÉXITOS` : ""));
       if (N <= 40) {
         const cols = Math.min(N, 20), dx = (590) / cols;
         for (let i = 0; i < N; i++) {
           const cx = 30 + (i % cols) * dx, cy = 36 + Math.floor(i / cols) * 20;
           const isSucc = i < r, isSel = drawnObs && drawnObs.chosen.has(i);
-          add(plot, "circle", { cx: cx.toFixed(1), cy, r: isSel ? 7 : 5.5, fill: isSucc ? K_PAL.azul : "#d9ddd5", stroke: isSel ? K_PAL.rojo : "none", "stroke-width": isSel ? 2.4 : 0 });
+          add(plot, "circle", { cx: cx.toFixed(1), cy, r: isSel ? 7 : 5.5, fill: isSucc ? K_PAL.verde : "#e7b9c0", stroke: isSel ? K_PAL.tinta : "none", "stroke-width": isSel ? 2.4 : 0 });
         }
       } else {
-        add(plot, "rect", { x: 24, y: 32, width: 590 * p, height: 18, fill: K_PAL.azul });
-        add(plot, "rect", { x: 24 + 590 * p, y: 32, width: 590 * (1 - p), height: 18, fill: "#d9ddd5" });
+        add(plot, "rect", { x: 24, y: 32, width: 590 * p, height: 18, fill: K_PAL.verde });
+        add(plot, "rect", { x: 24 + 590 * p, y: 32, width: 590 * (1 - p), height: 18, fill: "#e7b9c0" });
       }
-      const left = 54, right = 610, top = 84, bottom = 266, maxP = Math.max(...pH, ...pB, 0.25) * 1.1;
+      const left = 54, right = 610, top = 84, bottom = 266, maxP = Math.max(...pH, ...(comparar ? pB : []), 0.25) * 1.1;
       const step = (right - left) / (n + 1), bw = Math.min(22, step * 0.36);
       const xc = (x) => left + step * (x + 0.5), Y = (v) => bottom - v / maxP * (bottom - top);
       baseline(plot, left, right, bottom, top);
       for (let x = 0; x <= n; x++) {
-        add(plot, "rect", { x: (xc(x) - bw - 1).toFixed(1), y: Y(pH[x]).toFixed(1), width: bw.toFixed(1), height: (bottom - Y(pH[x])).toFixed(1), fill: K_PAL.azul });
-        add(plot, "rect", { x: (xc(x) + 1).toFixed(1), y: Y(pB[x]).toFixed(1), width: bw.toFixed(1), height: (bottom - Y(pB[x])).toFixed(1), fill: K_PAL.ocre, "fill-opacity": 0.65 });
+        add(plot, "rect", { x: (comparar ? xc(x) - bw - 1 : xc(x) - bw / 2).toFixed(1), y: Y(pH[x]).toFixed(1), width: bw.toFixed(1), height: (bottom - Y(pH[x])).toFixed(1), fill: K_PAL.azul });
+        if (comparar) add(plot, "rect", { x: (xc(x) + 1).toFixed(1), y: Y(pB[x]).toFixed(1), width: bw.toFixed(1), height: (bottom - Y(pB[x])).toFixed(1), fill: K_PAL.ocre, "fill-opacity": 0.65 });
+        else add(plot, "text", { x: xc(x).toFixed(1), y: (Y(pH[x]) - 6).toFixed(1), "text-anchor": "middle", "font-size": 13, "font-weight": 700, fill: K_PAL.azul }, fmt(pH[x], 3));
         add(plot, "text", { x: xc(x).toFixed(1), y: bottom + 22, "text-anchor": "middle", class: "v-tick" }, String(x));
       }
-      add(plot, "rect", { x: right - 245, y: top - 4, width: 14, height: 12, fill: K_PAL.azul });
-      add(plot, "text", { x: right - 225, y: top + 6, "font-size": 14, "font-weight": 700, fill: K_PAL.azul }, "Hipergeométrica");
-      add(plot, "rect", { x: right - 105, y: top - 4, width: 14, height: 12, fill: K_PAL.ocre, "fill-opacity": 0.7 });
-      add(plot, "text", { x: right - 85, y: top + 6, "font-size": 14, "font-weight": 700, fill: K_PAL.ocre }, "Binomial");
+      if (comparar) {
+        add(plot, "rect", { x: right - 330, y: top - 4, width: 14, height: 12, fill: K_PAL.azul });
+        add(plot, "text", { x: right - 310, y: top + 6, "font-size": 14, "font-weight": 700, fill: K_PAL.azul }, "Sin reemplazo");
+        add(plot, "rect", { x: right - 175, y: top - 4, width: 14, height: 12, fill: K_PAL.ocre, "fill-opacity": 0.7 });
+        add(plot, "text", { x: right - 155, y: top + 6, "font-size": 14, "font-weight": 700, fill: K_PAL.ocre }, "Con reemplazo");
+      }
       add(plot, "text", { x: (left + right) / 2, y: 310, "text-anchor": "middle", class: "v-axis-label" }, "x, éxitos en la muestra");
       const varB = n * p * (1 - p), fpc = (N - n) / (N - 1), varH = varB * fpc;
-      result.textContent = `E(X) = ${fmt(n * p, 2)} en ambas · Var Hiper = ${fmt(varH, 3)} vs Binom = ${fmt(varB, 3)} (factor (N−n)/(N−1) = ${fmt(fpc, 2)})`;
+      cmpBtn.classList.toggle("is-active", comparar);
+      result.textContent = comparar
+        ? `Ocre: lo que pasaría si cada elemento se devolviera al lote antes de sacar el siguiente (binomial con p = r/N = ${fmt(p, 2)}). Las medias coinciden (${fmt(n * p, 2)}); sin reemplazo la varianza es menor: ${fmt(varH, 3)} frente a ${fmt(varB, 3)}. Con un lote grande frente a la muestra, las barras casi coinciden.`
+        : `Cada barra es P(X = x), la probabilidad de sacar x éxitos en la muestra de ${n}. E(X) = n·r/N = ${fmt(n * p, 2)}.`;
     }
 
     [nPopCtl, rCtl, nCtl].forEach((c) => c.input.addEventListener("input", () => { drawnObs = null; redraw(); }));
     drawBtn.addEventListener("click", sampleOnce);
+    cmpBtn.addEventListener("click", () => { comparar = !comparar; redraw(); });
     redraw();
   }
 

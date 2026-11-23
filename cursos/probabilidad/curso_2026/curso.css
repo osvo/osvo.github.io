@@ -726,3 +726,8 @@ div.aq-card{display:flex;flex-direction:column;gap:3px;padding:6px 8px;border:1p
 .aq-prob{font-size:18px}
 .aq-hist ol{font-size:18px}
 .ej-enunciado table.tabla-num{font-size:1em}
+
+/* Qué es cada símbolo de la fórmula principal */
+dl.simbolos{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:.15em .8em;margin:.35em 0 .2em;padding:.45em 0;border-top:1px solid var(--rule);font-size:22px;line-height:1.3}
+dl.simbolos dt{margin:0;white-space:nowrap}
+dl.simbolos dd{margin:0;color:var(--muted);align-self:center}

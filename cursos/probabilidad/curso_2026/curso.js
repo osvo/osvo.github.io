@@ -295,6 +295,12 @@
     }
     prose.appendChild(body);
     addFormula(prose, data.formula);
+    // «Qué es cada símbolo»: pares [símbolo en LaTeX, significado], debajo de la fórmula.
+    if (data.simbolos && data.simbolos.length) {
+      const dl = el("dl", "simbolos");
+      dl.innerHTML = data.simbolos.map(([sim, que]) => `<dt>\\(${sim}\\)</dt><dd>${que}</dd>`).join("");
+      prose.appendChild(dl);
+    }
     if (data.lectura) {
       const reading = el("p", "slide-reading");
       reading.innerHTML = data.lectura;
@@ -400,6 +406,9 @@
       const height = Math.max(170, g.getBoundingClientRect().height / scale - extra);
       g.style.height = `${height}px`; g.style.maxHeight = `${height}px`;
     };
+    // Si la columna de texto no cabe, primero se oculta el recuadro de código (sigue en la guía y en Lectura).
+    const codeBox = section.querySelector(".codigo-box");
+    if (codeBox) { codeBox.style.display = ""; if (overflow(proseBlocks()) > 0) codeBox.style.display = "none"; }
     const sideGraphic = lateral ? [...lateral.querySelectorAll("svg")].find(notMath) || null : null;
     const bodyGraphic = body ? [...body.querySelectorAll("svg")].find(notMath) || null : null;
     if (sideGraphic) { const extraSide = overflow(sideBlocks()); if (extraSide > 0) shrink(sideGraphic, extraSide); }
@@ -426,8 +435,10 @@
       if (bodyGraphic && extra > 0) shrink(bodyGraphic, extra);
       reduce(body, 22);
     }
-    reduce(reading, 24);
-    reduce(formula, 26);
+    reduce(section.querySelector(".simbolos"), 18);
+    reduce(reading, 20);
+    reduce(formula, 22);
+    if (body && !columnaPasos) reduce(body, 20);
     section.classList.remove("fitting");
   }
   function fitCurrent() {
@@ -602,7 +613,7 @@
     poisson: "Distribución de Poisson P(λ): al aumentar la tasa promedio λ, la distribución se desplaza a la derecha y se vuelve más simétrica alrededor de E(X) = λ.",
     sesgo_varianza: "Simulación de 2.000 muestras normales de tamaño n: muestra cuánta varianza se subestima en promedio al dividir entre n frente a n − 1.",
     primer_binomial: "Inspirado en el canal Primer: simulación animada de rondas de tiros libres con probabilidad p que construyen el histograma sobre la distribución teórica B(n, p), más el árbol de 8 rutas para n = 3.",
-    hiper_vs_binom: "Urna con N elementos y r éxitos sin reemplazo frente a binomial B(n, r/N): comparten media n(r/N), pero la hipergeométrica tiene varianza menor por el factor de corrección finita (N − n)/(N − 1).",
+    hiper_vs_binom: "Lote de N elementos con r éxitos (verde) y N − r fracasos (rojo). Las barras dan P(X = x) para una muestra de n sin reemplazo. «Extraer muestra» marca una muestra al azar. «Comparar con binomial» agrega en ocre lo que pasaría con reemplazo, para mostrar que con lotes grandes casi no cambia.",
     poisson_limite: "Muestra la convergencia de la binomial B(n, λ/n) hacia Poisson P(λ) a medida que aumenta n manteniendo fijo np = λ.",
     exponencial_memoria: "Ilustra la propiedad de falta de memoria: al condicionar en T > s, renormalizar la cola derecha produce exactamente la misma curva exponencial desplazada desde t = 0.",
     normal_significado: "Con ejes fijos se distinguen dos hechos clave: μ traslada la curva, σ la ensancha manteniendo área 1, y al colapsar el ancho a 0 el área tiende a cero (P(X = a) = 0) aunque f(μ) > 0.",

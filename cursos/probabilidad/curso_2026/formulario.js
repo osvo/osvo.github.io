@@ -12,7 +12,7 @@
     ["modelos_continuos", "Modelos continuos"],
     ["estadistica_descriptiva", "Estadística descriptiva"],
     ["muestreo_e_intervalos", "Muestreo e intervalos"],
-    ["regresion_y_confiabilidad", "Regresión y confiabilidad"]
+    ["regresion_y_confiabilidad", "Regresión lineal"]
   ];
   const NOMBRE = Object.fromEntries(UNIDADES);
 
@@ -25,7 +25,6 @@
     ["muest", "Distribuciones muestrales"],
     ["ic", "Intervalos de confianza"],
     ["reg", "Regresión"],
-    ["conf", "Confiabilidad"]
   ];
 
   // [tema, nombre, LaTeX, cuándo se usa, unidad, id de diapositiva, palabras clave]
@@ -77,8 +76,8 @@
     ["cont", "Tabla normal estándar y simetría", String.raw`\Phi(z)=P(Z\le z)\qquad \Phi(-z)=1-\Phi(z)\qquad P(a\le Z\le b)=\Phi(b)-\Phi(a)`, "Lectura directa (fila y columna) o búsqueda inversa por área.", MC, "mc-5t", "tabla z normal estándar acumulado simetría"],
     ["cont", "Percentil de una normal", String.raw`x_p=\mu+z_p\,\sigma`, "Problema inverso: se da la probabilidad y se busca x.", MC, "mc-5", "percentil inverso garantía"],
     ["cont", "Aproximación normal a la binomial", String.raw`\text{corte}=\frac{\text{último incluido}+\text{primero excluido}}{2}\qquad z=\frac{\text{corte}-np}{\sqrt{np(1-p)}}`, "np y n(1 − p) grandes; se corta a mitad de camino entre enteros.", MC, "mc-7", "corrección continuidad"],
-    ["cont", "Chi-cuadrado", String.raw`\chi^2=\frac{(n-1)s^2}{\sigma^2},\quad \mathrm{GL}=n-1`, "Varianza de una población normal; tabla acumulada (área a la izquierda).", MC, "mc-8c", "ji chi cuadrado varianza"],
-    ["cont", "t de Student", String.raw`t=\frac{\bar x-\mu}{s/\sqrt n},\quad \mathrm{GL}=n-1`, "Media con σ desconocida y población normal; colas más pesadas que Z.", MC, "mc-8t", "student gosset media"],
+    ["muest", "Chi-cuadrado", String.raw`\chi^2=\frac{(n-1)s^2}{\sigma^2},\quad \mathrm{GL}=n-1`, "Varianza de una población normal; tabla acumulada (área a la izquierda).", MI, "mi-chi", "ji chi cuadrado varianza"],
+    ["muest", "t de Student", String.raw`t=\frac{\bar x-\mu}{s/\sqrt n},\quad \mathrm{GL}=n-1`, "Media con σ desconocida y población normal; colas más pesadas que Z.", MI, "mi-t", "student gosset media"],
 
     ["desc", "Media muestral", String.raw`\bar x=\frac{\sum x_i}{n}\qquad \bar x=\frac{\sum f\,x}{n}\ \text{(con frecuencias)}`, "No requiere ordenar los datos.", ED, "ed-8", "promedio media frecuencias"],
     ["desc", "Media ponderada", String.raw`\bar x_w=\frac{\sum w_i\,x_i}{\sum w_i}`, "Cada valor pesa w; con frecuencias es la media de todos los datos. Excel: SUMAPRODUCTO/SUMA.", ED, "ed-mp", "ponderada pesos nota"],
@@ -117,8 +116,6 @@
     ["reg", "Mínimos cuadrados", String.raw`b_1=\frac{S_{xy}}{S_{xx}}\qquad b_0=\bar y-b_1\bar x\qquad S_{xy}=\sum(x_i-\bar x)(y_i-\bar y)`, "La recta pasa por (x̄, ȳ).", RC, "rc-2", "pendiente intercepto recta"],
     ["reg", "Correlación y R²", String.raw`r=\frac{S_{xy}}{\sqrt{S_{xx}S_{yy}}}\qquad R^2=1-\frac{\mathrm{SSE}}{\mathrm{SST}}=r^2\qquad \hat\sigma^2=\frac{\mathrm{SSE}}{n-2}`, "Bondad de ajuste y varianza residual.", RC, "rc-3", "correlación determinación residuos"],
 
-    ["conf", "Confiabilidad y tasa de falla", String.raw`R(t)=P(T>t)=1-F(t)\qquad h(t)=\frac{f(t)}{R(t)}`, "Probabilidad de seguir funcionando a tiempo t.", RC, "rc-5", "confiabilidad supervivencia tasa falla"],
-    ["conf", "Serie y paralelo", String.raw`R_{\text{serie}}=\prod r_i\qquad R_{\text{paralelo}}=1-\prod(1-r_i)`, "Componentes independientes.", RC, "rc-6", "sistemas serie paralelo redundancia"]
   ];
 
   const $ = (id) => document.getElementById(id);

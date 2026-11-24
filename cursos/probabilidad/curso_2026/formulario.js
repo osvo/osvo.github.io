@@ -81,6 +81,8 @@
     ["cont", "t de Student", String.raw`t=\frac{\bar x-\mu}{s/\sqrt n},\quad \mathrm{GL}=n-1`, "Media con σ desconocida y población normal; colas más pesadas que Z.", MC, "mc-8t", "student gosset media"],
 
     ["desc", "Media muestral", String.raw`\bar x=\frac{\sum x_i}{n}\qquad \bar x=\frac{\sum f\,x}{n}\ \text{(con frecuencias)}`, "No requiere ordenar los datos.", ED, "ed-8", "promedio media frecuencias"],
+    ["desc", "Media ponderada", String.raw`\bar x_w=\frac{\sum w_i\,x_i}{\sum w_i}`, "Cada valor pesa w; con frecuencias es la media de todos los datos. Excel: SUMAPRODUCTO/SUMA.", ED, "ed-mp", "ponderada pesos nota"],
+    ["desc", "Varianza de la población", String.raw`\mu=\frac{\sum x_i}{N}\qquad \sigma^2=\frac{\sum(x_i-\mu)^2}{N}`, "Todos los elementos de interés. Excel: VAR.P y DESVEST.P; numpy sin ddof; calculadora σx.", ED, "ed-pm", "poblacional sigma N"],
     ["desc", "Mediana", String.raw`\tilde x=x_{((n+1)/2)}\ \ (n\text{ impar})\qquad \tilde x=\frac{x_{(n/2)}+x_{(n/2+1)}}2\ \ (n\text{ par})`, "Ordenar primero; robusta ante atípicos.", ED, "ed-c", "mediana posición central"],
     ["desc", "Varianza muestral (definición)", String.raw`s^2=\frac{\sum(x_i-\bar x)^2}{n-1}`, "Tabla de desviaciones; se divide entre n − 1.", ED, "ed-8", "varianza tabla desviaciones n-1"],
     ["desc", "Varianza muestral (abreviada)", String.raw`s^2=\frac{\sum x_i^2-n\bar x^2}{n-1}=\frac{\sum x_i^2-(\sum x_i)^2/n}{n-1}`, "Con la columna de cuadrados; la que usa la calculadora.", ED, "ed-8", "varianza fórmula corta calculadora"],
@@ -89,7 +91,7 @@
     ["desc", "Cuartiles", String.raw`\text{posición de }Q_k=\frac k4(n+1)\ \text{con interpolación}`, "Declarar la convención (Excel CUARTIL.EXC).", ED, "ed-5", "cuartiles percentiles posición"],
     ["desc", "Percentil p", String.raw`L=\frac{p}{100}(n+1),\qquad P_p=x_{(k)}+d\,(x_{(k+1)}-x_{(k)}),\ L=k+d`, "Valor que deja el p % de los datos ordenados por debajo.", ED, "ed-p", "percentil posicion"],
     ["desc", "RIC y vallas", String.raw`\mathrm{RIC}=Q_3-Q_1\qquad Q_1-1{,}5\,\mathrm{RIC},\ \ Q_3+1{,}5\,\mathrm{RIC}`, "Diagrama de caja y datos atípicos.", ED, "ed-5", "boxplot atípicos rango intercuartílico"],
-    ["desc", "Coeficiente de variación", String.raw`CV=\frac{s}{\bar x}\times100\,\%`, "Comparar dispersión de medidas en escalas distintas.", ED, "ed-6", "variación relativa"],
+    ["desc", "Coeficiente de variación", String.raw`\mathrm{CV}=\frac{s}{\bar x}\ \text{(muestra)}\qquad \mathrm{CV}=\frac{\sigma}{\mu}\ \text{(población)}`, "Comparar dispersión de medidas en escalas distintas.", ED, "ed-6", "variación relativa"],
     ["desc", "Rango", String.raw`R=x_{\max}-x_{\min}`, "Distancia entre los extremos; depende solo de dos datos.", ED, "ed-d", "dispersion amplitud"],
 
     ["muest", "Media muestral: centro y error estándar", String.raw`E(\bar X)=\mu\qquad \sigma_{\bar X}=\frac{\sigma}{\sqrt n}\qquad \widehat{\mathrm{EE}}(\bar X)=\frac{S}{\sqrt n}`, "Observaciones independientes. El promedio oscila menos que un dato.", MI, "mi-2", "error estándar media muestral"],

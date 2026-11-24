@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="es" data-publico="1">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Tablas acumuladas · Probabilidad y Estadística</title>
+  <link rel="stylesheet" href="curso.css?v=20261124r13">
+  <style>
+    html,body{height:100%}body{background:#fff;color:var(--ink);margin:0;font-family:var(--sans);display:flex;flex-direction:column;overflow:hidden}
+    .cab{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;padding:18px 76px 10px 28px;border-bottom:2px solid var(--ink);background:#fff;z-index:3;flex:none}
+    .cab h1{font:700 30px/1 var(--serif);margin:0}
+    .pestanas{display:flex;gap:6px}
+    .pestanas button{font:600 17px var(--sans);padding:8px 16px;border:1px solid var(--rule);border-bottom:0;border-radius:8px 8px 0 0;background:#f4f5f2;color:var(--muted);cursor:pointer}
+    .pestanas button[aria-pressed="true"]{background:var(--green);color:#fff;border-color:var(--green)}
+    .ayuda{flex:none;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px 32px;padding:10px 28px;font:400 15px/1.4 var(--sans);color:var(--ink);border-bottom:1px solid var(--rule);background:#fafbf8}
+    .ayuda b{color:var(--green)}
+    .ayuda code{font:500 14px ui-monospace,Consolas,monospace;background:#eef0ea;padding:1px 5px;border-radius:4px}
+    .zona{flex:1;min-height:0;padding:0 28px 30px;overflow:auto}
+    table.tz{border-collapse:collapse;font:400 14px/1.15 var(--sans);font-variant-numeric:tabular-nums;margin:0 auto}
+    table.tz th,table.tz td{padding:3px 6px;text-align:right;white-space:nowrap;border-bottom:1px solid #eceee9}
+    table.tz thead th{position:sticky;top:0;background:#d9dcd5;font-weight:700;z-index:1}
+    table.tz th.fila{background:#d9dcd5;font-weight:700;text-align:center}
+    table.tz td.sep,table.tz th.sep{border-left:3px solid #fff}
+    table.tz .rf{background:#fff3cf}
+    table.tz .rc{background:#fff3cf}
+    table.tz th.rf,table.tz th.rc{background:#f2c94c!important;color:#000}
+    table.tz td.cruce{background:var(--green)!important;color:#fff;font-weight:700;outline:2px solid #1f3d1a}
+    table.tz td:hover{background:#e7efe4;cursor:pointer}
+    .lectura{font:600 18px var(--sans);color:var(--green);text-align:center;min-height:1.4em;margin:8px 0;flex:none}
+    body.embed .cab{padding-top:12px}
+  </style>
+</head>
+<body>
+  <header class="cab">
+    <h1>Tablas acumuladas (área a la izquierda)</h1>
+    <nav class="pestanas" id="pestanas">
+      <button data-t="z">Normal estándar Z</button>
+      <button data-t="t">t de Student</button>
+      <button data-t="chi">Ji cuadrada χ²</button>
+    </nav>
+  </header>
+  <div class="ayuda" id="ayuda"></div>
+  <p class="lectura" id="lectura"></p>
+  <div class="zona"><table class="tz" id="tabla"></table></div>
+  <script src="tablas_datos.js?v=20261124r13"></script>
+  <script>
+  (function () {
+    "use strict";
+    const T = window.TABLAS, P = new URLSearchParams(location.search);
+    if (P.get("embed")) document.body.classList.add("embed");
+    const AYUDA = {
+      z: `<div><b>Cómo se lee:</b> fila = entero y décima de z; columna = centésima. La celda es Φ(z) = P(Z ≤ z), el área a la izquierda de z.</div>
+          <div><b>Excel:</b> <code>=DISTR.NORM.ESTAND.N(z;VERDADERO)</code>; al revés, <code>=INV.NORM.ESTAND(p)</code>. <b>Python:</b> <code>scipy.stats.norm.cdf(z)</code>, <code>norm.ppf(p)</code>.</div>`,
+      t: `<div><b>Cómo se lee:</b> fila = grados de libertad GL = n − 1; columna = probabilidad p a la izquierda. La celda es el valor t con P(T ≤ t) = p. Por simetría, el valor con 1 − p a la izquierda es −t.</div>
+          <div><b>Excel:</b> <code>=INV.T(p;GL)</code>; probabilidad, <code>=DISTR.T.N(t;GL;VERDADERO)</code>. <b>Python:</b> <code>scipy.stats.t.ppf(p, GL)</code>, <code>t.cdf(t, GL)</code>.</div>`,
+      chi: `<div><b>Cómo se lee:</b> fila = grados de libertad GL = n − 1; columna = probabilidad p a la izquierda. La celda es el valor x con P(χ² ≤ x) = p.</div>
+          <div><b>Excel:</b> <code>=INV.CHICUAD(p;GL)</code>; probabilidad, <code>=DISTR.CHICUAD(x;GL;VERDADERO)</code>. <b>Python:</b> <code>scipy.stats.chi2.ppf(p, GL)</code>, <code>chi2.cdf(x, GL)</code>.</div>`
+    };
+    const fmt = {
+      z: (v) => v.toFixed(5).replace("0.", ",").replace(".", ","),
+      t: (v) => v.toFixed(5).replace(".", ","),
+      chi: (v) => v.toFixed(3).replace(".", ",")
+    };
+    const nombre = { z: "Φ", t: "t", chi: "χ²" };
+    let actual = null;
+
+    function dibujar(t, f, c) {
+      actual = t;
+      document.querySelectorAll("#pestanas button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.t === t)));
+      document.getElementById("ayuda").innerHTML = AYUDA[t];
+      const d = T[t], tab = document.getElementById("tabla");
+      let h = "";
+      if (t === "z") {
+        const neg = d.filas.filter((r) => r.startsWith("-")), pos = d.filas.filter((r) => !r.startsWith("-"));
+        const cab = `<th>z</th>${d.cols.map((cc) => `<th data-c="${cc}">${cc}</th>`).join("")}`;
+        h += `<thead><tr>${cab}${cab.replace("<th>z</th>", '<th class="sep">z</th>')}</tr></thead><tbody>`;
+        for (let i = 0; i < Math.max(neg.length, pos.length); i++) {
+          h += "<tr>";
+          [neg[i], pos[i]].forEach((r, k) => {
+            if (r === undefined) { h += `<th class="fila${k ? " sep" : ""}"></th>` + "<td></td>".repeat(10); return; }
+            const v = d.v[d.filas.indexOf(r)];
+            h += `<th class="fila${k ? " sep" : ""}" data-f="${r}">${r}</th>` + v.map((x, j) => `<td data-f="${r}" data-c="${d.cols[j]}">${fmt.z(x)}</td>`).join("");
+          });
+          h += "</tr>";
+        }
+      } else {
+        h += `<thead><tr><th>GL \\ p</th>${d.cols.map((cc) => `<th data-c="${cc}">${cc}</th>`).join("")}</tr></thead><tbody>`;
+        d.filas.forEach((r, i) => {
+          h += `<tr><th class="fila" data-f="${r}">${r}</th>${d.v[i].map((x, j) => `<td data-f="${r}" data-c="${d.cols[j]}">${fmt[t](x)}</td>`).join("")}</tr>`;
+        });
+      }
+      tab.innerHTML = h + "</tbody>";
+      marcar(f, c);
+    }
+
+    function marcar(f, c) {
+      const tab = document.getElementById("tabla");
+      tab.querySelectorAll(".rf,.rc,.cruce").forEach((e) => e.classList.remove("rf", "rc", "cruce"));
+      const lect = document.getElementById("lectura");
+      lect.textContent = "";
+      if (!f && !c) return;
+      // En la Z, la fila resalta solo su panel (negativo o positivo)
+      tab.querySelectorAll("[data-f]").forEach((e) => { if (e.dataset.f === f) e.classList.add("rf"); });
+      tab.querySelectorAll("[data-c]").forEach((e) => {
+        if (e.dataset.c !== c) return;
+        if (actual === "z" && f && e.tagName === "TD" && (e.dataset.f.startsWith("-") !== f.startsWith("-"))) return;
+        e.classList.add("rc");
+      });
+      const celda = [...tab.querySelectorAll("td")].find((e) => e.dataset.f === f && e.dataset.c === c);
+      if (celda) {
+        celda.classList.add("cruce");
+        celda.scrollIntoView({ block: "center", inline: "center" });
+        const d = T[actual];
+        if (actual === "z") {
+          const zv = (f.startsWith("-") ? "-" : "") + (Math.abs(parseFloat(f.replace(",", "."))) + parseFloat(c.replace(",", "."))).toFixed(2).replace(".", ",");
+          lect.textContent = `Fila ${f}, columna ${c}: Φ(${zv}) = P(Z ≤ ${zv}) = ${celda.textContent}`;
+        } else {
+          lect.textContent = `Fila GL = ${f}, columna p = ${c}: P(${actual === "t" ? "T" : "χ²"} ≤ ${celda.textContent}) = ${c}`;
+        }
+      }
+    }
+
+    document.getElementById("pestanas").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) dibujar(b.dataset.t); });
+    document.getElementById("tabla").addEventListener("click", (e) => { const td = e.target.closest("td[data-f]"); if (td) marcar(td.dataset.f, td.dataset.c); });
+    dibujar(T[P.get("t")] ? P.get("t") : "z", P.get("f"), P.get("c"));
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape" || e.key === "t" || e.key === "T") parent.postMessage({ cerrarTablas: true }, "*"); });
+    window.addEventListener("message", (e) => { const m = e.data || {}; if (m.tabla && T[m.tabla]) dibujar(m.tabla, m.f, m.c); });
+  }());
+  </script>
+</body>
+</html>

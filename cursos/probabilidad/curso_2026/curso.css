@@ -731,3 +731,12 @@ div.aq-card{display:flex;flex-direction:column;gap:3px;padding:6px 8px;border:1p
 dl.simbolos{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:.15em .8em;margin:.35em 0 .2em;padding:.45em 0;border-top:1px solid var(--rule);font-size:22px;line-height:1.3}
 dl.simbolos dt{margin:0;white-space:nowrap}
 dl.simbolos dd{margin:0;color:var(--muted);align-self:center}
+
+/* Tablas acumuladas a la mano */
+#tablas-dialog{width:96vw;height:92vh;max-width:none;max-height:none;padding:0;border:0;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.35);overflow:hidden}
+#tablas-dialog::backdrop{background:rgba(20,24,18,.55)}
+#tablas-dialog iframe{width:100%;height:100%;border:0;display:block}
+#tablas-dialog .tablas-cerrar{position:absolute;top:10px;right:14px;z-index:5;font:700 26px/1 var(--sans);width:40px;height:40px;border-radius:50%;border:1px solid var(--rule);background:#fff;color:var(--ink);cursor:pointer}
+.ver-tabla{font:600 .78em var(--sans);color:var(--green);background:#eef4ec;border:1px solid #b9cdb3;border-radius:999px;padding:.05em .6em;margin:0 .15em;cursor:pointer;white-space:nowrap;vertical-align:.1em}
+.ver-tabla::before{content:"▦ ";font-weight:400}
+.ver-tabla:hover{background:var(--green);color:#fff}

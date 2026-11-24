@@ -618,7 +618,7 @@
     exponencial_memoria: "Ilustra la propiedad de falta de memoria: al condicionar en T > s, renormalizar la cola derecha produce exactamente la misma curva exponencial desplazada desde t = 0.",
     normal_significado: "Con ejes fijos se distinguen dos hechos clave: μ traslada la curva, σ la ensancha manteniendo área 1, y al colapsar el ancho a 0 el área tiende a cero (P(X = a) = 0) aunque f(μ) > 0.",
     tabla_z: "Tabla normal estándar acumulada Φ(z) interactiva conectada con la gráfica: pulsar una celda o mover el deslizador ubica fila y columna; en modo inverso resalta la celda más cercana al área buscada.",
-    normal_aprox_binom: "Compara barras binomiales con el área normal continua y resalta en ocre la franja de corrección de continuidad ±0,5.",
+    normal_aprox_binom: "Compara barras binomiales con el área normal continua y resalta en ocre la media barra que se pierde si no se corta a mitad de camino entre enteros.",
     caja_interactiva: "Permite desplazar el mayor valor de los 20 cilindros para ver cómo Q₁, Q₂ y Q₃ permanecen estables y los bigotes se detienen en el último dato dentro de la valla Q₃ + 1,5·RIC antes de marcar el atípico.",
     t_vs_z: "Compara las colas de la distribución t de Student con ν = n − 1 grados de libertad frente a la normal estándar Z y el ensanchamiento porcentual del intervalo del 95 %.",
     bernoulli_ensayo: "Simulador de un ensayo Bernoulli X ~ B(1, p) con historial de resultados, comparación empírica y parábola de varianza p(1 − p) máxima en p = 0,5.",
@@ -902,6 +902,40 @@
     bottom.insertBefore(firma, bottom.firstChild);
   }
 
+  /* Tablas acumuladas a la mano: botón «Tablas», tecla T y botones «ver en la tabla» dentro de los pasos. */
+  function abrirTabla(t, f, c) {
+    let dlg = document.getElementById("tablas-dialog");
+    if (!dlg) {
+      dlg = document.createElement("dialog");
+      dlg.id = "tablas-dialog";
+      dlg.innerHTML = '<button type="button" class="tablas-cerrar" aria-label="Cerrar tablas">×</button><iframe title="Tablas acumuladas"></iframe>';
+      document.body.appendChild(dlg);
+      dlg.querySelector(".tablas-cerrar").addEventListener("click", () => dlg.close());
+      dlg.addEventListener("click", (e) => { if (e.target === dlg) dlg.close(); });
+    }
+    const fr = dlg.querySelector("iframe");
+    const q = new URLSearchParams({ embed: "1" });
+    if (t) q.set("t", t); if (f) q.set("f", f); if (c) q.set("c", c);
+    const url = "tablas.html?" + q.toString();
+    if (fr.dataset.cargado && fr.contentWindow) fr.contentWindow.postMessage({ tabla: t, f, c }, "*");
+    else { fr.src = url; fr.dataset.cargado = "1"; }
+    if (!dlg.open) dlg.showModal();
+  }
+  window.abrirTabla = abrirTabla;
+  window.addEventListener("message", (e) => { if (e.data && e.data.cerrarTablas) { const d = document.getElementById("tablas-dialog"); if (d) d.close(); } });
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest(".ver-tabla");
+    if (!b) return;
+    e.preventDefault(); e.stopPropagation();
+    abrirTabla(b.dataset.t, b.dataset.f, b.dataset.c);
+  }, true);
+  document.addEventListener("keydown", (e) => {
+    if ((e.key === "t" || e.key === "T") && !e.ctrlKey && !e.metaKey && !e.altKey && !/INPUT|TEXTAREA|SELECT/.test((e.target.tagName || ""))) {
+      const dlg = document.getElementById("tablas-dialog");
+      if (dlg && dlg.open) dlg.close(); else abrirTabla();
+    }
+  });
+
   function setupChrome() {
     $("course-short-title").textContent = course.shortTitle || course.title;
     const actions = document.querySelector(".chrome-actions");
@@ -909,6 +943,10 @@
       const glos = el("a", "", "Fórmulas"); glos.href = "formulario.html"; glos.title = "Glosario de fórmulas y buscador de temas";
       actions.insertBefore(glos, actions.firstChild);
     }
+    const tablasBtn = el("button", "", "Tablas"); tablasBtn.type = "button";
+    tablasBtn.title = "Tablas acumuladas Z, t y χ² (tecla T)";
+    tablasBtn.addEventListener("click", () => abrirTabla());
+    actions.insertBefore(tablasBtn, actions.firstChild);
     const modeUrl = new URL(window.location.href);
     modeUrl.hash = ""; modeUrl.searchParams.delete("guia");
     if (readingMode) {

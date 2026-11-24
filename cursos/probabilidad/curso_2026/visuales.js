@@ -2664,7 +2664,7 @@
     const nCtl = makeSlider(controls, "Ensayos, n", "10", "50", "1", "20");
     const pCtl = makeSlider(controls, "Probabilidad, p", "0.15", "0.85", "0.05", "0.40");
     const xCtl = makeSlider(controls, "Corte P(X ≥ x)", "1", "19", "1", "10");
-    const ccBtn = controlButton("Corrección −0,5 (activa)", true);
+    const ccBtn = controlButton("Cortar a mitad de camino (activo)", true);
     controls.appendChild(ccBtn);
     const plot = makeSvg("0 0 640 320", "Aproximación normal a la binomial resaltando la corrección de continuidad");
     const result = el("p", "widget-result");
@@ -2674,7 +2674,7 @@
     const combL = (n, x) => { let c = 1; for (let i = 0; i < x; i++) c = c * (n - i) / (i + 1); return c; };
     function redraw() {
       ccBtn.classList.toggle("is-active", useCC);
-      ccBtn.textContent = useCC ? "Corrección −0,5 (activa)" : "Sin corrección";
+      ccBtn.textContent = useCC ? "Cortar a mitad de camino (activo)" : "Cortar en el entero";
       const n = Number(nCtl.input.value), p = Number(pCtl.input.value);
       xCtl.input.max = String(n - 1);
       const xCut = Math.min(n - 1, Math.max(1, Number(xCtl.input.value)));
